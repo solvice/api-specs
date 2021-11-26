@@ -1,0 +1,777 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+
+
+  title: Solvice Demand Forecasting API
+
+  termsOfService: 'https://solvice.io/terms/'
+
+  contact:
+    email: info@solvice.io # [Optional] Replace with your contact email
+
+  x-logo:
+    url: 'logo.png'
+    altText: Demand Forecasting API
+
+
+  description: |
+
+    # Introduction
+
+    The Demand Forecasting (DF) API is developped to help clients use the Solvice demand forecasting algorithm, while also supporting additional features to enrich the algorithm. The features of the demand forecasting services are as follows:
+      - Demand driver definition of context.
+      - Integrate data structure with algorithm.
+      - Standardise the forecasting of demand.
+      - Compare actual and forecasted data points in stats.
+      - Outlier detection in actual data.
+
+
+
+    Interaction with the demand forecasting service is possible through the API. First we will define the different concepts to interact with the DF API.
+
+    # Quickstart
+
+    These steps are necessary to get started with integrating the Demand Forecasting API with your planning application:
+    1. Setup context
+    2. Define Data Connection
+    3. Train model
+    4. Predict with model
+    5. Evaluate
+
+
+
+
+
+
+    ## Setup context
+
+    First step is to create a new customer into the DF API.
+
+    To onboard new demand forecasting customers, data from their system(s) needs to be imported into the DF API and vice versa. We will discuss what steps to go through to onboard a new customer in the demand forecasting application with a special focus for how to integrate the DF API and the customer's system(s).
+
+    For every customer different geographical units can be defined. These units can have different factors predicting the demand at that location. Hence these units allow for the definition of different demand drivers that make up the actual demand.
+
+
+    Demand drivers are the factors for which a client wants to make a forecast; for example, foot traffic, revenue, or sold items. However, those attributes are often structured in the sense that they belong to a certain department, location, region, or country. In the demand forecasting service, we refer to the items that forms this structure as units, and they can be structured hierarchically. Each unit belongs to a certain customer, to enable multiple parallel structures that are overlapping but only apply to a specific customer of the client.
+
+
+    ## Define data connection
+
+    The data service allows for connecting custom data connections for which the DF API can systematically update current forecasts and
+
+
+    Upload historical data for every demand driver you just defined will result in the basic necessary information for the system to feed you with predictions. These data should entail the timestamp, time block, the driver and unit id and the actual value.
+
+
+    ## Training the model
+
+    Training the model is the next necessary step towards a productional forecasting system.
+    It is possible to train either a single driver or an entire unit.
+
+    ## Predicting the demand
+    Based on the model, it is now possible to make a prediction for a specific period and either a single driver or the entire unit or even for all the units of a specific customer.
+
+
+    ## Evaluation
+
+    Carefully check that the resulting model's accuracy reflects your pre-defined level. Machine learning model accuracy is the measurement used to determine which model is best at identifying relationships and patterns between variables in a dataset based on the input, or training, data.
+
+
+
+
+
+
+
+tags:
+  - name: Customer
+    description:  A customer is the entity that is being serviced by the client of the DF API.
+  - name: Driver
+    description: A (demand) driver is a description of a data element (i.e., demand driver) in the demand forecasting service. Attributes can represent data such as foot traffic, revenue, or sold items.
+  - name: Unit
+    description: A unit is a building block in the structure of the demand driver context. As mentioned previously, units can represent things such as countries, regions, locations, or departments.
+  - name: Data
+    description: Add actual historical data in order to fuel the Demand Forecasting algorithm. Add actual current data in order to compare with old forecasts.
+  - name: Forecasting
+    description: The DF API simplifies the forecasting of demand by limiting the degrees of freedom of the algorithmic modelling to only those degrees of freedom that are needed for demand forecasting. Forecasting can occur on the level of the Unit as well as on a specific demand driver.
+  - name: Model Run
+    description: Different forecasting jobs result in different runs of the algorithm.
+
+
+servers:
+  - url: 'https://df.solvice.io/api'
+
+
+
+paths:
+
+  /customer:
+    post:
+      tags:
+        - Customer
+      summary: Add new customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+    get:
+      tags:
+        - Customer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the customer.
+          schema:
+            type: string
+      summary: Get customer by id
+      description: |
+      operationId: getCustomerId
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Customer'
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - Customer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the customer.
+          schema:
+            type: string
+      summary: Delete customer by id
+      description: |
+      operationId: deleteCustomer
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+
+  /customers:
+    get:
+      tags:
+        - Customer
+
+      summary: Get customer list
+      description: |
+      operationId: getCustomerList
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                format: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '403':
+          description: Forbidden
+
+  /driver:
+    get:
+      tags:
+        - Driver
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Demand Driver.
+          schema:
+            type: string
+      summary: Get demand driver by id
+      description: |
+
+      operationId: getDriver
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Driver'
+        '403':
+          description: Forbidden
+        '404':
+          description: Demand Driver not found
+    post:
+      tags:
+        - Driver
+
+      summary: Create new demand driver
+      description: |
+      requestBody:
+        content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Driver'
+      operationId: createDriver
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+    delete:
+      tags:
+        - Driver
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Demand Driver.
+          schema:
+            type: string
+      summary: Delete demand driver by id
+      description: |
+      operationId: deleteDriver
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Demand Driver not found
+  /driver/forecast:
+    post:
+      tags:
+        - Driver
+        - Forecasting
+      parameters:
+        - in: path
+          name: start
+          required: true
+          description: Start date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: end
+          required: true
+          description: End date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: driver
+          required: true
+          description: Driver Id
+          schema:
+            type: string
+      summary: Predict Driver
+      description: |
+
+      operationId: predictDriver
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Run'
+        '403':
+          description: Forbidden
+  /driver/runs:
+    get: # documentation for GET operation for this path
+      tags:
+        - Driver
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Demand Driver.
+          schema:
+            type: string
+      summary: Get all the modelling runs of a driver
+      description: |
+
+      operationId: getDriverRuns
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Demand Driver not found
+  /driver/actual:
+    get:
+      tags:
+        - Driver
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Demand Driver.
+          schema:
+            type: string
+        - in: path
+          name: time
+          required: true
+          description: The start of the block for which to get the actual value
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: size
+          required: true
+          description: Size of the block for which to get the actual value
+          schema:
+            type: string
+            format: date-time
+      summary: Get the actual value of a driver for specific moment
+      description: |
+
+      operationId: getActual
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Demand Driver not found
+
+
+  /driver/train:
+    post:
+      tags:
+        - Driver
+        - Forecasting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Demand Driver.
+          schema:
+            type: string
+        - in: path
+          name: start
+          required: true
+          description: Start date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: end
+          required: true
+          description: End date time
+          schema:
+            type: string
+            format: date-time
+      summary: Train driver
+      description: |
+        Train the Driver
+      operationId: modelUnit
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Run'
+        '403':
+          description: Forbidden
+
+  /unit:
+    get:
+      tags:
+        - Unit
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the unit.
+          schema:
+            type: string
+      summary: Get unit by id
+      description: |
+
+      operationId: getUnit
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Unit'
+        '403':
+          description: Forbidden
+        '404':
+          description: Unit not found
+    post:
+      tags:
+        - Unit
+      summary: Create unit
+      description: |
+        Create Unit
+      operationId: createUnit
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Unit'
+        '403':
+          description: Forbidden
+        '404':
+          description: Unit not found
+    delete:
+      tags:
+        - Unit
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the unit.
+          schema:
+            type: string
+      summary: Delete unit
+      description: |
+        Create Unit
+      operationId: deleteUnit
+      responses: # list of responses
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+        '404':
+          description: Unit not found
+  /unit/forecast:
+    post:
+      tags:
+        - Unit
+        - Forecasting
+      parameters:
+        - in: path
+          name: start
+          required: true
+          description: Start date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: end
+          required: true
+          description: End date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: driver
+          required: true
+          description: Driver Id
+          schema:
+            type: string
+        - in: path
+          name: name
+          required: true
+          description: Name of the forecast
+          schema:
+            type: string
+
+      summary: Forecast unit
+      description: |
+
+      operationId: forecastUnit
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Run'
+        '403':
+          description: Forbidden
+  /unit/train:
+    post:
+      tags:
+        - Unit
+        - Forecasting
+      parameters:
+        - in: path
+          name: start
+          required: true
+          description: Start date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: end
+          required: true
+          description: End date time
+          schema:
+            type: string
+            format: date-time
+      summary: Model unit
+      description: |
+        Model the Unit
+      operationId: trainUnit
+      responses: # list of responses
+        '200':
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: '#/components/schemas/Run'
+        '403':
+          description: Forbidden
+  /unit/detect:
+    post:
+      tags:
+        - Unit
+      parameters:
+        - in: path
+          name: start
+          required: true
+          description: Start date time
+          schema:
+            type: string
+            format: date-time
+        - in: path
+          name: end
+          required: true
+          description: End date time
+          schema:
+            type: string
+            format: date-time
+      summary: Detect outliers unit
+      description: |
+        Detect the outliers of Unit
+      operationId: detectUnit
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+
+  /data/upload:
+    post:
+      tags:
+        - Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              format: array
+              items:
+                $ref: '#/components/schemas/Data'
+      summary: Upload data
+      description: |
+        Upload list of Data elements
+      operationId: UploadData
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden
+
+
+  /data/import:
+    post:
+      tags:
+        - Data
+      summary: Import custom data connection
+      operationId: importData
+      responses:
+        '200':
+          description: Success
+
+
+  /runs:
+    get:
+      tags:
+        - Model Run
+      summary: Get runs
+      operationId: getRuns
+      responses:
+        '200':
+          description: Success
+
+
+
+
+# An object to hold reusable parts that can be used across the spec
+components:
+  schemas:
+
+    Customer:
+      type: object
+      properties:
+        name:
+          description: Name of customer
+          type: string
+          minLength: 4
+          example: Company_x
+        id:
+          description: Customer id
+          type: string
+          format: uuid
+          minLength: 1
+        group:
+          description: Group (ISV) id
+          type: string
+          minLength: 1
+
+    Driver:
+      type: object
+      properties:
+        name:
+          description: Name of driver
+          type: string
+          minLength: 3
+          example: Pizza Revenue
+        id:
+          description: Driver id
+          type: string
+          minLength: 1
+          example: revenue_1
+        customer:
+          description: Customer id
+          type: string
+        unit:
+          description: Unit id
+          type: string
+
+
+
+    Unit:
+      type: object
+      properties:
+        name:
+          description: Name of unit
+          type: string
+          minLength: 3
+          example: John78
+        id:
+          description: Unit id
+          type: string
+          minLength: 1
+          example: John
+        group:
+          description: Group of unit
+          type: string
+          minLength: 1
+        customer:
+          description: Id of Customer
+          type: string
+        parent:
+          description: Id of parent unit (hierarchical)
+          type: string
+        location:
+          description: Physical location of unit
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 51.321431
+            longitude:
+              type: number
+              example: 5.0123445
+            address:
+              type: string
+              description: Geocodable address of location
+        timezone:
+          description: Timezone of unit
+          type: string
+
+    Run:
+      type: object
+      properties:
+        id:
+          description: Id of the Run
+          type: string
+        timestamp:
+          description: Timestamp of start of algorithm
+          type: string
+        accuracy:
+          description: Accurracy level
+          type: string
+        driver:
+          description: Id of the driver
+          type: string
+        unit:
+          description: Id of the unit
+          type: string
+        customer:
+          description: Customer id
+          type: string
+
+    Forecast:
+      type: object
+      properties:
+        value:
+          description: Actual value of the forecast
+          type: integer
+        time:
+          description: Timestamp of start of forecasted timeblock
+          type: string
+          format: date-time
+        block:
+          description: block size in seconds
+          type: integer
+        run:
+          description: Run id
+          type: string
+        driver:
+          description: Id of the driver
+          type: string
+        unit:
+          description: Id of the unit
+          type: string
+        customer:
+          description: Customer id
+          type: string
+
+
+    Data:
+      type: object
+      properties:
+        value:
+          description: Actual value of the data
+          type: integer
+        time:
+          description: Timestamp of start of data timeblock
+          type: string
+          format: date-time
+        block:
+          description: block size in seconds
+          type: integer
+        driver:
+          description: Id of the driver
+          type: string
+        unit:
+          description: Id of the unit
+          type: string
+
+
+  headers:
+    ExpiresAfter:
+      description: date in UTC when token expires
+      schema:
+        type: string
+        format: date-time
+
+
+  securitySchemes:
+    basic_auth:
+      type: http
+      scheme: basic
