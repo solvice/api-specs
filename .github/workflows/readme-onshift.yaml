@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: readmeio/github-readme-sync@v2
         with:
-          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a0dbf1a3a7bbb15c90a02f
+          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a1025ae500b60a3cb9e3de
           # OPTIONAL CONFIG, use if necessary
           oas-file-path: './onshift/openapi.yaml'
           api-version: 'v1.0.0'
