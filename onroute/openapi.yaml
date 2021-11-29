@@ -323,7 +323,7 @@ paths:
                 summary: Example of a pickup and delivery problem
                 externalValue: https://api.solvice.io/examples/pdp
               PVRP:
-                summary: Example of a vehicle routing problem
+                summary: Example of a multi-period vehicle routing problem
                 externalValue: https://api.solvice.io/examples/pvrp
             schema:
               anyOf:
