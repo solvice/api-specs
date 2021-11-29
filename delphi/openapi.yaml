@@ -8,7 +8,7 @@ info:
   termsOfService: 'https://solvice.io/terms/'
 
   contact:
-    email: info@solvice.io # [Optional] Replace with your contact email
+    email: info@solvice.io
 
   x-logo:
     url: 'logo.png'
@@ -99,7 +99,7 @@ tags:
 
 
 servers:
-  - url: 'https://df.solvice.io/api'
+  - url: 'https://delphi.solvice.io/api'
 
 
 

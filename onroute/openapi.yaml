@@ -318,7 +318,7 @@ paths:
             examples:
               VRP:
                 summary: Example of a vehicle routing problem
-                externalValue: 'https://storage.googleapis.com/solvice-static/examples/fill.json'
+                externalValue: https://storage.googleapis.com/solvice-static/examples/fill.json
               PDP:
                 summary: Example of a pickup and delivery problem
                 externalValue: https://api.solvice.io/examples/pdp
