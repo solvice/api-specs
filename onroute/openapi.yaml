@@ -100,8 +100,7 @@ tags:
 
 
 
-  - name: Jobs
-    description: The Jobs endpoint allows to retrieve information of a posted request, its status, the score or even detailed statistics.
+
   - name: Routing
     description: |
       Post a new solve request to the Routing Engine.
@@ -159,6 +158,8 @@ tags:
       expected to be executed within one day. Sometimes capacity is not uniformly spread. In those cases it is possible to optionally adjust the capacity on a weekly basis.
 
 
+  - name: Jobs
+    description: The Jobs endpoint allows to retrieve information of a posted request, its status, the score or even detailed statistics.
   - name: Solution
     description: Retrieve the optimal solution to the problem.
   - name: FAQ
@@ -322,10 +323,12 @@ paths:
                   $ref: ./onroute/examples/vrp.json
               PDP:
                 summary: Pickup and delivery problem
-                externalValue: https://storage.googleapis.com/solvice-static/examples/fill.json
+                value:
+                  $ref: ./onroute/examples/pdp.json
               PVRP:
                 summary: Long term vehicle routing problem
-                externalValue: "https://storage.googleapis.com/solvice-static/examples/fill.json"
+                value:
+                  $ref: ./onroute/examples/pvrp.json
             schema:
               anyOf:
                 - $ref: '#/components/schemas/VRP'

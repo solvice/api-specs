@@ -377,6 +377,19 @@ paths:
         required: true
         content:
           application/json:
+            examples:
+              FILL:
+                summary: Shift Filling
+                value:
+                  $ref: ./onshift/examples/fill.json
+              CREATE:
+                summary: Shift Creation
+                value:
+                  $ref: ./onshift/examples/creation.json
+              TASK:
+                summary: Task Assignment
+                value:
+                  $ref: ./onshift/examples/task.json
             schema:
               anyOf:
                 - $ref: '#/components/schemas/ShiftRequest'
