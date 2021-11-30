@@ -317,14 +317,14 @@ paths:
           application/json:
             examples:
               VRP:
-                summary: Example of a vehicle routing problem
-                $ref: https://storage.googleapis.com/solvice-static/examples/fill.json
+                summary: Vehicle routing problem
+                externalValue: ./onroute/examples/vrp.json
               PDP:
-                summary: Example of a pickup and delivery problem
-                externalValue: https://api.solvice.io/examples/pdp
+                summary: Pickup and delivery problem
+                externalValue: https://storage.googleapis.com/solvice-static/examples/fill.json
               PVRP:
-                summary: Example of a multi-period vehicle routing problem
-                externalValue: https://api.solvice.io/examples/pvrp
+                summary: Long term vehicle routing problem
+                externalValue: "https://storage.googleapis.com/solvice-static/examples/fill.json"
             schema:
               anyOf:
                 - $ref: '#/components/schemas/VRP'
