@@ -1,0 +1,18 @@
+name: Sync OAS to ReadMe OnStock
+on:
+  push:
+    branches:
+      - master
+      - main
+jobs:
+
+  build2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: readmeio/github-readme-sync@v2
+        with:
+          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a1025ae500b60a3cb9e3de
+          # OPTIONAL CONFIG, use if necessary
+          oas-file-path: './onshift/openapi.yaml' # TODO change this to onstock yaml
+          api-version: 'v1.0.0'
