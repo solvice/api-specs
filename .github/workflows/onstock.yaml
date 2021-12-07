@@ -15,4 +15,4 @@ jobs:
           readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61af6703db4473fe20085f17
           # OPTIONAL CONFIG, use if necessary
           oas-file-path: './onstock/openapi.yaml'
-          api-version: 'v1.0.0'
+          api-version: 'v1.1'

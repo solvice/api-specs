@@ -5,11 +5,11 @@ servers:
     description: Production cluster
 
 info:
-  version: "1.0.1"
-  title: OnShift API
+  version: "1.1"
+  title: OnStock API
   x-logo:
     url: 'logo.png'
-    altText: OnShift API
+    altText: OnStock API
   description: |
 
     Welcome to the Solvice API! You can use our API to access Solvice API endpoints,
