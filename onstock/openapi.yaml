@@ -1,0 +1,1431 @@
+openapi: 3.0.2
+
+servers:
+  - url: 'https://api.solvice.io/'
+    description: Production cluster
+
+info:
+  version: "1.0.1"
+  title: OnShift API
+  x-logo:
+    url: 'logo.png'
+    altText: OnShift API
+  description: |
+
+    Welcome to the Solvice API! You can use our API to access Solvice API endpoints,
+    which can get information on your solved jobs,
+    their statuses and of course post new solve jobs.
+
+    # Workforce Optimisation
+
+
+    OnShift is a solver engine for solving workforce optimisation problems through the Solvice Optimisation API Platform.
+
+    Creating an optimal roster for a team of employees based on forecasted demand and taking into account extensive labor agreement rules & other constraints.
+
+
+    The Solvice Workforce Optimisation API consists of the following RESTful web services:
+     * [Capacity Planning API](#section/Capacity-planning)
+     * [Shift Planning API](#section/Shift-scheduling)
+     * [Fill Planning API](#section/Fill-scheduling)
+     * [Task Sequencing API](#section/Task-sequencing)
+
+    ### Getting started
+     1. To use one of these APIs, you require an API key. Sign up [here](https://www.solvice.io/onshift/register) to get one.
+     2. Read the documentation of the desired API below.
+     3. Start using the API.
+
+    ### Overview
+
+    > Test our API in just one command
+
+     ```shell
+     curl https://demo:demo@api.solvice.io/demo/fill | \
+     curl https://demo:demo@api.solvice.io/v1/solve  \
+          -X POST -H "Content-Type: application/json" -d @-
+     ```
+     >You can copy and paste the above in your terminal for a working example. The example uses a randomly generated FILL problem.
+
+
+
+     The Solvice API is super simple! Basically, it holds one [/solve](#solve-endpoint)  endpoint for sending an asynchronous solve request to for a certain optimization problem and it holds one [/jobs/:job_id/solution](#jobs-endpoint)  endpoint for retrieving the solved job asynchronous. That's it!
+     The only thing you have to manage is the actual payload for the solve request.
+
+
+
+    The OnShift API is as simple as it gets. There are only several important endpoints:
+
+     1. Solving an OnShift optimisation problem is as simple as an POST to our `/solve` endpoint.
+     2. The Job `id` is returned.
+     3. Check for the status of that job wether it is solved yes with the GET `/jobs/<id>/status` endpoint.
+     4. If so, then fetch the solution with a simple GET on `/jobs/<id>/solution`
+
+    Thats's it! Could not be easier.
+
+    To use our Workforce Optimisation API commercially, you can subscribe to a paid plan [here](https://www.solvice.io/onshift/api#pricing).
+
+    ### Problems or Questions?
+    If you have problems or questions, we offer you the following options:
+     * [FAQ](https://www.solvice.io/faq)
+     * [Open ticket]()
+     * [Contact us](https://www.solvice.io/contact)
+
+    <!---To get informed about the newest features and development follow us at [twitter](https://twitter.com/solvice_io/). Furthermore you can watch [this git repository](https://github.com/solvice/workforce-api-docs) of this documentation, sign up at our [dashboard](https://dashboard.solvice.io/).--->
+
+
+
+    ## Explore our APIs
+
+
+    #### Insomnia
+    To explore our APIs with Insomnia, follow these steps:
+    [![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=OnShift%20API&uri=https%3A%2F%2Fdocs2.solvice.io%2Fonshift%2Finsomnia_fill.json)
+
+
+
+
+tags:
+  - name: Workforce Optimisation
+    description: |
+
+      OnShift can solve different workforce optimisation problems.
+
+      ## Capacity planning
+      Use our workforce capacity planning algorithms to get an actionable outlook on total labour costs, workload volume breakdown and staffing recommendations - And optimise your workforce model to suit your business needs.
+      Close gaps in your current workforce to meet long term work volume requirements; strategically plan staffing levels and hiring decisions to meet the optimal full time to part time ratio per location.
+
+
+
+      ## Shift scheduling
+      Creating an optimal roster for a team of employees based on forecasted demand and taking into account extensive labor agreement rules & constraints.
+      - Based on last weeks sales, last planning, predicted weather, revenue and reservations, a clear demand can be generated used as base occupation per skill, per location, per time block.
+      - Collective Work Agreements are numerous and complex. Our optimisation already takes into account hundreds of specific employee constraints. Not enough? Simply create your own work rules.
+      - Not only automagically generate a plan in seconds, but define what is important in the optimisation. Is financial wage cost minimisation more important than fairness? It's just a parameter. Our advanced mathematical solver engine can handle any request.
+
+
+      ## Fill scheduling
+
+
+      ### Input
+      Filling in pre-defined shifts with employees according to contractual agreements that enforce fair and cost efficient rosters.
+      The input requires you to make up:
+
+       - contract definitions
+       - open shifts
+       - available employees
+
+      #### Contract
+      A contract definition consists of a multitude of labour restricting constraints such as the maximum number of consecutive working days,
+      the maximum number of shifts per day, number of resting days, etc...
+
+      ```json
+        {
+          "name": "FULL",
+          "max": "PT38H",
+           "min": "PT5H",
+           "maxConsecutiveWorkDays": 5,
+           "maxShiftsDay": 2,
+           "minRestBetweenShiftsSameDay": 30,
+           "maxWorkingDays": 6,
+           "latestShiftStart": "10:00:00",
+           "earliestShiftStart": "02:00:00"
+        }
+      ```
+
+      #### Shifts
+
+      The shifts represent the demand. These shifts need to be filled in with employees.
+      A shift in its simplest form can be defined by a shift start time (`from`) and an end time (`to`).
+      Shifts are uniquely identified by a `name` and require a specific `skill`.
+      You can define the number of employees that need to be assigned to this shift with `value`.
+
+      ```json
+      {
+         "name": "Shift 1",
+         "from": "2020-06-26T08:00:00",
+         "to": "2020-06-26T17:00:00",
+         "skill": "skill1",
+         "value": 3
+       }
+      ```
+
+      #### Employee
+
+      Define the resources or employees with whom you want to fill up the shifts.
+
+      ```json
+      {
+        "name": "John Dory",
+        "contract": "FULL",
+        "availability": [
+          {
+            "from": "2020-06-26T08:00:00",
+            "to": "2020-06-30T08:00:00"
+          }
+        ],
+        "skills": [
+            "waiter",
+            "bar"
+        ],
+        "hourlyPay": 15.5
+      }
+      ```
+      ### Output
+
+      Simply fetch the solution in the `jobs/:id/solution` endpoint and receive the shift assignments.
+      For every shift defined by its `name` we will assign the best `employee`.
+
+      ```json
+      [
+        {
+          "name": "Morning Shift 1",
+          "from": "2020-06-26T08:00:00",
+          "to": "2020-06-30T08:00:00",
+          "employee": "John Dory",
+          "skills": [
+              "waiter",
+              "bar"
+          ]
+        }
+      ]
+      ```
+
+
+      ### Constraints
+
+      We take into account many constraints. Let us know if there are any constraints that you think are missing.
+
+      | Code             | Level  | Description                               |
+      |------------------|--------|--------------------------------------------|
+      | Maximum Working Days | HARD | An employee should not work more than `contract.maxWorkingDays` days in the planning horizon.  |
+      | Maximum Hours | HARD | An employee should not work more than `contract.max` hours in the planning horizon. |
+      | Minimum Hours | HARD | An employee should not work less than `contract.min` hours in the planning horizon. Please ensure minimum feasibility over the whole workforce.  |
+      | Earliest Shift Start  | HARD| Earliest time `contract.earliestShiftStart` in a day when an employee is allowed to work |
+      | Latest Shift Start  | HARD| Earliest time `contract.latestShiftStart` in a day when an employee is allowed to start work |
+      | Latest Shift End  | HARD| Latest time `contract.latestShiftEnd` in a day when an employee is allowed to end work  |
+      | Maximum Shift Length | HARD | Maximum time `contract.maxShiftLength` that an employee is allowed to work |
+      | DayOfWeek Working | HARD | Restricts employee availability based on days in the week that  |
+      | Minimum Shift Length | HARD | Minimum time `contract.maxShiftLength` that an employee is allowed to work |
+      | Maximum Shifts On Same Day  | HARD| Maximum number of shifts that an employee is allowed to work |
+      | Minimum Rest On Same Day | HARD | Minimum resting period between two shifts on the same day |
+      | Employee Availability | HARD | Date-time range of employee's availability |
+      | Travel Time  | SOFT | Travel from home to shift location |
+      | Priority | SOFT | Shift Priorities |
+      | Locked Assignment | HARD | Take into account assignments that are fixed during the solve |
+      | Maximum Consecutive Working Days | HARD | No more than `contract.maxConsecutiveWorkDays` consecutive shifts. |
+      | Minimum Rest | HARD | Minimum resting between two shifts (irrespective of shifts) |
+      | Shift Employee Preference  | SOFT| A preference for a certain shift assignment for an employee |
+      | Financial Costs | SOFT | Some shifts incurr a higher cost when they are assigned to (opposite of priority) |
+      | Wage Costs per Employee  | SOFT| Hourly wage cost per employee influences choice of employee |
+      | Unassigned Employee| SOFT | Minimise the number of unassigned employees |
+      | No Concurrent Assignments| HARD | An employee cannot have two assignments on the same time. (This should never happen)  |
+      | Skill Requirement for shifts | HARD | Multiple shifts can have a shared requirement for a skill |
+      | Employee Skill Match | HARD| Assign employees to match according to their skills and the required skills for a shift |
+      | Employee Skill Match Soft | SOFT | Assign employees to match according to their skills and the required skills for a shift (soft rule) |
+      | Employee Critical Skill Match | SOFT | Prefer assigning critical shifts first  |
+
+
+      ## Task sequencing
+      Sequencing tasks in time according to the available resources: A task sequencing problem can be solved for work defined according to two hierarchies: *orders* and *tasks*
+      If only orders are provided, they will be scheduled as if they are the lowest level detail that needs to be handled by the sequencing model. If however, orders are defined that contain tasks,
+      these tasks are considered the lowest level detail of work that needs to be sequenced. The order level is then only used to incorporate priorities.
+
+
+      ### Model
+
+      #### Order
+
+      An Order is an executable piece of work that can take a pre-determined amount of time, and that needs to be handled with a certain priority. It can contain multiple tasks.
+      If tasks are provided, they are sequenced rather than the order itself. An order can have an availability and should have a resourceRequirement.
+
+
+      #### Order
+
+      A task is the lowest-level detail for work that needs to be scheduled that can be provided in the model. If provided, it is always defined under the higher hierarchy of an order. Futher, we define tasks using
+      a duration (pre-determined amount of time to finish the task), a resourceRequirement and (optionally) an availability.
+
+      #### ResourceRequirement
+
+      For the work that is incorporated in the model (from either orders or tasks), a resource requirement can be defined. A resource requirement can be specified using three different constructs:
+        - a combination of the name of the *capacitated* resource type and how many of these resources are required.
+        - a combination of the name of the *plannable* resource type and the name of the specific resource that is required.
+        - a combination of the name of the *plannable* resource type and an object that incorporates how many resources and what (additional) skills they require.
+
+      ```json
+            {
+              "hammer": 2,
+              "location": "location0"
+              "operator": {
+                "value" : 2,
+                "skill" : ["electrician", "heavy tool"]
+              }
+            }
+      ```
+
+      #### Resource
+
+       There are 2 types of Resources:
+
+       - a *Plannable* Resource: demands that a resource is explicitly assigned to a task.
+       - a *Capacitated* Resource: only requires available capacity of a resource. Specific assignment is not necessary.
+
+      For example, take the assignment problem of a task "hammer a nail" that requires a technician and a hammer to execute that task.
+      Usually, we don't need to know that for task "hammer a nail", you need a specific hammer with serial number SNxxx.
+      You just need to know that there are ample hammers availabe for all tasks that require a hammer to be performed at the same time.  E.g. there are 4 hammers available and you will take 1.
+      For a technician however, it might be required that the schedule points out who will execute that task.
+      Will it be John, Alex or Lee?
+      Therfore, a hammer can be considered a Capacitated Resource, while a technician is a Plannable Resource in this example.
+
+      Structure of a Capacitated Resource:
+      ```json
+      {
+        "type": "capacitated",
+        "name": "hammer",
+        "supply": 4,
+        "availability": [ {
+          "from": "2021-02-06T09:00:00",
+          "to": "2021-02-06T18:00:00"
+        }]
+      }
+      ```
+
+      Structure of a Plannable Resource:
+      ```json
+      {
+        "type": "plannable",
+        "name": "technician",
+        "supply": [
+          {
+            "name": "John",
+            "skill": ["a","b"],
+            "availability": [ {
+              "from": "2021-02-06T09:00:00",
+              "to": "2021-02-06T18:00:00"
+            }]
+          }
+        ]
+      }
+      ```
+
+      ### Constraints
+
+
+      | Code             | Description                               |
+      |------------------|-------------------------------------------|
+      | Resource Availability | A task should not be planned to a resource outside its availability  |
+      | Resource Capacity | A resource should not assigned at the same time to more than one task. |
+      | Order Priority | The priority of the orders that are assigned is maximized.  |
+
+
+
+  - name: Jobs
+    description: The Jobs endpoint allows to retrieve information of a posted request, its status, the score or even detailed statistics.
+
+
+  - name: Scheduling
+    description: |
+      It is possible to generate the planning by doing a `solve` or either `evaluate` a current solution by doing a `evaluate`.
+      Post a new solve request to the Workforce Optimisation Engine.
+
+      The optimisation engine can accept different problems:
+       - CAP: `CapacityRequest`
+       - CREATE: `CreateRequest`
+       - FILL: `ShiftFillRequest`
+       - TASK: `TaskRequest`
+
+  - name: Solution
+    description: Retrieve the optimal solution to the problem.
+  - name: FAQ
+    description: |
+
+
+
+
+security:
+  - ApiKey: []
+
+paths:
+  /solve:
+    post:
+      tags:
+        - Scheduling
+      summary: Solve problem
+      operationId: solve
+      parameters:
+        - in: query
+          name: seconds
+          example: 20
+          schema:
+            type: integer
+          description: The number of seconds you give the solver to optimise the problem. By default, the solver decides.
+
+      description: |
+        Endpoint for solving shift optimisation problem.
+        There are multiple possible problems:
+         1. Capacity Planning: `CAP` solver to send a `CapacityRequest`
+         2. Shift Scheduling: `SHIFT` solver to send a `ShiftRequest`
+         3. Shift Filling: `FILL` solver to send a `ShiftFillRequest`
+         3. Task Assigning: `TASK` solver to send a `TaskRequest`
+      requestBody:
+        description: |
+          Payload for all information concerning the shift problem.
+          This includes:
+
+           - the demand
+           - the pool of employees
+           - the statutes
+        required: true
+        content:
+          application/json:
+            examples:
+              FILL:
+                summary: Shift Filling
+                value:
+                  $ref: ./onshift/examples/fill.json
+              CREATE:
+                summary: Shift Creation
+                value:
+                  $ref: ./onshift/examples/creation.json
+              TASK:
+                summary: Task Assignment
+                value:
+                  $ref: ./onshift/examples/task.json
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/ShiftRequest'
+                - $ref: '#/components/schemas/ShiftFillRequest'
+                - $ref: '#/components/schemas/CapacityRequest'
+                - $ref: '#/components/schemas/TaskRequest'
+
+      responses:
+        '200':
+          description: solve job accepted to queue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusJob'
+        '400':
+          $ref: '#/components/responses/WrongFormat'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /evaluate:
+    post:
+      tags:
+        - Scheduling
+      summary: Evaluate problem
+      operationId: evaluate
+      description: Endpoint for evaluating optimisation problem.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/ShiftRequest'
+                - $ref: '#/components/schemas/CapacityRequest'
+                - $ref: '#/components/schemas/ShiftFillRequest'
+                - $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '200':
+          description: Job valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusJob'
+        '400':
+          $ref: '#/components/responses/WrongFormat'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  '/jobs/{jobId}':
+    get:
+      tags:
+        - Jobs
+      summary: Job
+      operationId: getJob
+      description: When posting a new solve request, this job can be checked again under this endpoint.
+        In fact, it should be the entire request posted as-is.
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          description: The job ID.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: return a job
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusJob'
+        '404':
+          description: 'Job not found'
+
+  /v1/stats/{jobId}:
+    get:
+      tags:
+        - Jobs
+      summary: Statistics
+      operationId: getStats
+      parameters:
+        - in: path
+          name: jobId
+          required: true
+          description: The job ID.
+          schema:
+            type: string
+            format: uuid
+      description: |
+        Returns the information on why a job has been solved the way it's been.
+        Information includes specific unresolved objects. Want to know how it is optimised?
+        This endpoint lets you know what rules have been overruled.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+        '404':
+          description: 'Job not found'
+
+  /jobs/{jobId}/status:
+    get:
+      tags:
+        - Jobs
+      parameters:
+        - name: jobId
+          in: path
+          description: Job ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      summary: Get a status
+      operationId: getStatus
+      responses:
+        '200':
+          description: get job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusJob'
+        '400':
+          description: bad input parameter
+
+  /jobs/{jobId}/solution:
+    get:
+      tags:
+        - Solution
+      parameters:
+        - name: jobId
+          in: path
+          description: Job ID
+          required: true
+          schema:
+            type: string
+            format: uuid
+      summary: Get a solution
+      operationId: getSolution
+      responses:
+        '200':
+          description: Valid Job
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ShiftSolution'
+                  - $ref: '#/components/schemas/FillSolution'
+                  - $ref: '#/components/schemas/CapacitySolution'
+                  - $ref: '#/components/schemas/TaskSolution'
+                discriminator:
+                  propertyName: solver
+                  mapping:
+                    shift: '#/components/schemas/ShiftSolution'
+                    fill: '#/components/schemas/FillSolution'
+                    cap: '#/components/schemas/CapacitySolution'
+                    task: '#/components/schemas/TaskSolution'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+
+components:
+  schemas:
+    ShiftRequest:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - demand
+            - employees
+            - statutes
+          properties:
+            demand:
+              type: array
+              description: Demand blocks for which a certain number of employees by a certain skill and on a certain location are required.
+              items:
+                $ref: '#/components/schemas/Demand'
+            employees:
+              type: array
+              description: Group of employees available to be planned in the planning period defined by the demand.
+              items:
+                $ref: '#/components/schemas/Employee'
+            statutes:
+              type: array
+              description: Statute definitions used by employees.
+              items:
+                $ref: '#/components/schemas/Statute'
+            assignments:
+              type: array
+              description: Pre made assignments that the solver should take into account
+              items:
+                $ref: '#/components/schemas/ShiftAssignment'
+
+
+    ShiftFillRequest:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - shifts
+            - employees
+            - contracts
+          properties:
+            shifts:
+              type: array
+              description: Pre-defined shifts that need to be filled in.
+              items:
+                $ref: '#/components/schemas/Shift'
+            contracts:
+              type: array
+              description: Contract definitions used by employees.
+              items:
+                $ref: '#/components/schemas/Contract'
+            employees:
+              type: array
+              description: Group of employees available to be planned in the planning period defined by the demand.
+              items:
+                $ref: '#/components/schemas/FillEmployee'
+            requirements:
+              type: array
+              description: An optional list of shared resource requirements
+              items:
+                  $ref: '#/components/schemas/ResourceRequirement'
+
+
+
+    TaskRequest:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - orders
+            - resources
+          properties:
+            resources:
+              type: array
+              description: Available resource definitions
+              items:
+                $ref: '#/components/schemas/Resource'
+            orders:
+              type: array
+              description: Orders that need to be assigned to Resources.
+              items:
+                $ref: '#/components/schemas/Order'
+
+
+
+    CapacityRequest:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - demand
+            - statutes
+          properties:
+            demand:
+              type: array
+              description: Predicted demand for a pred-fined period of time (usually multiple weeks & months).
+              items:
+                $ref: '#/components/schemas/Demand'
+            statutes:
+              type: array
+              description: Possible Statute definitions used by employees.
+              items:
+                $ref: '#/components/schemas/Statute'
+
+    SolveJob:
+      type: object
+      required:
+        - solver
+      properties:
+        solver:
+          $ref: '#/components/schemas/Solver'
+        hook:
+          type: string
+          format: uri
+          description: Webhook returns solution status after solving in the form of a POST request to the uri given.
+
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        description:
+          type: string
+
+    ErrorCode:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        explanation:
+          type: string
+        line:
+          type: integer
+        column:
+          type: integer
+
+    Status:
+      type: string
+      enum:
+        - QUEUED
+        - SOLVING
+        - SOLVED
+        - ERROR
+      example: "SOLVING"
+      description: The current status of the job. After arriving at the solver engine, it gets `QUEUED` to the right solver, then processed (`SOLVING`) and when finished the status is `SOLVED`.
+
+    Solver:
+      type: string
+      enum:
+        - CAP
+        - FILL
+        - SHIFT
+        - TASK
+        - CREATE
+      example: "FILL"
+
+    Score:
+      description: The score of a solution shows how good this solution is w.r.t all the constraints.
+      type: object
+      properties:
+        hardScore:
+          type: integer
+          description: The score of the constraints that are hard. This should be 0 in order to be feasible.
+        mediumScore:
+          type: integer
+          description: The score of the constraints that are medium.
+        softScore:
+          type: integer
+          description: The score of the constraints that are soft.
+        feasible:
+          type: boolean
+          description: Feasibility check on hard constraints. Check unresolved parameter if you cannot reach feasibility.
+
+    Statute:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "FULLTIME"
+          description: Unique name for a definition of a statute.
+        minShiftLength:
+          type: integer
+          description: The minimum number of hours in a shift for an employee
+        maxShiftLength:
+          type: integer
+          description: The maximum number of hours in a shift for an employee
+        minRestBetweenShifts:
+          type: integer
+          description: The minimum duration (in hours) of a rest period between two shifts for this employee
+        maxConsecutiveWorkDays:
+          type: integer
+          description: The maximum days consecutive that this employee can be working
+        maxHrsPerWeek:
+          type: integer
+          description: The maximum number of hours this employee can be working in a week
+        minHrsPerWeek:
+          type: integer
+          description: The minimum number of hours this employee should be working in a week
+        shiftStart:
+          type: number
+          description: The earliest this employee can start working (expressed as decimal in 24 hour-format)
+        latestShiftStart:
+          type: number
+          description: The latest this employee can start working (expressed as decimal in 24 hour-format)
+        shiftEnd:
+          type: number
+          description: The latest this employee can work on a day (expressed as decimal in 24 hour-format)
+        minHoursMonth:
+          type: integer
+          description: The minimum hours per month this employee should be working
+        maxHoursMonth:
+          type: integer
+          description: The maximum hours per month this employee should be working
+        overTimeThreshold1:
+          type: number
+          description: The first time threshold for overtime (expressed as decimal in 24 hour-format)
+        overTimeRaise1:
+          type: number
+          description: The raise after the first time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
+        overTimeThreshold2:
+          type: number
+          description: The second time threshold for overtime (expressed as decimal in 24 hour-format)
+        overTimeRaise2:
+          type: number
+          description: The raise after the second time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
+        overTimeWeeklyThreshold1:
+          type: number
+          description:   The number of hours per week after which a "weekly overtime" raise should be given
+        overTimeWeeklyRaise1:
+          type: number
+          description: The weekly overtime raise (e.q. 1.2 means a 20% raise per hour)
+        nightlyThreshold1:
+          type: number
+          description: The time threshold to be considered for a night raise (expressed as decimal in 24 hour-format)
+        nightlyRaise:
+          type: number
+          description: The raise after the first time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
+
+
+    Contract:
+      type: object
+      description: Collection of labour agreement rule parameters.
+      properties:
+        name:
+          type: string
+          description: Unique name and definition of the contract.
+        maxConsecutiveWorkDays:
+          type: integer
+          description: Maximum number of successive consecutive working days that an employee under this contract is allowed to work.
+        maxShiftsDay:
+          type: integer
+          description: Maximum number of shift per day that an employee under this contract is allowed to work.
+        minRestBetweenShiftsSameDay:
+          type: integer
+          description: Minimum resting time for two successive shifts in the same day.
+        minRestBetweenShifts:
+          type: integer
+          description: Minimum resting time for two successive shifts over different days.
+        maxWorkingDays:
+          type: integer
+          description: Maximum number of total days working in planning period.
+        latestShiftStart:
+          type: string
+          format: time
+          description: Latest time at which an employee under this contract can start its shift.
+        earliestShiftStart:
+          type: string
+          format: time
+          description: Earliest time at which an employee under this contract can start its shift.
+        latestShiftEnd:
+          type: string
+          format: time
+          description: Latest time at which an employee under this contract can finish its shift.
+        min:
+          type: string
+          format: time
+          description: Minimum number of hours to work in the planning period.
+        max:
+          type: string
+          format: time
+          description: Maximum number of hours to work in the planning period.
+
+    ShiftLocation:
+      type: object
+      properties:
+        latitude:
+          description: Latitude in WSG84
+          type: number
+        longitude:
+          description: Longitude in WSG84
+          type: number
+        address:
+          description: Address information or name of location.
+          type: string
+
+    Shift:
+      type: object
+      description: A specific shift that starts at `from` and ends at `to` for which `value` number of employees should be scheduled to according to a skill.
+      required:
+        - name
+        - from
+        - to
+      properties:
+        name:
+          description: A unique name for the shift.
+          type: string
+        from:
+          description: Start time of the shift.
+          type: string
+          format: date-time
+        to:
+          description: End time of the shift.
+          type: string
+          format: date-time
+        cost:
+          type: number
+          description: Financial cost related to this shift. Will be minimised when overconstrained.
+        value:
+          description: Actual number of employees that should be assigned to this shift
+          type: number
+        priority:
+          description: Forces a priority constraint on this shift with 1 being highest priority and 10 being the lowest.
+          type: number
+          minimum: 1
+        location:
+          $ref: '#/components/schemas/ShiftLocation'
+        skills:
+          type: array
+          description: Skill requirement definition that should match with skills from Employee. All are required
+          items:
+            $ref: '#/components/schemas/SkillRequirement'
+        employees:
+          type: array
+          description: List of planned employees. Or can be used to pre-plan.
+          items:
+            type: string
+            description: Employee name
+        locked:
+          type: array
+          description: List of locked employees. Should be equal size as `employees` and maximum `value`.
+          items:
+            type: boolean
+            description: Employee name
+        critical:
+          type: boolean
+          description: Critical shift. These should be assigned first. Similar to `shift.cost`
+        blacklist:
+          type: array
+          description: List of employees that cannot be used for this shift.
+          items:
+            type: string
+            description: Employee name.
+
+    Skill:
+      type: object
+      properties:
+        name:
+          description: Skill name. Should match skill name of employee.
+          type: string
+        expiry:
+          description: Date on which the skill expires.
+          type: string
+          format: date
+        weight:
+          description: Weight of skill when matching. The higher, the more impartant the skill is to be assigned to someone with that skill.
+          minimum: 1
+          maximum: 10
+          type: integer
+
+
+    SkillRequirement:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          description: Required Skill name. Should match skill name of employee.
+          type: string
+        weight:
+          description: Weight of skill when matching. The higher, the more impartant the skill is to be assigned to someone with that skill.
+          maximum: 10
+          type: integer
+        hard:
+          description: Whether the skill matching should be seen as a hard constraint or not.
+          type: boolean
+
+
+
+
+    FillEmployee:
+      type: object
+      required:
+        - name
+        - contract
+        - skills
+      properties:
+        name:
+          type: string
+          description: Unique name/id of employee
+        contract:
+          type: string
+          description: Reference to Contract name
+        home:
+          $ref: '#/components/schemas/ShiftLocation'
+        skills:
+          $ref: '#/components/schemas/Skill'
+        efficiency:
+          type: number
+          description: Efficiency rate of employee. 1.0 is normal and default
+        hourlyPay:
+          type: number
+          description: Hourly wage/pay for employee. Total costs are minimised by the optimiser.
+        lastRestDate:
+          type: string
+          format: date
+          description: The last date on which the employee had a rest before the planning period.
+        canWorkOn:
+          type: array
+          description: List of days of week on which the employee can work.
+          items:
+            type: string
+            format: date
+            description: Day of week
+        availability:
+          type: array
+          description: Available date-time range of employee.
+          items:
+            $ref: '#/components/schemas/DateTimeWindow'
+        preference:
+          type: array
+          description: Preference towards certain shifts.
+          items:
+            type: string
+            description: Shift name that should be preferred.
+
+
+
+    Employee:
+      type: object
+      required:
+        - name
+        - statute
+        - skill
+      properties:
+        name:
+          type: string
+          description: Unique name/id of employee
+        statute:
+          type: string
+          description: Reference to Statute name
+        skill:
+          type: string
+          description: Skill name owned by employee
+        efficiency:
+          type: number
+          description: Efficiency rate of employee. 1.0 is normal and default
+        hourlyPay:
+          type: number
+          description: Hourly wage/pay for employee. Total costs are minimised by the optimiser.
+        lastRestDate:
+          type: string
+          format: date
+          description: The last date on which the employee had a rest before the planning period.
+
+
+    DateTimeWindow:
+      type: object
+      description: Date time window
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: datetime
+          description: From datetime
+        to:
+          type: string
+          format: datetime
+          description: To datetime
+
+    Demand:
+      type: object
+      description: Preferred demand for a certain skill and for a specific block during the day.
+      required:
+        - shift
+        - skill
+        - prefDemand
+      properties:
+        shift:
+          type: object
+          description: Shift definition
+          properties:
+            index:
+              type: number
+              description: Index time of shift block in day. (usually 0 - 23 for 1h blocks per day)
+            date:
+              type: string
+              format: date
+              description: Shift blok date.
+        skill:
+          type: string
+          description: Skill type definition
+        prefDemand:
+          type: integer
+          description: The number of employees of that skill to be present.
+
+    ResourceRequirement:
+      type: object
+      description: A shared resource requirement
+      properties:
+        shifts:
+          type: array
+          description: a list of shiftnames this requirement applies to
+        skill:
+          type: string
+          description: the skill this requirement applies to
+        value:
+          type: integer
+          description: the required number of shared resources with this skill
+
+
+
+    TaskResourceRequirement:
+      type: object
+      description: A requirement for a Resource
+      properties:
+        value:
+          type: integer
+          description: The number of requirements.
+        skills:
+          type: array
+          description: The required skills that should be matched by the assigned Resource.
+          items:
+            type: string
+            description: Skill name
+        allowed:
+          type: array
+          description: The allowed resources that can do this job.
+          items:
+            type: string
+            description: Resource name
+
+
+    Order:
+      type: object
+      description: An order to be planned. Can hold multiple tasks.
+      properties:
+        name:
+          type: string
+          description: unique name identifier
+        duration:
+          type: string
+          description: duration of an order (ISO8601 Duration)
+          example: "PT1M"
+        priority:
+          type: integer
+          description: level of importance of scheduling this as soon as possible (1-1000)
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        resourceRequirements:
+          $ref: '#/components/schemas/TaskResourceRequirement'
+
+    Task:
+      type: object
+      description: Task within an order
+      properties:
+        duration:
+          type: number
+          description: duration of a task (ISO8601 Duration)
+        resourceRequirements:
+          $ref: '#/components/schemas/TaskResourceRequirement'
+
+    Resource:
+      type: object
+      description: A resource definition
+      properties:
+        name:
+          type: string
+          description: unique name identifier for resource
+        availability:
+          type: array
+          description: Available date-time range for a resource.
+          items:
+            $ref: '#/components/schemas/DateTimeWindow'
+
+
+    PlannableResource:
+      allOf: # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/Resource'
+        - type: object
+          properties:
+            supply:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: unique identifier for resource item
+                  skills:
+                    type: array
+                    items:
+                      type: string
+                    description: list of skills
+
+
+    CapacitatedResource:
+      allOf:
+        - $ref: '#/components/schemas/Resource'
+        - type: object
+          properties:
+            supply:
+              type: number
+              description: The number of resources necessary.
+
+
+
+
+
+
+    JobId:
+      type: string
+      format: uuid
+      description: Job ID
+
+
+    SolutionJob:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/JobId'
+        solver:
+          $ref: '#/components/schemas/Solver'
+        status:
+          $ref: '#/components/schemas/Status'
+        score:
+          $ref: '#/components/schemas/Score'
+
+
+
+    ShiftSolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockAssignment'
+
+
+    TaskSolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskAssignment'
+
+
+    CapacitySolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WeekAssignment'
+
+
+    FillSolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: array
+              items:
+                $ref: '#/components/schemas/FillAssignment'
+
+
+
+    ShiftAssignment:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date of the assignment
+        employee:
+          type: string
+          description: Employee name
+        skill:
+          type: string
+          description: Skill name
+        startDateTime:
+          type: string
+          format: date-time
+          description: Date time of the start of the assignment
+        endDateTime:
+          type: string
+          format: date-time
+          description: Date time of the start of the assignment
+        locked:
+          type: boolean
+          description: Date time of the start of the assignment
+
+    BlockAssignment:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date of the assignment
+        index:
+          type: integer
+          description: Index number of the block
+
+    TaskAssignment:
+      type: object
+      properties:
+        order:
+          type: string
+          description: order name
+        task:
+          type: string
+          description: task name
+        from:
+          type: string
+          format: date-time
+          description: start time of the order/task
+        to:
+          type: string
+          format: date-time
+          description: end time of the order/task
+        resources:
+          type: array
+          description: list of resources used during excution of this order/task
+          items:
+            type: string
+            description: resource name
+
+
+
+
+    WeekAssignment:
+      type: object
+      properties:
+        index:
+          type: integer
+          description: Index number of the week
+        statute:
+          type: string
+          description: Statute type definition
+        totals:
+          type: integer
+          description: Total number of statute employees necessary
+
+    FillAssignment:
+          type: object
+          properties:
+            shift:
+              type: string
+              description: Shift
+            employee:
+              type: string
+              description: Employee
+            from:
+              type: string
+              format: date-time
+            to:
+              type: string
+              format: date-time
+            skills:
+              type: array
+              items:
+                type: string
+                description: skill
+
+
+
+    Stats:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        goals:
+          type: array
+          description: List of unresolved goals.
+          items:
+            type: object
+            properties:
+              goal:
+                type: string
+                description: Goal name
+              weight:
+                type: integer
+                description: Weight total for goal.
+              conflicts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    weight:
+                      type: integer
+                      description: Specific weight for unresolved goal reasons.
+                    reasons:
+                      type: array
+                      items:
+                        type: string
+
+
+
+    StatusJob:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/JobId'
+        solver:
+          type: string
+          description: Solver type
+        status:
+          $ref: '#/components/schemas/Status'
+
+  securitySchemes:
+
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    WrongFormat:
+      description: Wrong format
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorCode'
+
+
+
