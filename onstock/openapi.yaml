@@ -467,10 +467,10 @@ components:
           type: integer
           description: The processing time for this node
         cost:
-          type: double
+          type: number
           description: The incremental cost of the processing in this node.
         serviceFactor:
-          type: double
+          type: number
           example: 1.645
           description: The serviceFactor that is taken into account in the calculation of the demand bound for this node. 
         successors:
@@ -480,10 +480,10 @@ components:
             type: string
             description: The name of the succeeding nodes
         avgCustomerDemand:
-          type: double
+          type: number
           description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
         sdCustomerDemand: 
-          type: double
+          type: number
           description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
     
     ServiceTimeAssignment:
