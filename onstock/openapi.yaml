@@ -88,7 +88,7 @@ tags:
       the demand characteristics (if a node supplies an external demand.)
 
       ```json
-    {
+      {
           "name": "Final assembly",
           "index": 0,
           "nominalTime": 4,
