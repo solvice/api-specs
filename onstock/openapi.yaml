@@ -508,7 +508,23 @@ components:
                       type: array
                       items:
                         type: string
+    JobId:
+      type: string
+      format: uuid
+      description: Job ID
 
+
+    SolutionJob:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/JobId'
+        solver:
+          $ref: '#/components/schemas/Solver'
+        status:
+          $ref: '#/components/schemas/Status'
+        score:
+          $ref: '#/components/schemas/Score'
 
 
     StatusJob:
