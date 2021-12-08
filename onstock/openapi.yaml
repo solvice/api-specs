@@ -357,12 +357,12 @@ components:
           required:
             - nodes
           properties:
-            nodes:
+            networkNodes:
               type: array
               description: Nodes characteristics from your network.
               items:
                 $ref: '#/components/schemas/Node'
-            assignments:
+            serviceTimeAssignments:
               type: array
               description: Pre made assignments that the solver should take into account
               items:
@@ -455,6 +455,9 @@ components:
       required:
         - name
         - nominalTime
+        - cost
+        - serviceFactor
+        - successors
       properties:
         name:
           type: string
@@ -462,8 +465,27 @@ components:
           description: Unique name for the network node.
         nominalTime:
           type: integer
-          description: The processign time for this node
-
+          description: The processing time for this node
+        cost:
+          type: double
+          description: The incremental cost of the processing in this node.
+        serviceFactor:
+          type: double
+          example: 1.645
+          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node. 
+        successors:
+          type: array
+          description: The network nodes that succeed this node
+          items:
+            type: string
+            description: The name of the succeeding nodes
+        avgCustomerDemand:
+          type: double
+          description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
+        sdCustomerDemand: 
+          type: double
+          description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
+    
     ServiceTimeAssignment:
       type: object
       properties:
