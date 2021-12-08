@@ -1,0 +1,164 @@
+{
+  "solver": "BASE_STOCK",
+  "networkNodes": [
+    {
+      "name": "Final assembly",
+      "index": 0,
+      "nominalTime": 4,
+      "cost": 8000,
+      "successors": [],
+      "avgCustomerDemand": 5,
+      "sdCustomerDemand": 3
+    },
+    {
+      "name": "Main assembly",
+      "index": 1,
+      "nominalTime": 8,
+      "cost": 12000,
+      "successors": ["Final assembly"]
+    },
+    {
+      "name": "Suspension group",
+      "index": 1,
+      "nominalTime": 7,
+      "cost": 3600,
+      "successors": ["Final assembly"]
+    },
+    {
+      "name": "Track roller frame",
+      "index": 1,
+      "nominalTime": 10,
+      "cost": 3000,
+      "successors": ["Final assembly"]
+    },
+    {
+      "name": "Boggie assembly",
+      "index": 2,
+      "nominalTime": 11,
+      "cost": 575,
+      "successors": ["Suspension group"]
+    },
+    {
+      "name": "Chassis/platform",
+      "index": 2,
+      "nominalTime": 7,
+      "cost": 4320,
+      "successors": ["Main assembly"]
+    },
+    {
+      "name": "Common subassembly",
+      "index": 2,
+      "nominalTime": 5,
+      "cost": 8000,
+      "successors": ["Main assembly"]
+    },
+    {
+      "name": "Dressed-out engine",
+      "index": 2,
+      "nominalTime": 10,
+      "cost": 4100,
+      "successors": ["Main assembly"]
+    },
+    {
+      "name": "Pin assembly",
+      "index": 2,
+      "nominalTime": 35,
+      "cost": 90,
+      "successors": ["Suspension group"]
+    },
+    {
+      "name": "Case & frame",
+      "index": 3,
+      "nominalTime": 16,
+      "cost": 1500,
+      "successors": ["Common subassembly"]
+    },
+    {
+      "name": "Drive Group",
+      "index": 3,
+      "nominalTime": 9,
+      "cost": 1550,
+      "successors": ["Final drive & brake"]
+    },
+    {
+      "name": "Fans",
+      "index": 3,
+      "nominalTime": 12,
+      "cost": 650,
+      "successors": ["Dressed-out engine"]
+    },
+    {
+      "name": "Fender group",
+      "index": 3,
+      "nominalTime": 9,
+      "cost": 900,
+      "successors": ["Chassis/platform"]
+    },
+    {
+      "name": "Final drive & brake",
+      "index": 3,
+      "nominalTime": 6,
+      "cost": 3680,
+      "successors": ["Common subassembly"]
+    },
+    {
+      "name": "Platform group",
+      "index": 3,
+      "nominalTime": 6,
+      "cost": 725,
+      "successors": ["Chassis/platform"]
+    },
+    {
+      "name": "Roll over group",
+      "index": 3,
+      "nominalTime": 8,
+      "cost": 1150,
+      "successors": ["Chassis/platform"]
+    },
+    {
+      "name": "Transmission",
+      "index": 3,
+      "nominalTime": 15,
+      "cost": 7450,
+      "successors": ["Common subassembly"]
+    },
+    {
+      "name": "Brake group",
+      "index": 4,
+      "nominalTime": 8,
+      "cost": 3850,
+      "successors": ["Final drive & brake"]
+    },
+    {
+      "name": "Case",
+      "index": 4,
+      "nominalTime": 15,
+      "cost": 2200,
+      "successors": ["Case & frame"]
+    },
+    {
+      "name": "Engine",
+      "index": 4,
+      "nominalTime": 7,
+      "cost": 4500,
+      "successors": ["Dressed-out engine"]
+    },
+    {
+      "name": "Frame assembly",
+      "index": 4,
+      "nominalTime": 19,
+      "cost": 605,
+      "successors": ["Case & frame"]
+    },
+    {
+      "name": "Plant carrier",
+      "index": 4,
+      "nominalTime": 9,
+      "cost": 155,
+      "successors": ["Final drive & brake"]
+    }
+  ],
+  "options": {
+      "holdingRate": 0.30
+    }
+}
