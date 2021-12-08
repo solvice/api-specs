@@ -211,7 +211,7 @@ paths:
   /evaluate:
     post:
       tags:
-        - Scheduling
+        - Inventory placement
       summary: Evaluate problem
       operationId: evaluate
       description: Endpoint for evaluating optimisation problem.
