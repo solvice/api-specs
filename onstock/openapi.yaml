@@ -140,7 +140,7 @@ tags:
 
       The optimisation engine can accept different problems:
        - BASE_STOCK: `BaseRequest`
-       - RQ_PLANNING: `RQRequest`
+       - RQ_STOCK: `RQRequest`
 
   - name: Solution
     description: Retrieve the optimal solution to the problem.
@@ -172,7 +172,7 @@ paths:
         Endpoint for solving inventory optimisation problem.
         There are multiple possible problems:
          1. Base stock placement: `BASE_STOCK` solver to send a `BaseRequest`
-         2. RQ planning: `RQ_PLANNING` solver to send a `RQRequest`
+         2. RQ planning: `RQ_STOCK` solver to send a `RQRequest`
       requestBody:
         description: |
           Payload for all information concerning the inventory problem.
@@ -186,8 +186,8 @@ paths:
                 summary: Base stock placement
                 value:
                   $ref: ./onstock/examples/base.json
-              RQ_PLANNING:
-                summary: PQ planning
+              RQ_STOCK:
+                summary: RQ stock placement
                 value:
                   $ref: ./onstock/examples/rq.json
             schema:
@@ -429,7 +429,7 @@ components:
       type: string
       enum:
         - BASE_STOCK
-        - RQ_PLANNING
+        - RQ_STOCK
       example: "BASE_STOCK"
 
     Score:

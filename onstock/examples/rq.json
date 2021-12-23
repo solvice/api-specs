@@ -1,5 +1,5 @@
 {
-  "solver": "BASE_STOCK",
+  "solver": "RQ_STOCK",
   "networkNodes": [
     {
       "name": "Final assembly",
@@ -158,7 +158,7 @@
       "successors": ["Final drive & brake"]
     }
   ],
-  "options": {
+  "rqOptions": {
       "holdingRate": 0.30
     }
 }
