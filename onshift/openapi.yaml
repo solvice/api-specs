@@ -29,6 +29,7 @@ info:
      * [Shift Planning API](#section/Shift-scheduling)
      * [Fill Planning API](#section/Fill-scheduling)
      * [Task Sequencing API](#section/Task-sequencing)
+     * [Shift Creation API](#section/Shift-creation)
 
     ### Getting started
      1. To use one of these APIs, you require an API key. Sign up [here](https://www.solvice.io/onshift/register) to get one.
@@ -239,7 +240,7 @@ tags:
       If tasks are provided, they are sequenced rather than the order itself. An order can have an availability and should have a resourceRequirement.
 
 
-      #### Order
+      #### Task
 
       A task is the lowest-level detail for work that needs to be scheduled that can be provided in the model. If provided, it is always defined under the higher hierarchy of an order. Futher, we define tasks using
       a duration (pre-determined amount of time to finish the task), a resourceRequirement and (optionally) an availability.
