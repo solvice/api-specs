@@ -659,6 +659,30 @@ components:
               items:
                 $ref: '#/components/schemas/Statute'
 
+    CreationRequest:
+      allOf: # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - demands
+            - patterns
+          properties:
+            demands:
+              type: array
+              description: demands with either a 'value' or a 'min' and 'max' specifying the demand for a certain skill between two points in time.
+              items:
+                $ref: '#/components/schemas/CreationDemand'
+            patterns:
+              type: array
+              description: definition of a possible shift for a certain skill. This contains the time intevals during which this shift takes place aswell as the minimum and maximum number of people that can be assigned to this shift.
+              items:
+                $ref: '#/components/schemas/CreationShiftPattern'
+            resourceAvailabilities:
+              type: array
+              description: definition of a certain resource and how many units of that resouce are available.
+              items:
+                $ref: '#/components/schemas/CreationResourceAvailability'
+
     SolveJob:
       type: object
       required:
@@ -1176,9 +1200,132 @@ components:
               description: The number of resources necessary.
 
 
+    CreationDemand:
+      type: object
+      description: A demand for a certain skill during a certain time interval used by the creation solver.
+      required:
+        - from
+        - to
+        - skill
+      properties:
+        from:
+          type: string
+          format: datetime
+          description: The date and time when this demand interval starts.
+        to:
+          type: string
+          format: datetime
+          description: The date and time when this demand interval ends.
+        skill:
+          type: string
+          description: The skill for which this demand is defined.
+        demand:
+          type: integer
+          description: The number of people needed for this shift during this time interval for this skill (only applicable to fixed mode).
+        min:
+          type: integer
+          description: The total amount of minutes that need to have been worked by the end of this interval for this skill (only applicable to flexible mode).
+        max:
+          type: integer
+          description: The total maximum amount of minutes of work that is available at the start of this interval (only applicable to flexible mode).
 
+    CreationShiftPattern:
+      type: object
+      description: A definition of a schedulable shift for the creation solver.
+      required:
+        - name
+        - definition
+        - skill
+        - min
+        - max
+      properties:
+        name:
+          type: string
+          description: A unique name for this shift pattern.
+        definition:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationDatePattern'
+          description: The different time intervals for this shift.
+        skill:
+          type: string
+          description: The skill linked to this shift pattern.
+        min:
+          type: integer
+          description: The minimum amount of people that will be assigned to this shift.
+        max:
+          type: integer
+          description: The maximum amount of people that will be assigned to this shift.
+        resourceRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationResourceRequirement'
+          description: The required resources needed for each person assigned to this shift.
 
+    CreationDatePattern:
+      type: object
+      description: A pattern definition denoting the time interval(s) for a certain shift.
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: datetime
+          description: The date and time when this interval starts.
+        to:
+          type: string
+          format: datetime
+          description: The date and time when this interval ends.
+        breaks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationBreak'
+          description: The breaks during this shift.
 
+    CreationBreak:
+      type: object
+      description: A break is a time interval assigned to a date pattern of a shift during which no work is done.
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: string
+          format: datetime
+          description: The start date and time of this break.
+        end:
+          type: string
+          format: datetime
+          description: The end date and time of this break.
+
+    CreationResourceRequirement:
+      type: object
+      description: A required resource used by a certain shift.
+      required:
+        - resourceName
+        - value
+      properties:
+        resourceName:
+          type: string
+          description: The name of the required resource.
+        value:
+          type: integer
+          description: How many units of this resource type is required for this shift.
+
+    CreationResourceAvailability:
+      type: object
+      description: A limited availbale resource that can be used by certain shifts.
+      required:
+        - resourceName
+        - max
+      properties:
+        resourceName:
+          type: string
+          description: The unique name of the resource.
+        max:
+          type: integer
+          description: The maximum amount of units of this resource that can be used simultaneously.
 
     JobId:
       type: string
