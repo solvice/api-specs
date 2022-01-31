@@ -192,7 +192,7 @@ paths:
          1. Base stock placement: `BASE_STOCK` solver to send a `BaseRequest`
          2. RQ planning: `RQ_STOCK` solver to send an `RQRequest`
 
-        References: [Solvice documentation](https://docs.solvice.io/v1.1/docs/onstock-overview), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
+        References: [Solvice documentation](/docs/onstock-overview), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
       requestBody:
         description: |
           Payload for all information concerning the inventory problem.
@@ -394,7 +394,7 @@ components:
                   type: number
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
-                  type: integer
+                  type: string
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
@@ -428,7 +428,7 @@ components:
                       type: number
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
-                      type: integer
+                      type: string
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
@@ -473,7 +473,7 @@ components:
                   type: number
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
-                  type: integer
+                  type: string
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
@@ -514,7 +514,7 @@ components:
                       type: number
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
-                      type: integer
+                      type: string
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
