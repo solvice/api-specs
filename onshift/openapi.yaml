@@ -1321,13 +1321,22 @@ components:
           type: string
           format: date-time
           description: end time of the order/task
-        resources:
-          type: array
-          description: list of resources used during excution of this order/task
-          items:
-            type: string
-            description: resource name
-
+        capacitated:
+          type: object
+          description: the combination of capacitated resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              description: number of capacitated resources of this type used.
+        plannable:
+          type: object
+          description: the combination of plannable resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: sting
+              description: name of the capacitated resources of this type used.
 
 
 
