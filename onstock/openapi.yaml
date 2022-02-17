@@ -38,10 +38,11 @@ info:
     > Test our API in just one command
 
      ```shell
-     curl https://demo:demo@api.solvice.io/demo/base-stock | \
+     curl https://demo:demo@api.solvice.io/demo/stock/base | \
      curl https://demo:demo@api.solvice.io/v1/solve  \
           -X POST -H "Content-Type: application/json" -d @-
      ```
+
      >You can copy and paste the above in your terminal for a working example. The example uses a randomly generated base stock problem.
 
 
@@ -51,16 +52,14 @@ info:
 
 
 
-    The OnShift API is as simple as it gets. There are only several important endpoints:
+    The OnStock API is as simple as it gets. There are only several important endpoints:
 
      1. Solving an OnStock optimisation problem is as simple as an POST to our `/solve` endpoint.
      2. The Job `id` is returned.
-     3. Check for the status of that job wether it is solved yes with the GET `/jobs/<id>/status` endpoint.
+     3. Check for the status of that job whether it is solved yes with the GET `/jobs/<id>/status` endpoint.
      4. If so, then fetch the solution with a simple GET on `/jobs/<id>/solution`
 
-    Thats's it! Could not be easier.
-
-    To use our Workforce Optimisation API commercially, you can subscribe to a paid plan [here](https://www.solvice.io/onstock/api#pricing).
+    To use our OnStock API commercially, you can subscribe to a paid plan [here](https://www.solvice.io/onstock/api#pricing).
 
     ### Problems or Questions?
     If you have problems or questions, we offer you the following options:
@@ -101,10 +100,10 @@ tags:
 
       #### ServiceTimeAssignments
 
-      The service time assingments represent the solution. In the GSM (Guaranteed Service Model) definition of the multi-echelon 
+      The service time assignments represent the solution. In the GSM (Guaranteed Service Model) definition of the multi-echelon
       inventory placement problem the outgoing service time in each node is to be decided. From this outgoing service time, the holding cost 
       for each node follows.
-      
+
 
       ```json
       {
@@ -114,10 +113,26 @@ tags:
        }
       ```
 
+      #### OrderSizeAssignments
+
+      The service time assignments represent the solution. In the GSM (Guaranteed Service Model) definition of the multi-echelon
+      inventory placement problem the outgoing service time in each node is to be decided. From this outgoing service time, the holding cost
+      for each node follows.
+
+
+      ```json
+      {
+         "id": 1,
+         "node": "Final assembly",
+         "orderSize" : 2
+       }
+      ```
+
+
       ### Output
 
       Simply fetch the solution in the `jobs/:id/solution` endpoint and receive the GSM outgoingServiceTime assignments.
-      
+
 
       ```json
       [
@@ -151,7 +166,7 @@ tags:
 
 
 security:
-  - ApiKey: []
+  - ApiKey: [ ]
 
 paths:
   /solve:
@@ -169,10 +184,15 @@ paths:
           description: The number of seconds you give the solver to optimise the problem. By default, the solver decides.
 
       description: |
-        Endpoint for solving inventory optimisation problem.
+        Endpoint for solving inventory optimisation problem. OnStock performs Multi Echelon Inventory Optimization (MEIO).
+        In contrast to the single echelon approximation that looks at nodes separately, here, the supply chain is seen as a whole.
+        OnStock implements the Guaranteed Service Model, which considers the processing times and the demands in a supply network to be deterministic.
+
         There are multiple possible problems:
          1. Base stock placement: `BASE_STOCK` solver to send a `BaseRequest`
-         2. RQ planning: `RQ_STOCK` solver to send a `RQRequest`
+         2. RQ planning: `RQ_STOCK` solver to send an `RQRequest`
+
+        References: [Solvice documentation](/docs/onstock-overview), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
       requestBody:
         description: |
           Payload for all information concerning the inventory problem.
@@ -278,8 +298,7 @@ paths:
             format: uuid
       description: |
         Returns the information on why a job has been solved the way it's been.
-        Information includes specific unresolved objects. Want to know how it is optimised?
-        This endpoint lets you know what rules have been overruled.
+        Information includes specific unresolved objects. Want to know how it is optimised? This endpoint lets you know what rules have been overruled.
       responses:
         '200':
           description: OK
@@ -335,13 +354,13 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/BaseRequest'
-                  - $ref: '#/components/schemas/RQRequest'
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - $ref: '#/components/schemas/RQResponse'
                 discriminator:
                   propertyName: solver
                   mapping:
-                    base: '#/components/schemas/BaseRequest'
-                    rq: '#/components/schemas/RQRequest'
+                    base: '#/components/schemas/BaseResponse'
+                    rq: '#/components/schemas/RQResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -351,7 +370,7 @@ paths:
 components:
   schemas:
     BaseRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf: # Combines the SolveJob and the inline model
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
@@ -359,28 +378,159 @@ components:
           properties:
             networkNodes:
               type: array
-              description: Nodes characteristics from your network.
+              description: Node characteristics from your network.
               items:
                 $ref: '#/components/schemas/Node'
             serviceTimeAssignments:
               type: array
-              description: Pre made assignments that the solver should take into account
+              description: Pre made assignments that the solver should take into account.
               items:
                 $ref: '#/components/schemas/ServiceTimeAssignment'
+            options:
+              type: object
+              description: Model parameters for cost calculation, demand calculation and calculation bounds.
+              properties:
+                holdingRate:
+                  type: number
+                  description: Expression of how expensive it is to hold a good relative to its cost.
+                distribution:
+                  type: string
+                  description: Demand profile.
+                maxMovingRateCalculation:
+                  type: integer
+                  description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
+                maxOutGoingServiceTimeOffset:
+                  type: integer
+                  description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
+
+
+
+    BaseResponse:
+          allOf: # Combines the SolveJob and the inline model
+            - $ref: '#/components/schemas/SolveJob'
+            - type: object
+              properties:
+                networkNodes:
+                  type: array
+                  description: Node characteristics from your network.
+                  items:
+                    $ref: '#/components/schemas/Node'
+                serviceTimeAssignments:
+                  type: array
+                  description: Pre made assignments that the solver should take into account.
+                  items:
+                    $ref: '#/components/schemas/ServiceTimeAssignment'
+                options:
+                  type: object
+                  description: Model parameters for cost calculation, demand calculation and calculation bounds.
+                  properties:
+                    holdingRate:
+                      type: number
+                      description: Expression of how expensive it is to hold a good relative to its cost.
+                    distribution:
+                      type: string
+                      description: Demand profile.
+                    maxMovingRateCalculation:
+                      type: integer
+                      description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
+                    maxOutGoingServiceTimeOffset:
+                      type: integer
+                      description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
+                solution:
+                  type: array
+                  description: List of the node solutions.
+                  items:
+                    $ref: '#/components/schemas/NodeSolution'
 
 
     RQRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf: # Combines the SolveJob and the inline model
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
             - nodes
           properties:
-            shifts:
+            networkNodes:
               type: array
-              description: Nodes characteristics from your network.
+              description: Node characteristics from your network.
               items:
-                $ref: '#/components/schemas/Node'
+                $ref: '#/components/schemas/RQNode'
+            serviceTimeAssignments:
+              type: array
+              description: Pre made assignments that the solver should take into account
+              items:
+                $ref: '#/components/schemas/ServiceTimeAssignment'
+            orderSizeAssignments:
+              type: array
+              description: Pre made assignments that the solver should take into account
+              items:
+                $ref: '#/components/schemas/OrderSizeAssignment'
+            rqOptions:
+              type: object
+              description: Model parameters for cost calculation, demand calculation and calculation bounds.
+              properties:
+                holdingRate:
+                  type: number
+                  description: Expression of how expensive it is to hold a good relative to its cost.
+                distribution:
+                  type: string
+                  description: Demand profile.
+                maxMovingRateCalculation:
+                  type: integer
+                  description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
+                maxOutGoingServiceTimeOffset:
+                  type: integer
+                  description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
+                maxOrderSizeWeekFactor:
+                  type: integer
+                  description: The order size of a node is capped by the product of its average demand per week and this factor.
+
+
+    RQResponse:
+          allOf:
+            - $ref: '#/components/schemas/SolveJob'
+            - type: object
+              properties:
+                networkNodes:
+                  type: array
+                  description: Node characteristics from your network.
+                  items:
+                    $ref: '#/components/schemas/RQNode'
+                serviceTimeAssignments:
+                  type: array
+                  description: Pre made assignments that the solver should take into account
+                  items:
+                    $ref: '#/components/schemas/ServiceTimeAssignment'
+                orderSizeAssignments:
+                  type: array
+                  description: Pre made assignments that the solver should take into account
+                  items:
+                    $ref: '#/components/schemas/OrderSizeAssignment'
+                rqOptions:
+                  type: object
+                  description: Model parameters for cost calculation, demand calculation and calculation bounds.
+                  properties:
+                    holdingRate:
+                      type: number
+                      description: Expression of how expensive it is to hold a good relative to its cost.
+                    distribution:
+                      type: string
+                      description: Demand profile.
+                    maxMovingRateCalculation:
+                      type: integer
+                      description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
+                    maxOutGoingServiceTimeOffset:
+                      type: integer
+                      description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
+                    maxOrderSizeWeekFactor:
+                      type: integer
+                      description: The largest possible order size of a node is the product of its average demand and this value.
+                solution:
+                  type: array
+                  description: List of the node solutions.
+                  items:
+                    $ref: '#/components/schemas/RQNodeSolution'
+
 
     SolveJob:
       type: object
@@ -456,8 +606,6 @@ components:
         - name
         - nominalTime
         - cost
-        - serviceFactor
-        - successors
       properties:
         name:
           type: string
@@ -465,39 +613,142 @@ components:
           description: Unique name for the network node.
         nominalTime:
           type: integer
-          description: The processing time for this node
+          description: The processing time for this node.
         cost:
           type: number
           description: The incremental cost of the processing in this node.
         serviceFactor:
           type: number
           example: 1.645
-          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node. 
+          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
         successors:
           type: array
-          description: The network nodes that succeed this node
+          description: The network nodes that succeed this node directly.
           items:
             type: string
-            description: The name of the succeeding nodes
+            description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
-          description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
-        sdCustomerDemand: 
+          description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
+        sdCustomerDemand:
           type: number
-          description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network)
-    
+          description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
+
+    NodeSolution:
+      description: The solution characteristics of the nodes describing your network.
+      type: object
+      properties:
+        node:
+          type: string
+          description: Name of the node.
+        safetyStock:
+          type: integer
+          description: Amount of safety stock that should be kept at this node.
+        netLeadTime:
+          type: integer
+          description: The value that was used to calculate safety stock for this node.
+        holdingCostTau:
+          type: integer
+          description: The holding cost that stems from the safety stock.
+
+
+
+
+    RQNode:
+      description: The characteristics of the nodes describing your network.
+      type: object
+      required:
+        - name
+        - nominalTime
+        - cost
+        - fixedOrderCost
+      properties:
+        name:
+          type: string
+          example: "FINAL ASSEMBLY"
+          description: Unique name for the network node.
+        nominalTime:
+          type: integer
+          description: The processing time for this node.
+        cost:
+          type: number
+          description: The incremental cost of the processing in this node.
+        serviceFactor:
+          type: number
+          example: 1.645
+          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
+        successors:
+          type: array
+          description: The network nodes that succeed this node directly.
+          items:
+            type: string
+            description: The names of the succeeding nodes.
+        avgCustomerDemand:
+          type: number
+          description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
+        sdCustomerDemand:
+          type: number
+          description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
+        orderSizeStep:
+          type: integer
+          description: The minimal batch order size increment.
+        orderSizeMax:
+          type: integer
+          description: The maximal batch order size.
+        fixedOrderCost:
+          type: integer
+          description: The cost of ordering in this node.
+
+    RQNodeSolution:
+      description: The solution characteristics of the nodes describing your network.
+      type: object
+      properties:
+        node:
+          type: string
+          description: Name of the node.
+        safetyStock:
+          type: integer
+          description: Amount of safety stock that should be kept at this node.
+        netLeadTime:
+          type: integer
+          description: The value that was used to calculate safety stock for this node.
+        holdingCostTau:
+          type: integer
+          description: The holding cost that stems from the safety stock.
+        orderSize:
+          type: integer
+          description: The value of Q on which the solver decided for this node.
+        orderCost:
+          type: integer
+          description: The order cost of this node.
+        holdingCostQ:
+          type: integer
+          description: The holding cost that stems from the order size.
+
     ServiceTimeAssignment:
       type: object
       properties:
         id:
           type: integer
-          description: Unique id 
+          description: Unique id
         outgoingServiceTime:
           type: integer
         node:
           type: string
-          description: the node for which the outgoingServiceTime is given
-      
+          description: The name of the node for which the outgoingServiceTime is given.
+
+    OrderSizeAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique id
+        orderSize:
+          type: integer
+        node:
+          type: string
+          description: The node for which the orderSize is given.
+
 
     Stats:
       type: object

@@ -775,14 +775,21 @@ components:
           properties:
             resources:
               type: array
-              description: Available resource definitions
+              description: Define the available resources
               items:
-                $ref: '#/components/schemas/Resource'
+                oneOf:
+                  - $ref: '#/components/schemas/PlannableResource'
+                  - $ref: '#/components/schemas/CapacitatedResource'
             orders:
               type: array
-              description: Orders that need to be assigned to Resources.
+              description: Define the orders that need to be assigned to Resources.
               items:
                 $ref: '#/components/schemas/Order'
+            period:
+              type: object
+              description: The planning period
+              items:
+                $ref: '#/components/schemas/PlanningPeriod'
 
 
 
@@ -1252,7 +1259,15 @@ components:
 
     TaskResourceRequirement:
       type: object
-      description: A requirement for a Resource
+      description: A a combination of resource requirements grouped per resource.
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/TaskResourceRequirementDetail'
+        
+
+    TaskResourceRequirementDetail:
+      type: object
       properties:
         value:
           type: integer
@@ -1269,7 +1284,6 @@ components:
           items:
             type: string
             description: Resource name
-
 
     Order:
       type: object
@@ -1305,6 +1319,8 @@ components:
     Resource:
       type: object
       description: A resource definition
+      required:
+        - name
       properties:
         name:
           type: string
@@ -1321,6 +1337,10 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            type:
+              type: string
+              enum: [plannable]
+              description: Resource type, i.e. plannable 
             supply:
               type: array
               items:
@@ -1341,6 +1361,10 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            type:
+              type: string
+              enum: [capacitated]
+              description: Resource type, i.e. capacitated 
             supply:
               type: number
               description: The number of resources necessary.
@@ -1407,6 +1431,16 @@ components:
           items:
             $ref: '#/components/schemas/CreationResourceRequirement'
           description: The required resources needed for each person assigned to this shift.
+
+    PlanningPeriod:
+      type: object
+      properties:
+        from:
+          type: date-time
+          description: the starting date-time (ISO 8601 format) for the planning period
+        to:
+          type: date-time
+          description: the end date-time (ISO 8601 format) for the planning period
 
     CreationDatePattern:
       type: object
@@ -1512,10 +1546,8 @@ components:
         - type: object
           properties:
             solution:
-              type: object
-              additionalProperties:
-                type: array
-                items:
+              type: array
+              items:
                   $ref: '#/components/schemas/TaskAssignment'
 
 
@@ -1597,13 +1629,22 @@ components:
           type: string
           format: date-time
           description: end time of the order/task
-        resources:
-          type: array
-          description: list of resources used during excution of this order/task
-          items:
-            type: string
-            description: resource name
-
+        capacitated:
+          type: object
+          description: the combination of capacitated resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              description: number of capacitated resources of this type used.
+        plannable:
+          type: object
+          description: the combination of plannable resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: sting
+              description: name of the capacitated resources of this type used.
 
 
 
