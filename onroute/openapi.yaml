@@ -334,7 +334,12 @@ paths:
                 - $ref: '#/components/schemas/VRP'
                 - $ref: '#/components/schemas/PVRP'
                 - $ref: '#/components/schemas/PDP'
-                - $ref: '#/components/schemas/CAP'
+              discriminator:
+                propertyName: solver
+                mapping:
+                  VRP: '#/components/schemas/VRP'
+                  PDP: '#/components/schemas/PDP'
+                  PVRP: '#/components/schemas/PVRP'
         description: Problem solve request
 
   '/evaluate':
@@ -592,6 +597,7 @@ components:
           enum:
             - CAR
             - TRUCK
+          default: CAR
         allow_overtime:
           type: boolean
           description: |
