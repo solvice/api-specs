@@ -1687,25 +1687,25 @@ components:
           description: Total number of statute employees necessary
 
     FillAssignment:
-          type: object
-          properties:
-            shift:
-              type: string
-              description: Shift
-            employee:
-              type: string
-              description: Employee
-            from:
-              type: string
-              format: date-time
-            to:
-              type: string
-              format: date-time
-            skills:
-              type: array
-              items:
-                type: string
-                description: skill
+      type: object
+      properties:
+        shift:
+          type: string
+          description: Shift
+        employee:
+          type: string
+          description: Employee
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        skills:
+          type: array
+          items:
+            type: string
+            description: skill
 
 
 
