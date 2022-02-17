@@ -25,7 +25,6 @@ info:
 
 
     The Solvice Workforce Optimisation API consists of the following RESTful web services:
-     * [Capacity Planning API](#section/Capacity-planning)
      * [Shift Planning API](#section/Shift-scheduling)
      * [Fill Planning API](#section/Fill-scheduling)
      * [Task Sequencing API](#section/Task-sequencing)
@@ -90,11 +89,6 @@ tags:
     description: |
 
       OnShift can solve different workforce optimisation problems.
-
-      ## Capacity planning
-      Use our workforce capacity planning algorithms to get an actionable outlook on total labour costs, workload volume breakdown and staffing recommendations - And optimise your workforce model to suit your business needs.
-      Close gaps in your current workforce to meet long term work volume requirements; strategically plan staffing levels and hiring decisions to meet the optimal full time to part time ratio per location.
-
 
 
       ## Shift scheduling
@@ -508,18 +502,13 @@ paths:
       description: |
         Endpoint for solving shift optimisation problem.
         There are multiple possible problems:
-         1. Capacity Planning: `CAP` solver to send a `CapacityRequest`
-         2. Shift Scheduling: `SHIFT` solver to send a `ShiftRequest`
+         1. Shift Scheduling: `SHIFT` solver to send a `ShiftRequest`
+         2. Shift Creation: `CREATE` solver to send a `CreationRequest`
          3. Shift Filling: `FILL` solver to send a `ShiftFillRequest`
-         3. Task Assigning: `TASK` solver to send a `TaskRequest`
+         4. Task Assigning: `TASK` solver to send a `TaskRequest`
       requestBody:
         description: |
-          Payload for all information concerning the shift problem.
-          This includes:
-
-           - the demand
-           - the pool of employees
-           - the statutes
+          Any of the Shift Filling, Shift Creation or Task Assignment requests.
         required: true
         content:
           application/json:
@@ -539,8 +528,8 @@ paths:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/ShiftRequest'
+                - $ref: '#/components/schemas/CreationRequest'
                 - $ref: '#/components/schemas/ShiftFillRequest'
-                - $ref: '#/components/schemas/CapacityRequest'
                 - $ref: '#/components/schemas/TaskRequest'
 
       responses:
@@ -685,6 +674,7 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/ShiftSolution'
                   - $ref: '#/components/schemas/FillSolution'
+                  - $ref: '#/components/schemas/CreateSolution'
                   - $ref: '#/components/schemas/CapacitySolution'
                   - $ref: '#/components/schemas/TaskSolution'
                 discriminator:
@@ -762,7 +752,6 @@ components:
               description: An optional list of shared resource requirements
               items:
                   $ref: '#/components/schemas/ResourceRequirement'
-
 
 
     TaskRequest:
@@ -1123,6 +1112,8 @@ components:
 
 
 
+
+
     FillEmployee:
       type: object
       required:
@@ -1208,11 +1199,11 @@ components:
       properties:
         from:
           type: string
-          format: datetime
+          format: date-time
           description: From datetime
         to:
           type: string
-          format: datetime
+          format: date-time
           description: To datetime
 
     Demand:
@@ -1234,6 +1225,27 @@ components:
               type: string
               format: date
               description: Shift blok date.
+        skill:
+          type: string
+          description: Skill type definition
+        prefDemand:
+          type: integer
+          description: The number of employees of that skill to be present.
+
+    ShiftDemand:
+      type: object
+      description: Preferred demand for a certain skill and for a specific block during the day.
+      required:
+        - from
+        - to
+        - skill
+        - demand
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: Starting time of demand
+
         skill:
           type: string
           description: Skill type definition
@@ -1380,11 +1392,11 @@ components:
       properties:
         from:
           type: string
-          format: datetime
+          format: date-time
           description: The date and time when this demand interval starts.
         to:
           type: string
-          format: datetime
+          format: date-time
           description: The date and time when this demand interval ends.
         skill:
           type: string
@@ -1436,10 +1448,12 @@ components:
       type: object
       properties:
         from:
-          type: date-time
+          type: string
+          format: date-time
           description: the starting date-time (ISO 8601 format) for the planning period
         to:
-          type: date-time
+          type: string
+          format: date-time
           description: the end date-time (ISO 8601 format) for the planning period
 
     CreationDatePattern:
@@ -1451,11 +1465,11 @@ components:
       properties:
         from:
           type: string
-          format: datetime
+          format: date-time
           description: The date and time when this interval starts.
         to:
           type: string
-          format: datetime
+          format: date-time
           description: The date and time when this interval ends.
         breaks:
           type: array
@@ -1472,11 +1486,11 @@ components:
       properties:
         start:
           type: string
-          format: datetime
+          format: date-time
           description: The start date and time of this break.
         end:
           type: string
-          format: datetime
+          format: date-time
           description: The end date and time of this break.
 
     CreationResourceRequirement:
@@ -1575,6 +1589,17 @@ components:
                 $ref: '#/components/schemas/FillAssignment'
 
 
+    CreateSolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: array
+              items:
+                $ref: '#/components/schemas/FillAssignment'
+
+
 
     ShiftAssignment:
       type: object
@@ -1643,7 +1668,7 @@ components:
           additionalProperties:
             type: array
             items:
-              type: sting
+              type: string
               description: name of the capacitated resources of this type used.
 
 
