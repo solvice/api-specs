@@ -776,6 +776,11 @@ components:
                 oneOf:
                   - $ref: '#/components/schemas/PlannableResource'
                   - $ref: '#/components/schemas/CapacitatedResource'
+                discriminator:
+                  propertyName: type
+                  mapping:
+                    plannable: '#/components/schemas/PlannableResource'
+                    capacitated: '#/components/schemas/CapacitatedResource'
             orders:
               type: array
               description: Define the orders that need to be assigned to Resources.
@@ -1338,26 +1343,32 @@ components:
       description: A resource definition
       required:
         - name
+        - type
       properties:
         name:
           type: string
           description: unique name identifier for resource
+        type:
+          $ref: '#/components/schemas/ResourceType'
         availability:
           type: array
           description: Available date-time range for a resource.
           items:
             $ref: '#/components/schemas/DateTimeWindow'
 
+    ResourceType:
+      type: string
+      description: Resource type, plannable or capacitated.
+      enum:
+        - plannable
+        - capacitated
+
 
     PlannableResource:
-      allOf: # Combines the SolveJob and the inline model
+      allOf: # Combines the Resource and the inline model
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
-            type:
-              type: string
-              enum: [plannable]
-              description: Resource type, i.e. plannable 
             supply:
               type: array
               items:
@@ -1378,10 +1389,6 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
-            type:
-              type: string
-              enum: [capacitated]
-              description: Resource type, i.e. capacitated 
             supply:
               type: number
               description: The number of resources necessary.
