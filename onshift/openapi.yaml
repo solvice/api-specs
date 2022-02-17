@@ -1084,7 +1084,7 @@ components:
 
     TaskResourceRequirement:
       type: object
-      description: A requirement for a Resource
+      description: A a combination of resource requirements grouped per resource.
       additionalProperties:
         type: array
         items:
