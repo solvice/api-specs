@@ -1139,15 +1139,10 @@ components:
       description: A resource definition
       required:
         - name
-        - type
       properties:
         name:
           type: string
           description: unique name identifier for resource
-        type:
-           type: string
-           enum: [plannable, capacitated]
-           description: Resource type, i.e. either  plannable or capacitated
         availability:
           type: array
           description: Available date-time range for a resource.
@@ -1160,6 +1155,10 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            type:
+              type: string
+              enum: [plannable]
+              description: Resource type, i.e. plannable 
             supply:
               type: array
               items:
@@ -1180,6 +1179,10 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            type:
+              type: string
+              enum: [capacitated]
+              description: Resource type, i.e. capacitated 
             supply:
               type: number
               description: The number of resources necessary.
