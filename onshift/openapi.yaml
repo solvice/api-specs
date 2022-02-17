@@ -1086,24 +1086,29 @@ components:
       type: object
       description: A requirement for a Resource
       additionalProperties:
-        type: object
-          properties:
-            value:
-              type: integer
-              description: The number of requirements.
-            skills:
-              type: array
-              description: The required skills that should be matched by the assigned Resource.
-              items:
-                type: string
-                description: Skill name
-            allowed:
-              type: array
-              description: The allowed resources that can do this job.
-              items:
-                type: string
-                description: Resource name
+        type: array
+        items:
+          $ref: '#/components/schemas/TaskResourceRequirementDetail'
+        
 
+    TaskResourceRequirementDetail:
+      type: object
+        properties:
+          value:
+            type: integer
+            description: The number of requirements.
+          skills:
+            type: array
+            description: The required skills that should be matched by the assigned Resource.
+            items:
+              type: string
+              description: Skill name
+          allowed:
+            type: array
+            description: The allowed resources that can do this job.
+            items:
+              type: string
+              description: Resource name
 
     Order:
       type: object
