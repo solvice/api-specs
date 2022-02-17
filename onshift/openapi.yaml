@@ -468,7 +468,6 @@ tags:
       Post a new solve request to the Workforce Optimisation Engine.
 
       The optimisation engine can accept different problems:
-       - CAP: `CapacityRequest`
        - CREATE: `CreateRequest`
        - FILL: `ShiftFillRequest`
        - TASK: `TaskRequest`
@@ -526,11 +525,19 @@ paths:
                 value:
                   $ref: ./onshift/examples/task.json
             schema:
-              anyOf:
+              oneOf:
                 - $ref: '#/components/schemas/ShiftRequest'
                 - $ref: '#/components/schemas/CreationRequest'
                 - $ref: '#/components/schemas/ShiftFillRequest'
                 - $ref: '#/components/schemas/TaskRequest'
+              discriminator:
+                propertyName: solver
+                mapping:
+                  SHIFT: '#/components/schemas/ShiftRequest'
+                  FILL: '#/components/schemas/ShiftFillRequest'
+                  CREATE: '#/components/schemas/CreationRequest'
+                  TASK: '#/components/schemas/TaskRequest'
+
 
       responses:
         '200':
@@ -680,10 +687,10 @@ paths:
                 discriminator:
                   propertyName: solver
                   mapping:
-                    shift: '#/components/schemas/ShiftSolution'
-                    fill: '#/components/schemas/FillSolution'
-                    cap: '#/components/schemas/CapacitySolution'
-                    task: '#/components/schemas/TaskSolution'
+                    SHIFT: '#/components/schemas/ShiftSolution'
+                    FILL: '#/components/schemas/FillSolution'
+                    CREATE: '#/components/schemas/CreateSolution'
+                    TASK: '#/components/schemas/TaskSolution'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -871,12 +878,10 @@ components:
     Solver:
       type: string
       enum:
-        - CAP
         - FILL
         - SHIFT
         - TASK
         - CREATE
-      example: "FILL"
 
     Score:
       description: The score of a solution shows how good this solution is w.r.t all the constraints.
