@@ -629,12 +629,14 @@ components:
           properties:
             resources:
               type: array
-              description: Available resource definitions
+              description: Define the available resources
               items:
-                $ref: '#/components/schemas/Resource'
+                oneOf:
+                  - $ref: '#/components/schemas/PlannableResource'
+                  - $ref: '#/components/schemas/CapacitatedResource'
             orders:
               type: array
-              description: Orders that need to be assigned to Resources.
+              description: Define the orders that need to be assigned to Resources.
               items:
                 $ref: '#/components/schemas/Order'
 
