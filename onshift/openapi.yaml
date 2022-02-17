@@ -1137,10 +1137,17 @@ components:
     Resource:
       type: object
       description: A resource definition
+      required:
+        - name
+        - type
       properties:
         name:
           type: string
           description: unique name identifier for resource
+        type:
+           type: string
+           enum: [plannable, capacitated]
+           description: Resource type, i.e. either  plannable or capacitated
         availability:
           type: array
           description: Available date-time range for a resource.
