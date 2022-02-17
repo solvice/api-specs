@@ -29,6 +29,7 @@ info:
      * [Shift Planning API](#section/Shift-scheduling)
      * [Fill Planning API](#section/Fill-scheduling)
      * [Task Sequencing API](#section/Task-sequencing)
+     * [Shift Creation API](#section/Shift-creation)
 
     ### Getting started
      1. To use one of these APIs, you require an API key. Sign up [here](https://www.solvice.io/onshift/register) to get one.
@@ -239,7 +240,7 @@ tags:
       If tasks are provided, they are sequenced rather than the order itself. An order can have an availability and should have a resourceRequirement.
 
 
-      #### Order
+      #### Task
 
       A task is the lowest-level detail for work that needs to be scheduled that can be provided in the model. If provided, it is always defined under the higher hierarchy of an order. Futher, we define tasks using
       a duration (pre-determined amount of time to finish the task), a resourceRequirement and (optionally) an availability.
@@ -315,6 +316,151 @@ tags:
       | Resource Availability | A task should not be planned to a resource outside its availability  |
       | Resource Capacity | A resource should not assigned at the same time to more than one task. |
       | Order Priority | The priority of the orders that are assigned is maximized.  |
+
+
+      ## Shift Creation
+
+      Assigning an amount of people to certain shifts according to demand and resource constraints.
+
+      ### Input
+      The input requires two main things.
+
+      - shift patterns: which shifts can the solver choose from
+      - demands: how many people are needed and at what time?
+
+      The demands can be provided in two different ways. Depending on which kind of demands are used, the solver will run in either `fixed` or `flexible` mode.
+
+      #### Shift Pattern
+      A `Shift Pattern` is the central unit modified by the solver. The main goal for the solver is to find the optimal nubmer of people to assign to each shift.
+      Here is an example of a shift from Monday to Friday from 9AM to 5PM. The solver will choose somewhere between 0 and 10 people to assign to this shift.
+
+      ```json
+      {
+        "name": "MON:9-5",
+        "min": 0,
+        "max": 10,
+        "skill": "technician",
+        "definition": [
+          {
+            "from": "2021-10-04T09:00",
+            "to": "2021-10-04T17:00"
+          },
+          {
+            "from": "2021-10-05T13:00",
+            "to": "2021-10-05T17:00"
+          },
+          [ ... ]
+          {
+            "day": "FRIDAY",
+            "from": "2021-10-08T13:00",
+            "to": "2021-10-08T17:00"
+          }
+        ]
+      }
+      ```
+
+      #### Demand
+
+      Two types of demand are possible, an example of each type will be given here. The demands used in `fixed` mode are the most intuitive. During this mode, the
+      value given with each demand interval denotes the expected number of people between this interval.
+      Here is an example where 5 technicians are needed between 9AM and 5PM on Moday Oktober 4th.
+
+      ```json
+      {
+        "from": "2021-10-04T09:00,
+        "to": "2021-10-04T17:00",
+        "skill": "technician",
+        "demand": 5
+      }
+      ```
+
+      For `flexible` mode, the demands look slightly different. Instead of the `demand` atribute, a `min` and `max` need to be provided. These tell the solver that at the
+      start of this interval, already `min` number of minutes of work needs to have been done. By end of this interval, a total of `max` amount of minutes may be done.
+      `min` can be seen as work that has to be completed and `max` can be seen as the total amount of work that is available.
+
+      ```json
+      {
+        "from": "2021-10-04T09:00,
+        "to": "2021-10-04T17:00",
+        "skill": "technician",
+        "min": 60,
+        "max": 180,
+      }
+      ```
+
+      Fixed and Flexible demands cannot be mixed in the same creation request.
+
+      #### Resources
+
+      Resources can be used to further constrain the problem. A `resource` is a named unit with a finite supply that can be used by shifts. Available resources are listed in the model
+      in the follwoing way.
+
+      ```json
+      {
+        "resourceAvailabilities": [
+          {"resourceName": "hammer", "max": 10},
+          {"resourceName": "screwdriver", "max": 5}
+        ]
+      }
+      ```
+
+      This is how a shift can be configured to use one or more resources. This build on the first example of a Shift Pattern.
+
+      ```json
+      {
+        "name": "MON:9-5",
+        "min": 0,
+        "max": 10,
+        "skill": "technician",
+        "resourceRequirements": [
+          {"resourceName": "hammer", "value": 1},
+          {"resourceName": "screwdriver", "value": 2}
+        ],
+        "definition": [
+          {
+            "from": "2021-10-04T09:00",
+            "to": "2021-10-04T17:00"
+          },
+          {
+            "from": "2021-10-05T13:00",
+            "to": "2021-10-05T17:00"
+          },
+          [ ... ]
+          {
+            "day": "FRIDAY",
+            "from": "2021-10-08T13:00",
+            "to": "2021-10-08T17:00"
+          }
+        ]
+      }
+      ```
+
+      ### Output
+
+      The output of the creation solver is a list of shifts of the following form. The `pattern` value refers to the unique name given to each shift on the input side.
+
+      ```json
+      [
+        {"pattern": "9-5, MON-FRI: technician", "skill": "technician", "value": 3},
+        {"pattern": "9-5, MON-FRI: mechanic", "skill": "mechanic", "value": 2}
+      ]
+      ```
+
+      ### Constraints
+
+      The following constraints are used when solving the problem. Some are only valid in either `fixed` or `flexible` mode.
+
+      | Code             | Level  | Description                               |
+      |------------------|--------|--------------------------------------------|
+      |Total Demand | HARD | The total required demand must be met. Only applicable in `fixed mode`. |
+      |Resource Availability | HARD | For every resource, the solver tracks how many are being used at each point in time. It minimises the amount of over-usage that occurs for each resource. |
+      |Under Demand | MEDIUM | For every demand interval, the supply that is less than the demand must be minimised. Only applicable in `fixed` mode. |
+      |Over Demand | MEDIUM | For every demand interval, the supply that is more than the demand must be minimised. Only applicable in `fixed` mode. |
+      |Under Demand Cumulative | MEDIUM | For every demand interval, the total amount of work done needs to be more than the minimum required amount of work that has been done. Only applicable in `flexible` mode. |
+      |Over Demand Cumulative | MEDIUM | When staffing so many people that the total amount of work done exceeds the amount of work available, some people are doing nothing during their shift. Minimise this time that is being wasted. Only applicable in `flexible` mode. |
+      |As Late As Possible | SOFT | Execute the required amount of work as late as possible. This also means that the solver will try to execute a minimum amount of work. Only applicable in `flexible` mode. |
+      |Costs | SOFT | Cost based minimisation of the shifts. |
+      |Preference | SOFT | Preference based maximisation of the shifts. |
 
 
 
@@ -665,6 +811,30 @@ components:
               description: Possible Statute definitions used by employees.
               items:
                 $ref: '#/components/schemas/Statute'
+
+    CreationRequest:
+      allOf: # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - demands
+            - patterns
+          properties:
+            demands:
+              type: array
+              description: demands with either a 'value' or a 'min' and 'max' specifying the demand for a certain skill between two points in time.
+              items:
+                $ref: '#/components/schemas/CreationDemand'
+            patterns:
+              type: array
+              description: definition of a possible shift for a certain skill. This contains the time intevals during which this shift takes place aswell as the minimum and maximum number of people that can be assigned to this shift.
+              items:
+                $ref: '#/components/schemas/CreationShiftPattern'
+            resourceAvailabilities:
+              type: array
+              description: definition of a certain resource and how many units of that resouce are available.
+              items:
+                $ref: '#/components/schemas/CreationResourceAvailability'
 
     SolveJob:
       type: object
@@ -1200,6 +1370,67 @@ components:
               description: The number of resources necessary.
 
 
+    CreationDemand:
+      type: object
+      description: A demand for a certain skill during a certain time interval used by the creation solver.
+      required:
+        - from
+        - to
+        - skill
+      properties:
+        from:
+          type: string
+          format: datetime
+          description: The date and time when this demand interval starts.
+        to:
+          type: string
+          format: datetime
+          description: The date and time when this demand interval ends.
+        skill:
+          type: string
+          description: The skill for which this demand is defined.
+        demand:
+          type: integer
+          description: The number of people needed for this shift during this time interval for this skill (only applicable to fixed mode).
+        min:
+          type: integer
+          description: The total amount of minutes that need to have been worked by the end of this interval for this skill (only applicable to flexible mode).
+        max:
+          type: integer
+          description: The total maximum amount of minutes of work that is available at the start of this interval (only applicable to flexible mode).
+
+    CreationShiftPattern:
+      type: object
+      description: A definition of a schedulable shift for the creation solver.
+      required:
+        - name
+        - definition
+        - skill
+        - min
+        - max
+      properties:
+        name:
+          type: string
+          description: A unique name for this shift pattern.
+        definition:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationDatePattern'
+          description: The different time intervals for this shift.
+        skill:
+          type: string
+          description: The skill linked to this shift pattern.
+        min:
+          type: integer
+          description: The minimum amount of people that will be assigned to this shift.
+        max:
+          type: integer
+          description: The maximum amount of people that will be assigned to this shift.
+        resourceRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationResourceRequirement'
+          description: The required resources needed for each person assigned to this shift.
 
     PlanningPeriod:
       type: object
@@ -1211,7 +1442,70 @@ components:
           type: date-time
           description: the end date-time (ISO 8601 format) for the planning period
 
+    CreationDatePattern:
+      type: object
+      description: A pattern definition denoting the time interval(s) for a certain shift.
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: datetime
+          description: The date and time when this interval starts.
+        to:
+          type: string
+          format: datetime
+          description: The date and time when this interval ends.
+        breaks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationBreak'
+          description: The breaks during this shift.
 
+    CreationBreak:
+      type: object
+      description: A break is a time interval assigned to a date pattern of a shift during which no work is done.
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: string
+          format: datetime
+          description: The start date and time of this break.
+        end:
+          type: string
+          format: datetime
+          description: The end date and time of this break.
+
+    CreationResourceRequirement:
+      type: object
+      description: A required resource used by a certain shift.
+      required:
+        - resourceName
+        - value
+      properties:
+        resourceName:
+          type: string
+          description: The name of the required resource.
+        value:
+          type: integer
+          description: How many units of this resource type is required for this shift.
+
+    CreationResourceAvailability:
+      type: object
+      description: A limited availbale resource that can be used by certain shifts.
+      required:
+        - resourceName
+        - max
+      properties:
+        resourceName:
+          type: string
+          description: The unique name of the resource.
+        max:
+          type: integer
+          description: The maximum amount of units of this resource that can be used simultaneously.
 
     JobId:
       type: string
