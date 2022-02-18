@@ -1211,10 +1211,12 @@ components:
           type: string
           format: date-time
           description: From datetime
+          example: "2022-01-01T22:00:00"
         to:
           type: string
           format: date-time
           description: To datetime
+          example: "2022-01-03T06:00:00"
 
     Demand:
       type: object
@@ -1286,8 +1288,7 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/TaskResourceRequirementDetail'
-        example: "hammer"
-        
+
 
     TaskResourceRequirementDetail:
       type: object
@@ -1339,11 +1340,20 @@ components:
       type: object
       description: Task within an order
       properties:
+        name:
+          type: string
+          description: unique name identifier
+          example: "task 0"
         duration:
           type: string
           example: PT15M
           pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
           description: duration of a task (ISO8601 Duration)
+        availability:
+          type: array
+          description: Available date-time range for a resource.
+          items:
+            $ref: '#/components/schemas/DateTimeWindow'
         resourceRequirements:
           $ref: '#/components/schemas/TaskResourceRequirement'
 
@@ -1357,6 +1367,7 @@ components:
         name:
           type: string
           description: unique name identifier for resource
+          example: "resourceType 0"
         type:
           $ref: '#/components/schemas/ResourceType'
         availability:
@@ -1378,6 +1389,11 @@ components:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            availability:
+              type: array
+              description: Available date-time range for a resource.
+              items:
+                $ref: '#/components/schemas/DateTimeWindow'
             supply:
               type: array
               items:
@@ -1386,10 +1402,12 @@ components:
                   name:
                     type: string
                     description: unique identifier for resource item
+                    example: "named resource 0"
                   skills:
                     type: array
                     items:
                       type: string
+                      example: "A"
                     description: list of skills
 
 
@@ -1399,8 +1417,14 @@ components:
         - type: object
           properties:
             supply:
-              type: number
+              type: integer
               description: The number of resources necessary.
+              example: 1
+            availability:
+              type: array
+              description: Available date-time range for a resource.
+              items:
+                $ref: '#/components/schemas/DateTimeWindow'
 
 
     CreationDemand:
