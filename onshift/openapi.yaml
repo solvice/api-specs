@@ -1318,6 +1318,7 @@ components:
           type: string
           description: duration of an order (ISO8601 Duration)
           example: "PT1M"
+          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
         priority:
           type: integer
           description: level of importance of scheduling this as soon as possible (1-1000)
@@ -1333,7 +1334,9 @@ components:
       description: Task within an order
       properties:
         duration:
-          type: number
+          type: string
+          example: PT15M
+          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
           description: duration of a task (ISO8601 Duration)
         resourceRequirements:
           $ref: '#/components/schemas/TaskResourceRequirement'
