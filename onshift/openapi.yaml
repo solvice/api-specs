@@ -1504,6 +1504,9 @@ components:
     PlanningPeriod:
       type: object
       description: The planning period
+      required:
+        - from
+        - to
       properties:
         from:
           type: string
