@@ -1,139 +1,227 @@
 {
-  "id" : "03ace981-13df-4b76-8c41-84c61031be63",
-  "solver" : "VRP",
+  "id" : "32bc5dc1-f892-4623-b3c6-f00695488c6b",
+  "solver" : "PVRP",
   "options" : {
-    "capacitySpread" : true
+    "capacitySpread" : true,
+    "minimize_vehicle_use" : true,
+    "overconstrained" : true,
+    "allow_overtime" : true,
+    "periodic" : {
+      "include_periodic_difference" : true
+    }
   },
   "locations" : [ {
     "name" : "loc0",
-    "latitude" : 51.12317420299715,
-    "longitude" : 5.281797793554478
+    "latitude" : 51.132042753741956,
+    "longitude" : 3.7120073316457938
   }, {
     "name" : "loc1",
-    "latitude" : 50.65329310557439,
-    "longitude" : 4.517600740757033
+    "latitude" : 51.19384837423016,
+    "longitude" : 3.626153117855758
   }, {
     "name" : "loc2",
-    "latitude" : 51.20586951408341,
-    "longitude" : 5.050825570502835
+    "latitude" : 50.5550178025823,
+    "longitude" : 3.8168659524099775
   }, {
     "name" : "loc3",
-    "latitude" : 51.116048511299724,
-    "longitude" : 3.4438340449873435
+    "latitude" : 50.843001688339235,
+    "longitude" : 4.349110505812941
   }, {
     "name" : "loc4",
-    "latitude" : 51.19626097183903,
-    "longitude" : 4.457433874684473
+    "latitude" : 50.463033765087395,
+    "longitude" : 5.2825072718456365
   }, {
     "name" : "loc5",
-    "latitude" : 51.308125618134085,
-    "longitude" : 3.597829157609509
+    "latitude" : 51.208309586355284,
+    "longitude" : 4.3108929536226475
   }, {
     "name" : "loc6",
-    "latitude" : 51.375219897302884,
-    "longitude" : 3.4311920609779953
-  }, {
-    "name" : "loc7",
-    "latitude" : 50.469517882499886,
-    "longitude" : 3.4815045874748227
+    "latitude" : 50.77713707594933,
+    "longitude" : 3.7485844267747077
   } ],
   "fleet" : [ {
     "name" : "truck0",
-    "capacity" : 20,
-    "capacity2" : 23,
     "startlocation" : "loc6",
     "endlocation" : "loc4",
-    "category" : "TRUCK",
     "breaks" : [ {
-      "breakstart" : 650,
-      "breakend" : 750,
-      "breakduration" : 45
+      "breakstart" : 610,
+      "breakend" : 780,
+      "breakduration" : 30
     } ],
-    "shiftstart" : 500,
-    "shiftend" : 1439,
-    "type" : [ "Technician" ]
+    "workingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ],
+    "workingTime" : [ {
+      "date" : "2019-06-10",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    }, {
+      "date" : "2019-06-11",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    }, {
+      "date" : "2019-06-12",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    } ],
+    "shiftstart" : 480,
+    "shiftend" : 800,
+    "overtime" : true,
+    "overtime_end" : 830
   }, {
     "name" : "truck1",
-    "capacity" : 25,
-    "capacity2" : 26,
-    "startlocation" : "loc2",
-    "endlocation" : "loc1",
-    "category" : "TRUCK",
+    "startlocation" : "loc3",
+    "endlocation" : "loc0",
     "breaks" : [ {
-      "breakstart" : 650,
-      "breakend" : 750,
-      "breakduration" : 45
+      "breakstart" : 610,
+      "breakend" : 780,
+      "breakduration" : 30
     } ],
-    "shiftstart" : 500,
-    "shiftend" : 900,
-    "type" : [ "Maintenance" ]
+    "workingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ],
+    "unavailable" : [ "2022-02-21" ],
+    "workingTime" : [ {
+      "date" : "2019-06-10",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    }, {
+      "date" : "2019-06-11",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    }, {
+      "date" : "2019-06-12",
+      "shiftstart" : 500,
+      "shiftend" : 800
+    } ],
+    "shiftstart" : 480,
+    "shiftend" : 800,
+    "overtime" : true,
+    "overtime_end" : 830
   } ],
   "orders" : [ {
     "name" : "order0",
     "location" : "loc2",
-    "windows" : [ {
-      "starttime" : 480,
-      "endtime" : 720,
-      "hard" : true
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 655
     }, {
-      "starttime" : 780,
-      "endtime" : 1020,
-      "hard" : true
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 763
     } ],
-    "demand" : 2,
     "duration" : 30,
-    "type" : [ "Technician" ],
-    "restriction" : [ "Maintenance" ]
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order1",
-    "location" : "loc1",
-    "windows" : [ {
-      "starttime" : 480,
-      "endtime" : 720,
-      "hard" : true
+    "location" : "loc2",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 608
     }, {
-      "starttime" : 780,
-      "endtime" : 1020,
-      "hard" : true
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 732
     } ],
-    "demand" : 1,
-    "duration" : 30
+    "duration" : 30,
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order2",
-    "location" : "loc0",
-    "demand" : 2,
-    "duration" : 30
+    "location" : "loc5",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 508
+    }, {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 909
+    } ],
+    "duration" : 30,
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order3",
-    "location" : "loc1",
-    "windows" : [ {
-      "starttime" : 480,
-      "endtime" : 720,
-      "hard" : true
+    "location" : "loc6",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 506
     }, {
-      "starttime" : 780,
-      "endtime" : 1020,
-      "hard" : true
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 878
     } ],
-    "demand" : 2,
-    "duration" : 30
+    "duration" : 30,
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order4",
-    "location" : "loc7",
-    "demand" : 2,
+    "location" : "loc4",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 559
+    }, {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 879
+    } ],
     "duration" : 30,
-    "type" : [ "Maintenance" ],
-    "restriction" : [ "Technician" ]
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order5",
-    "location" : "loc3",
-    "demand" : 2,
-    "duration" : 30
+    "location" : "loc2",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 605
+    }, {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 805
+    } ],
+    "duration" : 30,
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   }, {
     "name" : "order6",
-    "location" : "loc0",
-    "demand" : 1,
-    "duration" : 30
+    "location" : "loc5",
+    "dateWindows" : [ {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 400,
+      "endTime" : 694
+    }, {
+      "start" : "2019-06-10",
+      "end" : "2019-06-11",
+      "startTime" : 700,
+      "endTime" : 915
+    } ],
+    "duration" : 30,
+    "openingDays" : [ "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" ]
   } ],
-  "solve_duration" : 0
+  "period" : {
+    "start" : "2019-06-10",
+    "end" : "2019-06-12"
+  },
+  "solve_duration" : 0,
+  "precedence_constraints" : [ {
+    "name" : "min5",
+    "order1" : "order0",
+    "order2" : "order1",
+    "min" : 1,
+    "max" : 5
+  } ],
+  "linked_orders" : [ {
+    "order1" : "order2",
+    "order2" : "order3"
+  } ]
 }
