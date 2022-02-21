@@ -1257,13 +1257,19 @@ components:
           type: string
           format: date-time
           description: Starting time of demand
-
+          example: "2021-12-01T08:00:00"
+        to:
+          type: string
+          format: date-time
+          description: Starting time of demand
+          example: "2021-12-01T16:00:00"
         skill:
           type: string
           description: Skill type definition
         prefDemand:
           type: integer
           description: The number of employees of that skill to be present.
+          example: 1
 
     ResourceRequirement:
       type: object
@@ -1272,12 +1278,18 @@ components:
         shifts:
           type: array
           description: a list of shiftnames this requirement applies to
+          items:
+            type: string
+            example: "shift"
+            description: shift name
         skill:
           type: string
           description: the skill this requirement applies to
+          example: technician
         value:
           type: integer
           description: the required number of shared resources with this skill
+          example: 2
 
 
 
@@ -1302,8 +1314,8 @@ components:
           description: The required skills that should be matched by the assigned Resource.
           items:
             type: string
-            example: "A"
             description: Skill name
+            example: "technician"
         allowed:
           type: array
           description: The allowed resources that can do this job.
@@ -1491,15 +1503,18 @@ components:
 
     PlanningPeriod:
       type: object
+      description: The planning period
       properties:
         from:
           type: string
           format: date-time
           description: the starting date-time (ISO 8601 format) for the planning period
+          example: "2022-01-01T08:00:00"
         to:
           type: string
           format: date-time
-          description: the end date-time (ISO 8601 format) for the planning period
+          description: the end date-time (ISO 8601 format) for the planning period (inclusive)
+          example: "2022-01-05T17:00:00"
 
     CreationDatePattern:
       type: object
