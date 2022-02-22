@@ -31,7 +31,7 @@
   ],
   "orders": [
     {
-      "name": "order 0",
+      "name": "order 0 pickup",
       "location": "loc2",
       "windows": [
         {
@@ -50,14 +50,14 @@
         "Technician"
       ],
       "activity": "PICKUP",
-      "ride": "order0 pickup"
+      "ride": "order0"
     },
     {
-      "name": "order1",
+      "name": "order0 delivery",
       "location": "loc1",
       "duration": 30,
       "activity": "DELIVERY",
-      "ride": "order0 delivery"
+      "ride": "order0"
     }
   ]
 }
