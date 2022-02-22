@@ -56,7 +56,7 @@
       "name": "order0 delivery",
       "location": "loc1",
       "duration": 30,
-      "activity": "DELIVERY",
+      "activity": "DROPOFF",
       "ride": "order0"
     }
   ]
