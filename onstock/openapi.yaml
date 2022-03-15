@@ -88,7 +88,7 @@ tags:
 
       ```json
       {
-          "name": "Final assembly",
+          "name": "Final Assembly",
           "index": 0,
           "nominalTime": 4,
           "cost": 8000,
@@ -108,7 +108,7 @@ tags:
       ```json
       {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "outgoingServiceTime" : 0
        }
       ```
@@ -123,7 +123,7 @@ tags:
       ```json
       {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "orderSize" : 2
        }
       ```
@@ -138,7 +138,7 @@ tags:
       [
         {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "outgoingServiceTime" : 0
        }
       ]
@@ -498,12 +498,12 @@ components:
                     $ref: '#/components/schemas/RQNode'
                 serviceTimeAssignments:
                   type: array
-                  description: Pre made assignments that the solver should take into account
+                  description: Assignments for the service times of nodes the solver was fed or decided on
                   items:
                     $ref: '#/components/schemas/ServiceTimeAssignment'
                 orderSizeAssignments:
                   type: array
-                  description: Pre made assignments that the solver should take into account
+                  description: Assignments for the order sizes of nodes the solver was fed or decided on
                   items:
                     $ref: '#/components/schemas/OrderSizeAssignment'
                 rqOptions:
@@ -609,18 +609,20 @@ components:
       properties:
         name:
           type: string
-          example: "FINAL ASSEMBLY"
+          example: "Final Assembly"
           description: Unique name for the network node.
         nominalTime:
           type: integer
+          example: 2
           description: The processing time for this node.
         cost:
           type: number
+          example: 5
           description: The incremental cost of the processing in this node.
-        serviceFactor:
+        serviceLevel:
           type: number
-          example: 1.645
-          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
+          example: 0.9
+          description: The serviceLevel that is taken into account in the calculation of the demand bound for this node.
         successors:
           type: array
           description: The network nodes that succeed this node directly.
@@ -629,9 +631,11 @@ components:
             description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
+          example: 52000
           description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         sdCustomerDemand:
           type: number
+          example: 3000
           description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
 
     NodeSolution:
@@ -647,7 +651,7 @@ components:
         netLeadTime:
           type: integer
           description: The value that was used to calculate safety stock for this node.
-        holdingCostTau:
+        holdingCostSS:
           type: integer
           description: The holding cost that stems from the safety stock.
 
@@ -665,18 +669,20 @@ components:
       properties:
         name:
           type: string
-          example: "FINAL ASSEMBLY"
+          example: "Final Assembly"
           description: Unique name for the network node.
         nominalTime:
           type: integer
+          example: 2
           description: The processing time for this node.
         cost:
           type: number
+          example: 5
           description: The incremental cost of the processing in this node.
-        serviceFactor:
+        serviceLevel:
           type: number
-          example: 1.645
-          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
+          example: 0.9
+          description: The serviceLevel that is taken into account in the calculation of the demand bound for this node.
         successors:
           type: array
           description: The network nodes that succeed this node directly.
@@ -685,18 +691,23 @@ components:
             description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
+          example: 52000
           description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         sdCustomerDemand:
           type: number
+          example: 3000
           description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         orderSizeStep:
           type: integer
+          example: 10
           description: The minimal batch order size increment.
         orderSizeMax:
           type: integer
+          example: 1000
           description: The maximal batch order size.
         fixedOrderCost:
           type: integer
+          example: 500
           description: The cost of ordering in this node.
 
     RQNodeSolution:
@@ -712,7 +723,7 @@ components:
         netLeadTime:
           type: integer
           description: The value that was used to calculate safety stock for this node.
-        holdingCostTau:
+        holdingCostSS:
           type: integer
           description: The holding cost that stems from the safety stock.
         orderSize:
