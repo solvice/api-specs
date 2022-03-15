@@ -334,7 +334,12 @@ paths:
                 - $ref: '#/components/schemas/VRP'
                 - $ref: '#/components/schemas/PVRP'
                 - $ref: '#/components/schemas/PDP'
-                - $ref: '#/components/schemas/CAP'
+              discriminator:
+                propertyName: solver
+                mapping:
+                  VRP: '#/components/schemas/VRP'
+                  PDP: '#/components/schemas/PDP'
+                  PVRP: '#/components/schemas/PVRP'
         description: Problem solve request
 
   '/evaluate':
@@ -592,6 +597,7 @@ components:
           enum:
             - CAR
             - TRUCK
+          default: CAR
         allow_overtime:
           type: boolean
           description: |
@@ -908,13 +914,13 @@ components:
           items:
             type: object
             properties:
-              starttime:
+              startTime:
                 type: integer
                 description: Start time of a date window.
                 minimum: 0
                 maximum: 1439
                 example: 530
-              endtime:
+              endTime:
                 type: integer
                 minimum: 0
                 maximum: 1439

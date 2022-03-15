@@ -1,5 +1,5 @@
 {
-  "solver": "VRP",
+  "solver": "PDP",
   "options": {
     "capacitySpread": true
   },
@@ -24,18 +24,14 @@
     {
       "name": "driver 1",
       "startlocation": "loc1",
-      "category": "TRUCK",
       "type": [
         "Technician"
       ]
-    },
-    {
-      "name": "driver 2"
     }
   ],
   "orders": [
     {
-      "name": "order 0",
+      "name": "order 0 pickup",
       "location": "loc2",
       "windows": [
         {
@@ -52,12 +48,16 @@
       "duration": 30,
       "type": [
         "Technician"
-      ]
+      ],
+      "activity": "PICKUP",
+      "ride": "order0"
     },
     {
-      "name": "order1",
+      "name": "order0 delivery",
       "location": "loc1",
-      "duration": 30
+      "duration": 30,
+      "activity": "DROPOFF",
+      "ride": "order0"
     }
   ]
 }

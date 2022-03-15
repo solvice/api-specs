@@ -25,10 +25,10 @@ info:
 
 
     The Solvice Workforce Optimisation API consists of the following RESTful web services:
-     * [Capacity Planning API](#section/Capacity-planning)
      * [Shift Planning API](#section/Shift-scheduling)
      * [Fill Planning API](#section/Fill-scheduling)
      * [Task Sequencing API](#section/Task-sequencing)
+     * [Shift Creation API](#section/Shift-creation)
 
     ### Getting started
      1. To use one of these APIs, you require an API key. Sign up [here](https://www.solvice.io/onshift/register) to get one.
@@ -89,11 +89,6 @@ tags:
     description: |
 
       OnShift can solve different workforce optimisation problems.
-
-      ## Capacity planning
-      Use our workforce capacity planning algorithms to get an actionable outlook on total labour costs, workload volume breakdown and staffing recommendations - And optimise your workforce model to suit your business needs.
-      Close gaps in your current workforce to meet long term work volume requirements; strategically plan staffing levels and hiring decisions to meet the optimal full time to part time ratio per location.
-
 
 
       ## Shift scheduling
@@ -239,7 +234,7 @@ tags:
       If tasks are provided, they are sequenced rather than the order itself. An order can have an availability and should have a resourceRequirement.
 
 
-      #### Order
+      #### Task
 
       A task is the lowest-level detail for work that needs to be scheduled that can be provided in the model. If provided, it is always defined under the higher hierarchy of an order. Futher, we define tasks using
       a duration (pre-determined amount of time to finish the task), a resourceRequirement and (optionally) an availability.
@@ -317,6 +312,151 @@ tags:
       | Order Priority | The priority of the orders that are assigned is maximized.  |
 
 
+      ## Shift Creation
+
+      Assigning an amount of people to certain shifts according to demand and resource constraints.
+
+      ### Input
+      The input requires two main things.
+
+      - shift patterns: which shifts can the solver choose from
+      - demands: how many people are needed and at what time?
+
+      The demands can be provided in two different ways. Depending on which kind of demands are used, the solver will run in either `fixed` or `flexible` mode.
+
+      #### Shift Pattern
+      A `Shift Pattern` is the central unit modified by the solver. The main goal for the solver is to find the optimal nubmer of people to assign to each shift.
+      Here is an example of a shift from Monday to Friday from 9AM to 5PM. The solver will choose somewhere between 0 and 10 people to assign to this shift.
+
+      ```json
+      {
+        "name": "MON:9-5",
+        "min": 0,
+        "max": 10,
+        "skill": "technician",
+        "definition": [
+          {
+            "from": "2021-10-04T09:00",
+            "to": "2021-10-04T17:00"
+          },
+          {
+            "from": "2021-10-05T13:00",
+            "to": "2021-10-05T17:00"
+          },
+          [ ... ]
+          {
+            "day": "FRIDAY",
+            "from": "2021-10-08T13:00",
+            "to": "2021-10-08T17:00"
+          }
+        ]
+      }
+      ```
+
+      #### Demand
+
+      Two types of demand are possible, an example of each type will be given here. The demands used in `fixed` mode are the most intuitive. During this mode, the
+      value given with each demand interval denotes the expected number of people between this interval.
+      Here is an example where 5 technicians are needed between 9AM and 5PM on Moday Oktober 4th.
+
+      ```json
+      {
+        "from": "2021-10-04T09:00,
+        "to": "2021-10-04T17:00",
+        "skill": "technician",
+        "demand": 5
+      }
+      ```
+
+      For `flexible` mode, the demands look slightly different. Instead of the `demand` atribute, a `min` and `max` need to be provided. These tell the solver that at the
+      start of this interval, already `min` number of minutes of work needs to have been done. By end of this interval, a total of `max` amount of minutes may be done.
+      `min` can be seen as work that has to be completed and `max` can be seen as the total amount of work that is available.
+
+      ```json
+      {
+        "from": "2021-10-04T09:00,
+        "to": "2021-10-04T17:00",
+        "skill": "technician",
+        "min": 60,
+        "max": 180,
+      }
+      ```
+
+      Fixed and Flexible demands cannot be mixed in the same creation request.
+
+      #### Resources
+
+      Resources can be used to further constrain the problem. A `resource` is a named unit with a finite supply that can be used by shifts. Available resources are listed in the model
+      in the follwoing way.
+
+      ```json
+      {
+        "resourceAvailabilities": [
+          {"resourceName": "hammer", "max": 10},
+          {"resourceName": "screwdriver", "max": 5}
+        ]
+      }
+      ```
+
+      This is how a shift can be configured to use one or more resources. This build on the first example of a Shift Pattern.
+
+      ```json
+      {
+        "name": "MON:9-5",
+        "min": 0,
+        "max": 10,
+        "skill": "technician",
+        "resourceRequirements": [
+          {"resourceName": "hammer", "value": 1},
+          {"resourceName": "screwdriver", "value": 2}
+        ],
+        "definition": [
+          {
+            "from": "2021-10-04T09:00",
+            "to": "2021-10-04T17:00"
+          },
+          {
+            "from": "2021-10-05T13:00",
+            "to": "2021-10-05T17:00"
+          },
+          [ ... ]
+          {
+            "day": "FRIDAY",
+            "from": "2021-10-08T13:00",
+            "to": "2021-10-08T17:00"
+          }
+        ]
+      }
+      ```
+
+      ### Output
+
+      The output of the creation solver is a list of shifts of the following form. The `pattern` value refers to the unique name given to each shift on the input side.
+
+      ```json
+      [
+        {"pattern": "9-5, MON-FRI: technician", "skill": "technician", "value": 3},
+        {"pattern": "9-5, MON-FRI: mechanic", "skill": "mechanic", "value": 2}
+      ]
+      ```
+
+      ### Constraints
+
+      The following constraints are used when solving the problem. Some are only valid in either `fixed` or `flexible` mode.
+
+      | Code             | Level  | Description                               |
+      |------------------|--------|--------------------------------------------|
+      |Total Demand | HARD | The total required demand must be met. Only applicable in `fixed mode`. |
+      |Resource Availability | HARD | For every resource, the solver tracks how many are being used at each point in time. It minimises the amount of over-usage that occurs for each resource. |
+      |Under Demand | MEDIUM | For every demand interval, the supply that is less than the demand must be minimised. Only applicable in `fixed` mode. |
+      |Over Demand | MEDIUM | For every demand interval, the supply that is more than the demand must be minimised. Only applicable in `fixed` mode. |
+      |Under Demand Cumulative | MEDIUM | For every demand interval, the total amount of work done needs to be more than the minimum required amount of work that has been done. Only applicable in `flexible` mode. |
+      |Over Demand Cumulative | MEDIUM | When staffing so many people that the total amount of work done exceeds the amount of work available, some people are doing nothing during their shift. Minimise this time that is being wasted. Only applicable in `flexible` mode. |
+      |As Late As Possible | SOFT | Execute the required amount of work as late as possible. This also means that the solver will try to execute a minimum amount of work. Only applicable in `flexible` mode. |
+      |Costs | SOFT | Cost based minimisation of the shifts. |
+      |Preference | SOFT | Preference based maximisation of the shifts. |
+
+
 
   - name: Jobs
     description: The Jobs endpoint allows to retrieve information of a posted request, its status, the score or even detailed statistics.
@@ -328,7 +468,6 @@ tags:
       Post a new solve request to the Workforce Optimisation Engine.
 
       The optimisation engine can accept different problems:
-       - CAP: `CapacityRequest`
        - CREATE: `CreateRequest`
        - FILL: `ShiftFillRequest`
        - TASK: `TaskRequest`
@@ -362,18 +501,13 @@ paths:
       description: |
         Endpoint for solving shift optimisation problem.
         There are multiple possible problems:
-         1. Capacity Planning: `CAP` solver to send a `CapacityRequest`
-         2. Shift Scheduling: `SHIFT` solver to send a `ShiftRequest`
+         1. Shift Scheduling: `SHIFT` solver to send a `ShiftRequest`
+         2. Shift Creation: `CREATE` solver to send a `CreationRequest`
          3. Shift Filling: `FILL` solver to send a `ShiftFillRequest`
-         3. Task Assigning: `TASK` solver to send a `TaskRequest`
+         4. Task Assigning: `TASK` solver to send a `TaskRequest`
       requestBody:
         description: |
-          Payload for all information concerning the shift problem.
-          This includes:
-
-           - the demand
-           - the pool of employees
-           - the statutes
+          Any of the Shift Filling, Shift Creation or Task Assignment requests.
         required: true
         content:
           application/json:
@@ -391,11 +525,19 @@ paths:
                 value:
                   $ref: ./onshift/examples/task.json
             schema:
-              anyOf:
+              oneOf:
                 - $ref: '#/components/schemas/ShiftRequest'
+                - $ref: '#/components/schemas/CreationRequest'
                 - $ref: '#/components/schemas/ShiftFillRequest'
-                - $ref: '#/components/schemas/CapacityRequest'
                 - $ref: '#/components/schemas/TaskRequest'
+              discriminator:
+                propertyName: solver
+                mapping:
+                  SHIFT: '#/components/schemas/ShiftRequest'
+                  FILL: '#/components/schemas/ShiftFillRequest'
+                  CREATE: '#/components/schemas/CreationRequest'
+                  TASK: '#/components/schemas/TaskRequest'
+
 
       responses:
         '200':
@@ -539,15 +681,16 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/ShiftSolution'
                   - $ref: '#/components/schemas/FillSolution'
+                  - $ref: '#/components/schemas/CreateSolution'
                   - $ref: '#/components/schemas/CapacitySolution'
                   - $ref: '#/components/schemas/TaskSolution'
                 discriminator:
                   propertyName: solver
                   mapping:
-                    shift: '#/components/schemas/ShiftSolution'
-                    fill: '#/components/schemas/FillSolution'
-                    cap: '#/components/schemas/CapacitySolution'
-                    task: '#/components/schemas/TaskSolution'
+                    SHIFT: '#/components/schemas/ShiftSolution'
+                    FILL: '#/components/schemas/FillSolution'
+                    CREATE: '#/components/schemas/CreateSolution'
+                    TASK: '#/components/schemas/TaskSolution'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -618,7 +761,6 @@ components:
                   $ref: '#/components/schemas/ResourceRequirement'
 
 
-
     TaskRequest:
       allOf:     # Combines the SolveJob and the inline model
         - $ref: '#/components/schemas/SolveJob'
@@ -629,14 +771,23 @@ components:
           properties:
             resources:
               type: array
-              description: Available resource definitions
+              description: Define the available resources
               items:
-                $ref: '#/components/schemas/Resource'
+                oneOf:
+                  - $ref: '#/components/schemas/PlannableResource'
+                  - $ref: '#/components/schemas/CapacitatedResource'
+                discriminator:
+                  propertyName: type
+                  mapping:
+                    plannable: '#/components/schemas/PlannableResource'
+                    capacitated: '#/components/schemas/CapacitatedResource'
             orders:
               type: array
-              description: Orders that need to be assigned to Resources.
+              description: Define the orders that need to be assigned to Resources.
               items:
                 $ref: '#/components/schemas/Order'
+            period:
+              $ref: '#/components/schemas/PlanningPeriod'
 
 
 
@@ -658,6 +809,30 @@ components:
               description: Possible Statute definitions used by employees.
               items:
                 $ref: '#/components/schemas/Statute'
+
+    CreationRequest:
+      allOf: # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolveJob'
+        - type: object
+          required:
+            - demands
+            - patterns
+          properties:
+            demands:
+              type: array
+              description: demands with either a 'value' or a 'min' and 'max' specifying the demand for a certain skill between two points in time.
+              items:
+                $ref: '#/components/schemas/CreationDemand'
+            patterns:
+              type: array
+              description: definition of a possible shift for a certain skill. This contains the time intevals during which this shift takes place aswell as the minimum and maximum number of people that can be assigned to this shift.
+              items:
+                $ref: '#/components/schemas/CreationShiftPattern'
+            resourceAvailabilities:
+              type: array
+              description: definition of a certain resource and how many units of that resouce are available.
+              items:
+                $ref: '#/components/schemas/CreationResourceAvailability'
 
     SolveJob:
       type: object
@@ -705,12 +880,10 @@ components:
     Solver:
       type: string
       enum:
-        - CAP
         - FILL
         - SHIFT
         - TASK
         - CREATE
-      example: "FILL"
 
     Score:
       description: The score of a solution shows how good this solution is w.r.t all the constraints.
@@ -946,6 +1119,8 @@ components:
 
 
 
+
+
     FillEmployee:
       type: object
       required:
@@ -1031,12 +1206,14 @@ components:
       properties:
         from:
           type: string
-          format: datetime
+          format: date-time
           description: From datetime
+          example: "2022-01-01T22:00:00"
         to:
           type: string
-          format: datetime
+          format: date-time
           description: To datetime
+          example: "2022-01-03T06:00:00"
 
     Demand:
       type: object
@@ -1064,6 +1241,33 @@ components:
           type: integer
           description: The number of employees of that skill to be present.
 
+    ShiftDemand:
+      type: object
+      description: Preferred demand for a certain skill and for a specific block during the day.
+      required:
+        - from
+        - to
+        - skill
+        - demand
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: Starting time of demand
+          example: "2021-12-01T08:00:00"
+        to:
+          type: string
+          format: date-time
+          description: Starting time of demand
+          example: "2021-12-01T16:00:00"
+        skill:
+          type: string
+          description: Skill type definition
+        prefDemand:
+          type: integer
+          description: The number of employees of that skill to be present.
+          example: 1
+
     ResourceRequirement:
       type: object
       description: A shared resource requirement
@@ -1071,21 +1275,36 @@ components:
         shifts:
           type: array
           description: a list of shiftnames this requirement applies to
+          items:
+            type: string
+            example: "shift"
+            description: shift name
         skill:
           type: string
           description: the skill this requirement applies to
+          example: technician
         value:
           type: integer
           description: the required number of shared resources with this skill
+          example: 2
 
 
 
     TaskResourceRequirement:
       type: object
-      description: A requirement for a Resource
+      description: A a combination of resource requirements grouped per resource.
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/TaskResourceRequirementDetail'
+
+
+    TaskResourceRequirementDetail:
+      type: object
       properties:
         value:
           type: integer
+          example: 1
           description: The number of requirements.
         skills:
           type: array
@@ -1093,13 +1312,14 @@ components:
           items:
             type: string
             description: Skill name
+            example: "technician"
         allowed:
           type: array
           description: The allowed resources that can do this job.
           items:
             type: string
+            example: "resource 0"
             description: Resource name
-
 
     Order:
       type: object
@@ -1108,12 +1328,15 @@ components:
         name:
           type: string
           description: unique name identifier
+          example: "order 0"
         duration:
           type: string
           description: duration of an order (ISO8601 Duration)
           example: "PT1M"
+          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
         priority:
           type: integer
+          example: 10
           description: level of importance of scheduling this as soon as possible (1-1000)
         tasks:
           type: array
@@ -1126,31 +1349,60 @@ components:
       type: object
       description: Task within an order
       properties:
+        name:
+          type: string
+          description: unique name identifier
+          example: "task 0"
         duration:
-          type: number
+          type: string
+          example: PT15M
+          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
           description: duration of a task (ISO8601 Duration)
+        availability:
+          type: array
+          description: Available date-time range for a resource.
+          items:
+            $ref: '#/components/schemas/DateTimeWindow'
         resourceRequirements:
           $ref: '#/components/schemas/TaskResourceRequirement'
 
     Resource:
       type: object
       description: A resource definition
+      required:
+        - name
+        - type
       properties:
         name:
           type: string
           description: unique name identifier for resource
+          example: "resourceType 0"
+        type:
+          $ref: '#/components/schemas/ResourceType'
         availability:
           type: array
           description: Available date-time range for a resource.
           items:
             $ref: '#/components/schemas/DateTimeWindow'
 
+    ResourceType:
+      type: string
+      description: Resource type, plannable or capacitated.
+      enum:
+        - plannable
+        - capacitated
+
 
     PlannableResource:
-      allOf: # Combines the SolveJob and the inline model
+      allOf: # Combines the Resource and the inline model
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
+            availability:
+              type: array
+              description: Available date-time range for a resource.
+              items:
+                $ref: '#/components/schemas/DateTimeWindow'
             supply:
               type: array
               items:
@@ -1159,10 +1411,12 @@ components:
                   name:
                     type: string
                     description: unique identifier for resource item
+                    example: "named resource 0"
                   skills:
                     type: array
                     items:
                       type: string
+                      example: "A"
                     description: list of skills
 
 
@@ -1172,13 +1426,160 @@ components:
         - type: object
           properties:
             supply:
-              type: number
+              type: integer
               description: The number of resources necessary.
+              example: 1
+            availability:
+              type: array
+              description: Available date-time range for a resource.
+              items:
+                $ref: '#/components/schemas/DateTimeWindow'
 
 
+    CreationDemand:
+      type: object
+      description: A demand for a certain skill during a certain time interval used by the creation solver.
+      required:
+        - from
+        - to
+        - skill
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: The date and time when this demand interval starts.
+        to:
+          type: string
+          format: date-time
+          description: The date and time when this demand interval ends.
+        skill:
+          type: string
+          description: The skill for which this demand is defined.
+        demand:
+          type: integer
+          description: The number of people needed for this shift during this time interval for this skill (only applicable to fixed mode).
+        min:
+          type: integer
+          description: The total amount of minutes that need to have been worked by the end of this interval for this skill (only applicable to flexible mode).
+        max:
+          type: integer
+          description: The total maximum amount of minutes of work that is available at the start of this interval (only applicable to flexible mode).
 
+    CreationShiftPattern:
+      type: object
+      description: A definition of a schedulable shift for the creation solver.
+      required:
+        - name
+        - definition
+        - skill
+        - min
+        - max
+      properties:
+        name:
+          type: string
+          description: A unique name for this shift pattern.
+        definition:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationDatePattern'
+          description: The different time intervals for this shift.
+        skill:
+          type: string
+          description: The skill linked to this shift pattern.
+        min:
+          type: integer
+          description: The minimum amount of people that will be assigned to this shift.
+        max:
+          type: integer
+          description: The maximum amount of people that will be assigned to this shift.
+        resourceRequirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationResourceRequirement'
+          description: The required resources needed for each person assigned to this shift.
 
+    PlanningPeriod:
+      type: object
+      description: The planning period
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: the starting date-time (ISO 8601 format) for the planning period
+          example: "2022-01-01T08:00:00"
+        to:
+          type: string
+          format: date-time
+          description: the end date-time (ISO 8601 format) for the planning period (inclusive)
+          example: "2022-01-05T17:00:00"
 
+    CreationDatePattern:
+      type: object
+      description: A pattern definition denoting the time interval(s) for a certain shift.
+      required:
+        - from
+        - to
+      properties:
+        from:
+          type: string
+          format: date-time
+          description: The date and time when this interval starts.
+        to:
+          type: string
+          format: date-time
+          description: The date and time when this interval ends.
+        breaks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreationBreak'
+          description: The breaks during this shift.
+
+    CreationBreak:
+      type: object
+      description: A break is a time interval assigned to a date pattern of a shift during which no work is done.
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: The start date and time of this break.
+        end:
+          type: string
+          format: date-time
+          description: The end date and time of this break.
+
+    CreationResourceRequirement:
+      type: object
+      description: A required resource used by a certain shift.
+      required:
+        - resourceName
+        - value
+      properties:
+        resourceName:
+          type: string
+          description: The name of the required resource.
+        value:
+          type: integer
+          description: How many units of this resource type is required for this shift.
+
+    CreationResourceAvailability:
+      type: object
+      description: A limited availbale resource that can be used by certain shifts.
+      required:
+        - resourceName
+        - max
+      properties:
+        resourceName:
+          type: string
+          description: The unique name of the resource.
+        max:
+          type: integer
+          description: The maximum amount of units of this resource that can be used simultaneously.
 
     JobId:
       type: string
@@ -1219,10 +1620,8 @@ components:
         - type: object
           properties:
             solution:
-              type: object
-              additionalProperties:
-                type: array
-                items:
+              type: array
+              items:
                   $ref: '#/components/schemas/TaskAssignment'
 
 
@@ -1240,6 +1639,17 @@ components:
 
 
     FillSolution:
+      allOf:     # Combines the SolveJob and the inline model
+        - $ref: '#/components/schemas/SolutionJob'
+        - type: object
+          properties:
+            solution:
+              type: array
+              items:
+                $ref: '#/components/schemas/FillAssignment'
+
+
+    CreateSolution:
       allOf:     # Combines the SolveJob and the inline model
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
@@ -1304,13 +1714,22 @@ components:
           type: string
           format: date-time
           description: end time of the order/task
-        resources:
-          type: array
-          description: list of resources used during excution of this order/task
-          items:
-            type: string
-            description: resource name
-
+        capacitated:
+          type: object
+          description: the combination of capacitated resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: integer
+              description: number of capacitated resources of this type used.
+        plannable:
+          type: object
+          description: the combination of plannable resources used during excution of this order/task, grouped per type. 
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              description: name of the capacitated resources of this type used.
 
 
 
@@ -1328,25 +1747,25 @@ components:
           description: Total number of statute employees necessary
 
     FillAssignment:
-          type: object
-          properties:
-            shift:
-              type: string
-              description: Shift
-            employee:
-              type: string
-              description: Employee
-            from:
-              type: string
-              format: date-time
-            to:
-              type: string
-              format: date-time
-            skills:
-              type: array
-              items:
-                type: string
-                description: skill
+      type: object
+      properties:
+        shift:
+          type: string
+          description: Shift
+        employee:
+          type: string
+          description: Employee
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        skills:
+          type: array
+          items:
+            type: string
+            description: skill
 
 
 
