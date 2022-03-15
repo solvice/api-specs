@@ -192,7 +192,7 @@ paths:
          1. Base stock placement: `BASE_STOCK` solver to send a `BaseRequest`
          2. RQ planning: `RQ_STOCK` solver to send an `RQRequest`
 
-        References: [Solvice documentation](/docs/onstock-overview), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
+        References: [Solvice documentation](/docs/onstock-overview), [Long form documentation](https://github.com/solvice/OnStock-documentation), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
       requestBody:
         description: |
           Payload for all information concerning the inventory problem.
@@ -392,15 +392,22 @@ components:
               properties:
                 holdingRate:
                   type: number
+                  example: 0.25
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
                   type: string
+                  enum:
+                    - NORMAL
+                    - POISSON
+                  example: NORMAL
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
+                  example: 125
                   description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
                 maxOutGoingServiceTimeOffset:
                   type: integer
+                  example: 26
                   description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
 
 
@@ -429,6 +436,10 @@ components:
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
                       type: string
+                      enum:
+                        - NORMAL
+                        - POISSON
+                      example: NORMAL
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
@@ -471,18 +482,26 @@ components:
               properties:
                 holdingRate:
                   type: number
+                  example: 0.25
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
                   type: string
+                  enum:
+                    - NORMAL
+                    - POISSON
+                  example: NORMAL
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
+                  example: 125
                   description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
                 maxOutGoingServiceTimeOffset:
                   type: integer
+                  example: 26
                   description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
                 maxOrderSizeWeekFactor:
                   type: integer
+                  example: 12
                   description: The order size of a node is capped by the product of its average demand per week and this factor.
 
 
@@ -515,6 +534,10 @@ components:
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
                       type: string
+                      enum:
+                        - NORMAL
+                        - POISSON
+                      example: NORMAL
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
@@ -741,6 +764,7 @@ components:
       properties:
         id:
           type: integer
+          example: 0
           description: Unique id
         outgoingServiceTime:
           type: integer
@@ -753,6 +777,7 @@ components:
       properties:
         id:
           type: integer
+          example: 1
           description: Unique id
         orderSize:
           type: integer
