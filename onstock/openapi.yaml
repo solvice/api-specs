@@ -764,12 +764,14 @@ components:
       properties:
         id:
           type: integer
-          example: 0
+          example: 1
           description: Unique id
         outgoingServiceTime:
+          example: 0
           type: integer
         node:
           type: string
+          example: Final Assembly
           description: The name of the node for which the outgoingServiceTime is given.
 
     OrderSizeAssignment:
@@ -780,6 +782,7 @@ components:
           example: 1
           description: Unique id
         orderSize:
+          example: 1
           type: integer
         node:
           type: string
