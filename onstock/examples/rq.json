@@ -3,162 +3,210 @@
   "networkNodes": [
     {
       "name": "Final assembly",
-      "index": 0,
       "nominalTime": 4,
       "cost": 8000,
       "successors": [],
       "avgCustomerDemand": 5,
-      "sdCustomerDemand": 3
+      "sdCustomerDemand": 3,
+      "serviceLevel": 0.95,
+      "orderSizeStep": 1,
+      "orderSizeMax": 50
     },
     {
       "name": "Main assembly",
-      "index": 1,
       "nominalTime": 8,
       "cost": 12000,
-      "successors": ["Final assembly"]
+      "successors": [
+        "Final assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Suspension group",
-      "index": 1,
       "nominalTime": 7,
       "cost": 3600,
-      "successors": ["Final assembly"]
+      "successors": [
+        "Final assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Track roller frame",
-      "index": 1,
       "nominalTime": 10,
       "cost": 3000,
-      "successors": ["Final assembly"]
+      "successors": [
+        "Final assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Boggie assembly",
-      "index": 2,
       "nominalTime": 11,
       "cost": 575,
-      "successors": ["Suspension group"]
+      "successors": [
+        "Suspension group"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Chassis/platform",
-      "index": 2,
       "nominalTime": 7,
       "cost": 4320,
-      "successors": ["Main assembly"]
+      "successors": [
+        "Main assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Common subassembly",
-      "index": 2,
       "nominalTime": 5,
       "cost": 8000,
-      "successors": ["Main assembly"]
+      "successors": [
+        "Main assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Dressed-out engine",
-      "index": 2,
       "nominalTime": 10,
       "cost": 4100,
-      "successors": ["Main assembly"]
+      "successors": [
+        "Main assembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Pin assembly",
-      "index": 2,
       "nominalTime": 35,
       "cost": 90,
-      "successors": ["Suspension group"]
+      "successors": [
+        "Suspension group"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Case & frame",
-      "index": 3,
       "nominalTime": 16,
       "cost": 1500,
-      "successors": ["Common subassembly"]
+      "successors": [
+        "Common subassembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Drive Group",
-      "index": 3,
       "nominalTime": 9,
       "cost": 1550,
-      "successors": ["Final drive & brake"]
+      "successors": [
+        "Final drive & brake"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Fans",
-      "index": 3,
       "nominalTime": 12,
       "cost": 650,
-      "successors": ["Dressed-out engine"]
+      "successors": [
+        "Dressed-out engine"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Fender group",
-      "index": 3,
       "nominalTime": 9,
       "cost": 900,
-      "successors": ["Chassis/platform"]
+      "successors": [
+        "Chassis/platform"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Final drive & brake",
-      "index": 3,
       "nominalTime": 6,
       "cost": 3680,
-      "successors": ["Common subassembly"]
+      "successors": [
+        "Common subassembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Platform group",
-      "index": 3,
       "nominalTime": 6,
       "cost": 725,
-      "successors": ["Chassis/platform"]
+      "successors": [
+        "Chassis/platform"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Roll over group",
-      "index": 3,
       "nominalTime": 8,
       "cost": 1150,
-      "successors": ["Chassis/platform"]
+      "successors": [
+        "Chassis/platform"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Transmission",
-      "index": 3,
       "nominalTime": 15,
       "cost": 7450,
-      "successors": ["Common subassembly"]
+      "successors": [
+        "Common subassembly"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Brake group",
-      "index": 4,
       "nominalTime": 8,
       "cost": 3850,
-      "successors": ["Final drive & brake"]
+      "successors": [
+        "Final drive & brake"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Case",
-      "index": 4,
       "nominalTime": 15,
       "cost": 2200,
-      "successors": ["Case & frame"]
+      "successors": [
+        "Case & frame"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Engine",
-      "index": 4,
       "nominalTime": 7,
       "cost": 4500,
-      "successors": ["Dressed-out engine"]
+      "successors": [
+        "Dressed-out engine"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Frame assembly",
-      "index": 4,
       "nominalTime": 19,
       "cost": 605,
-      "successors": ["Case & frame"]
+      "successors": [
+        "Case & frame"
+      ],
+      "serviceLevel": 0.95
     },
     {
       "name": "Plant carrier",
-      "index": 4,
       "nominalTime": 9,
       "cost": 155,
-      "successors": ["Final drive & brake"]
+      "successors": [
+        "Final drive & brake"
+      ],
+      "serviceLevel": 0.95
     }
   ],
   "rqOptions": {
-      "holdingRate": 0.30
-    }
+    "holdingRate": 0.3,
+    "maxOrderSizeWeekFactor": 26,
+    "distribution": "NORMAL",
+    "maxMovingRateCalculation": 125,
+    "maxOutGoingServiceTimeOffset": 26
+  }
 }
