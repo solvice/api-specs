@@ -88,7 +88,7 @@ tags:
 
       ```json
       {
-          "name": "Final assembly",
+          "name": "Final Assembly",
           "index": 0,
           "nominalTime": 4,
           "cost": 8000,
@@ -108,7 +108,7 @@ tags:
       ```json
       {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "outgoingServiceTime" : 0
        }
       ```
@@ -123,7 +123,7 @@ tags:
       ```json
       {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "orderSize" : 2
        }
       ```
@@ -138,7 +138,7 @@ tags:
       [
         {
          "id": 1,
-         "node": "Final assembly",
+         "node": "Final Assembly",
          "outgoingServiceTime" : 0
        }
       ]
@@ -192,7 +192,7 @@ paths:
          1. Base stock placement: `BASE_STOCK` solver to send a `BaseRequest`
          2. RQ planning: `RQ_STOCK` solver to send an `RQRequest`
 
-        References: [Solvice documentation](/docs/onstock-overview), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
+        References: [Solvice documentation](/docs/onstock-overview), [Long form documentation](https://github.com/solvice/OnStock-documentation), [Inventory Optimization](https://en.wikipedia.org/wiki/Inventory_optimization), [Base stock model](https://en.wikipedia.org/wiki/Base_stock_model), [RQ model](https://en.wikipedia.org/wiki/(Q,r)_model)
       requestBody:
         description: |
           Payload for all information concerning the inventory problem.
@@ -392,15 +392,22 @@ components:
               properties:
                 holdingRate:
                   type: number
+                  example: 0.25
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
                   type: string
+                  enum:
+                    - NORMAL
+                    - POISSON
+                  example: NORMAL
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
+                  example: 125
                   description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
                 maxOutGoingServiceTimeOffset:
                   type: integer
+                  example: 26
                   description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
 
 
@@ -429,6 +436,10 @@ components:
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
                       type: string
+                      enum:
+                        - NORMAL
+                        - POISSON
+                      example: NORMAL
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
@@ -471,18 +482,26 @@ components:
               properties:
                 holdingRate:
                   type: number
+                  example: 0.25
                   description: Expression of how expensive it is to hold a good relative to its cost.
                 distribution:
                   type: string
+                  enum:
+                    - NORMAL
+                    - POISSON
+                  example: NORMAL
                   description: Demand profile.
                 maxMovingRateCalculation:
                   type: integer
+                  example: 125
                   description: For Poisson profiles, the maximal rate for which the solver performs exact calculations. Higher rates are approximated.
                 maxOutGoingServiceTimeOffset:
                   type: integer
+                  example: 26
                   description: The highest possible outgoing service time of a node is the sum of its processing time and this value.
                 maxOrderSizeWeekFactor:
                   type: integer
+                  example: 12
                   description: The order size of a node is capped by the product of its average demand per week and this factor.
 
 
@@ -498,12 +517,12 @@ components:
                     $ref: '#/components/schemas/RQNode'
                 serviceTimeAssignments:
                   type: array
-                  description: Pre made assignments that the solver should take into account
+                  description: Assignments for the service times of nodes the solver was fed or decided on
                   items:
                     $ref: '#/components/schemas/ServiceTimeAssignment'
                 orderSizeAssignments:
                   type: array
-                  description: Pre made assignments that the solver should take into account
+                  description: Assignments for the order sizes of nodes the solver was fed or decided on
                   items:
                     $ref: '#/components/schemas/OrderSizeAssignment'
                 rqOptions:
@@ -515,6 +534,10 @@ components:
                       description: Expression of how expensive it is to hold a good relative to its cost.
                     distribution:
                       type: string
+                      enum:
+                        - NORMAL
+                        - POISSON
+                      example: NORMAL
                       description: Demand profile.
                     maxMovingRateCalculation:
                       type: integer
@@ -609,18 +632,20 @@ components:
       properties:
         name:
           type: string
-          example: "FINAL ASSEMBLY"
+          example: "Final Assembly"
           description: Unique name for the network node.
         nominalTime:
           type: integer
+          example: 2
           description: The processing time for this node.
         cost:
           type: number
+          example: 5
           description: The incremental cost of the processing in this node.
-        serviceFactor:
+        serviceLevel:
           type: number
-          example: 1.645
-          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
+          example: 0.9
+          description: The serviceLevel that is taken into account in the calculation of the demand bound for this node.
         successors:
           type: array
           description: The network nodes that succeed this node directly.
@@ -629,9 +654,11 @@ components:
             description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
+          example: 52000
           description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         sdCustomerDemand:
           type: number
+          example: 3000
           description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
 
     NodeSolution:
@@ -647,7 +674,7 @@ components:
         netLeadTime:
           type: integer
           description: The value that was used to calculate safety stock for this node.
-        holdingCostTau:
+        holdingCostSS:
           type: integer
           description: The holding cost that stems from the safety stock.
 
@@ -665,18 +692,20 @@ components:
       properties:
         name:
           type: string
-          example: "FINAL ASSEMBLY"
+          example: "Final Assembly"
           description: Unique name for the network node.
         nominalTime:
           type: integer
+          example: 2
           description: The processing time for this node.
         cost:
           type: number
+          example: 5
           description: The incremental cost of the processing in this node.
-        serviceFactor:
+        serviceLevel:
           type: number
-          example: 1.645
-          description: The serviceFactor that is taken into account in the calculation of the demand bound for this node.
+          example: 0.9
+          description: The serviceLevel that is taken into account in the calculation of the demand bound for this node.
         successors:
           type: array
           description: The network nodes that succeed this node directly.
@@ -685,18 +714,23 @@ components:
             description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
+          example: 52000
           description: The average demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         sdCustomerDemand:
           type: number
+          example: 3000
           description: The standard deviation of the demand that needs to be sourced to a customer. This should only be filled in for a customer node (i.e. which has no successors in the network).
         orderSizeStep:
           type: integer
+          example: 10
           description: The minimal batch order size increment.
         orderSizeMax:
           type: integer
+          example: 1000
           description: The maximal batch order size.
         fixedOrderCost:
           type: integer
+          example: 500
           description: The cost of ordering in this node.
 
     RQNodeSolution:
@@ -712,7 +746,7 @@ components:
         netLeadTime:
           type: integer
           description: The value that was used to calculate safety stock for this node.
-        holdingCostTau:
+        holdingCostSS:
           type: integer
           description: The holding cost that stems from the safety stock.
         orderSize:
@@ -730,11 +764,14 @@ components:
       properties:
         id:
           type: integer
+          example: 1
           description: Unique id
         outgoingServiceTime:
+          example: 0
           type: integer
         node:
           type: string
+          example: Final Assembly
           description: The name of the node for which the outgoingServiceTime is given.
 
     OrderSizeAssignment:
@@ -742,8 +779,10 @@ components:
       properties:
         id:
           type: integer
+          example: 1
           description: Unique id
         orderSize:
+          example: 1
           type: integer
         node:
           type: string

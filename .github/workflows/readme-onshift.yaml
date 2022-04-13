@@ -15,4 +15,4 @@ jobs:
           readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a1025ae500b60a3cb9e3de
           # OPTIONAL CONFIG, use if necessary
           oas-file-path: './onshift/openapi.yaml'
-          api-version: 'v1.0.0'
+          api-version: 'v1.1'
