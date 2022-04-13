@@ -759,6 +759,11 @@ components:
               description: An optional list of shared resource requirements
               items:
                   $ref: '#/components/schemas/ResourceRequirement'
+            options:
+              $ref: '#/components/schemas/FillOptions'
+            weights:
+              $ref: '#/components/schemas/FillWeights'
+
 
 
     TaskRequest:
@@ -1118,7 +1123,38 @@ components:
 
 
 
+    FillOptions:
+      type: object
+      properties:
+        hardAvailability:
+          type: boolean
+          description: If availabilty constraint should be hard or built-in (super hard)
+          example: true
+        hardSkill:
+          type: boolean
+          description: If skill constraint should be hard or built-in (super hard)
+          example: true
+        hardBlacklist:
+          type: boolean
+          description: If blacklist constraint should be hard or built-in (super hard)
+          example: true
+        full:
+          type: boolean
+          description: All shifts should be assigned (full solver). Or try to fill most (not full solver)
+          example: true
 
+
+    FillWeights:
+      type: object
+      properties:
+        unassigned:
+          type: string
+          description: Weight of having unassigned assignments (hard or medium)
+          example: "10medium"
+        concurrentAssignments:
+          type: string
+          description: Weight of having concurrent assignments (hard)
+          example: "100hard"
 
 
     FillEmployee:
