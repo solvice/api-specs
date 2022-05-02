@@ -1150,11 +1150,124 @@ components:
         unassigned:
           type: string
           description: Weight of having unassigned assignments (hard or medium)
-          example: "10medium"
-        concurrentAssignments:
+          example: "1medium"
+        maxWorkingDays:	 
+          description:	An employee should not work more than contract.maxWorkingDays days in the planning horizon.
           type: string
-          description: Weight of having concurrent assignments (hard)
-          example: "100hard"
+          example: "1hard"        
+        maxHours:	 
+          description:	An employee should not work more than contract.max hours in the planning horizon.
+          type: string
+          example: "1hard"          
+        minHours:	 
+          description:	An employee should not work less than contract.min hours in the planning horizon. Please ensure minimum feasibility over the whole workforce.
+          type: string
+          example: "1hard"          
+        shiftStart:	 
+          description:	Earliest time contract.earliestShiftStart in a day when an employee is allowed to work
+          type: string
+          example: "1hard"          
+        latestShiftStart: 
+          description:	Earliest time contract.latestShiftStart in a day when an employee is allowed to start work
+          type: string
+          example: "1hard"          
+        shiftEnd:	 
+          description:	Latest time contract.latestShiftEnd in a day when an employee is allowed to end work
+          type: string
+          example: "1hard"          
+        maxShift:	 
+          description:	Maximum time contract.maxShiftLength that an employee is allowed to work
+          type: string
+          example: "1hard"          
+        dayOfWeek:	 
+          description:	Restricts employee availability based on days in the week that
+          type: string
+          example: "1hard"          
+        minShift:	 
+          description:	Minimum time contract.maxShiftLength that an employee is allowed to work
+          type: string
+          example: "1hard"          
+        sameDay:	 
+          description:	Maximum number of shifts that an employee is allowed to work
+          type: string
+          example: "1hard"          
+        sameDayMinRest:	
+          description:	Minimum resting period between two shifts on the same day
+          type: string
+          example: "1hard"          
+        availability:	
+          description:	Date-time range of employee's availability
+          type: string
+          example: "1hard"          
+        locked:		
+          description:	Take into account assignments that are fixed during the solve
+          type: string
+          example: "1000hard"          
+        maxConsecutive:	
+          description:	No more than contract.maxConsecutiveWorkDays consecutive shifts.
+          type: string
+          example: "1hard"          
+        minRest:		 
+          description:	Minimum resting between two shifts (irrespective of shifts)
+          type: string
+          example: "1hard"          
+        concurrent:	
+          description:	An employee cannot have two assignments on the same time. (This should never happen)
+          type: string
+          example: "1000hard"          
+        requirements:	
+          description:	Multiple shifts can have a shared requirement for a skill
+          type: string
+          example: "1hard"       
+        skills:   	
+          description:	Assign employees to match according to their skills and the required skills for a shift
+          type: string
+          example: "1hard"          
+        distance:	
+          description:	Travel from home to shift location
+          type: string
+          example: "1soft"          
+        priority:	 
+          description:	Shift Priorities
+          type: string
+          example: "1soft"          
+        pref:	        
+          description:	A preference for a certain shift assignment for an employee
+          type: string
+          example: "1medium"          
+        costs:	        
+          description:	Some shifts incur a higher cost when they are assigned to (opposite of priority)
+          type: string
+          example: "1soft"          
+        wages:	        
+          description:	Hourly wage cost per employee influences choice of employee
+          type: string
+          example: "1soft"          
+        softSkills:	 
+          description:	Assign employees to match according to their skills and the required skills for a shift (soft rule)
+          type: string
+          example: "1soft"          
+        criticalSkills:	 
+          description:	Prefer assigning critical shifts first
+          type: string
+          example: "1hard"      
+        working:
+          description: Respect employee working days
+          type: string
+          example: "1hard"
+        blacklist:
+          description: Respect the shift's blacklist
+          type: string
+          example: "1hard"
+        efficiency:
+          description: Efficiency costs per employee
+          type: string
+          example: "1soft"
+        softSkillsLevel:
+          description: Respect employee skill level match
+          type: string
+          example: "1soft"
+
 
 
     FillEmployee:
