@@ -638,6 +638,10 @@ components:
         minimize_driver_wait_time:
           type: boolean
           description: If true, this will minimise the wait time of the vehicles.
+        workloadFairnessDeviation:
+          type: number
+          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadDeviation=6%, then it is a fair workload.'
+          example: 0.05
 
     Weights:
       type: object
