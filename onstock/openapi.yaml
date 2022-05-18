@@ -211,9 +211,14 @@ paths:
                 value:
                   $ref: ./onstock/examples/rq.json
             schema:
-              anyOf:
+              oneOf:
                 - $ref: '#/components/schemas/BaseRequest'
                 - $ref: '#/components/schemas/RQRequest'
+              discriminator:
+                propertyName: solver
+                mapping:
+                  BASE_STOCK: '#/components/schemas/BaseRequest'
+                  RQ_STOCK: '#/components/schemas/RQRequest'
 
 
       responses:
@@ -359,8 +364,8 @@ paths:
                 discriminator:
                   propertyName: solver
                   mapping:
-                    base: '#/components/schemas/BaseResponse'
-                    rq: '#/components/schemas/RQResponse'
+                    BASE_STOCK: '#/components/schemas/BaseResponse'
+                    RQ_STOCK: '#/components/schemas/RQResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':

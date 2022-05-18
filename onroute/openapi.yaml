@@ -437,6 +437,8 @@ components:
                 $ref: '#/components/schemas/Order'
             options:
               $ref: '#/components/schemas/options'
+            weights:
+              $ref: '#/components/schemas/Weights'
 
 
     PDP:
@@ -463,6 +465,8 @@ components:
                 $ref: '#/components/schemas/Order'
             options:
               $ref: '#/components/schemas/options'
+            weights:
+              $ref: '#/components/schemas/Weights'
 
 
     CAP:
@@ -553,6 +557,8 @@ components:
                 $ref: '#/components/schemas/Order'
             options:
               $ref: '#/components/schemas/options'
+            weights:
+              $ref: '#/components/schemas/Weights'
             precedence_constraints:
               type: array
               description: List of Precendence Constraints.
@@ -632,6 +638,90 @@ components:
         minimize_driver_wait_time:
           type: boolean
           description: If true, this will minimise the wait time of the vehicles.
+        workloadFairnessDeviation:
+          type: number
+          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadDeviation=6%, then it is a fair workload.'
+          example: 0.05
+
+    Weights:
+      type: object
+      description: Custom (advanced) weighting for vehicle routing goals
+      properties:
+        priorityWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for `order.priority` that ensures that priority orders are scheduled. Note that this does not make sure that they are scheduled sooner.
+        capacitySpreadWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for travel time per vehicle day.
+        overtimeWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for overtime penalties.
+        preferredVehicleWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for Vehicle Preference.
+        workloadSpreadWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for service time per vehicle day.
+
+        travelTimeWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for travel time.
+
+        plannedWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for planned vehicle and planned date requirement.
+
+        typeWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for Type requirements for `vehicle.type` linking to `order.type`.
+
+
+        ASAPWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier scheduling orders as soon (on day basis) as possible.
+
+
+        regionMinimisationWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for scheduling vehicles to their fixed `vehicle.region`
+
+
+        minimiseVehiclesWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for minimising the number of vehicles.
 
 
 
@@ -797,6 +887,12 @@ components:
               endlocation:
                 type: string
                 description: End location for this workingtime day/date definition
+              ignoreTravelTimeFromLastJob:
+                type: boolean
+                description: Ignore the travel time from the last order to the optional end location
+              ignoreTravelTimeToFirstJob:
+                type: boolean
+                description: Ignore the travel time from the start location to the first order
 
         breaks:
           type: object
