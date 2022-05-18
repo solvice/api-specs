@@ -642,6 +642,11 @@ components:
           type: number
           description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadDeviation=6%, then it is a fair workload.'
           example: 0.05
+        snapUnit:
+          type: integer
+          minimum: 1
+          example: 5
+          description: The smallest steps in time to which results will be snapped. Unless a post-process feature such as order padding is used, a calculated time of 393 with a snapUnit of 5 will yield 395.
 
     Weights:
       type: object
@@ -1078,6 +1083,11 @@ components:
               weight:
                 type: integer
                 description: Value of the weight. This will be on the same level as travel time.
+        padding:
+          type: integer
+          minimum: 0
+          example: 4
+          description: After the arrival time has been calculated and snapped, the arrival can be postponed. A padding of 4 means that an arrival snapped to minute 900 will be postponed to minute 904, independent of snapUnit.
 
     Sales:
       type: object
