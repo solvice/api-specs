@@ -966,6 +966,9 @@ components:
           description: |
             Priority allows you to make certain visits a priority over others. In some cases you have more visits than you can serve, resulting in a few unserved. But if you want to make sure your high priority visits take precedence, use this parameter and set it to 100.
           example: 0
+        departure_location:
+          type: string
+          description: Location from where this order departs
         duration:
           type: integer
           description: Duration of the service in minutes
