@@ -836,6 +836,7 @@ components:
           minimum: 0
           maximum: 1439
           example: 820
+          description: Ending time of the shift of this vehicle.
         type:
           type: array
           items:
