@@ -837,6 +837,14 @@ components:
           maximum: 1439
           example: 820
           description: Ending time of the shift of this vehicle.
+        maxDriveTime:
+          type: integer
+          example: 480
+          description: The maximum time a vehicle can spend driving over the course of one day.
+        maxDriveTimeOrder:
+          type: integer
+          example: 180
+          description: The maximum time a vehicle can spend driving towards any order.
         type:
           type: array
           items:
