@@ -640,6 +640,10 @@ components:
           type: boolean
           default: false
           description: Global setting for ignoring the travel time from a vehicle's last order to its (optional) end location.
+        max_service_time:
+          type: boolean
+          default: false
+          description: Setting `max_service_time` to true multiplies `order.priority` with the service time of an order when the solver chooses which orders to schedule in an overconstrained setting.
         capacitySpread:
           type: boolean
           description: Create a fair workload for every vehicle.
