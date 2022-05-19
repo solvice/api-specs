@@ -632,6 +632,14 @@ components:
         force_type_constraints:
           type: boolean
           description: If yes, then the type constraints violations are not allowed. Only do this when you are sure about type definitions.
+        ignore_travel_time_to_first_job:
+          type: boolean
+          default: false
+          description: Global setting for ignoring the travel time from a vehicle's (optional) starting location to its first order.
+        ignore_travel_time_from_last_job:
+          type: boolean
+          default: false
+          description: Global setting for ignoring the travel time from a vehicle's last order to its (optional) end location.
         capacitySpread:
           type: boolean
           description: Create a fair workload for every vehicle.
