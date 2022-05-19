@@ -606,8 +606,9 @@ components:
           default: CAR
         allow_overtime:
           type: boolean
+          default: false
           description: |
-            If the `shiftend` should be a soft condition to take into account. When `allow_overtime: true` then some orders will be planned after `shiftend`.
+            When `allow_overtime: true`, it's seen as a soft constraint and orders can be planned after `shiftend`.
         overconstrained:
           type: boolean
           description: |
