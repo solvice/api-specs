@@ -807,11 +807,11 @@ components:
           description: Unique identification of a vehicle via the name.
         startlocation:
           type: string
-          example: locatie1
+          example: location1
           description: Start address of the vehicle
         endlocation:
           type: string
-          example: locatie1
+          example: location1
           description: End address of the vehicle. The optimisation takes into account the travel back to this location.
         activation_cost:
           type: integer
