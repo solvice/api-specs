@@ -644,6 +644,10 @@ components:
           type: boolean
           default: false
           description: Setting `max_service_time` to true multiplies `order.priority` with the service time of an order when the solver chooses which orders to schedule in an overconstrained setting.
+        max_time_for_duration_Squash:
+          type: integer
+          default: 1
+          description: This setting determines whether an order duration gets squashed or not, given that `order.duration_squash` is set. In order for a squash to occur, the travel time from the location of the previous order to the current one must be strictly less than `max_time_for_duration_Squash`. For example, the default setting of `1` only allows squashing an order with its predecessor if the travel time is `0`.
         capacitySpread:
           type: boolean
           description: Create a fair workload for every vehicle.
