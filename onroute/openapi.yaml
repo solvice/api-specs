@@ -617,7 +617,7 @@ components:
           type: boolean
           description:  Minimise the vehicle useage or minimise total travel time. Two different objective functions.
         traffic:
-          type: integer
+          type: number
           description: Modifier for traffic.
         polylines:
           type: boolean
