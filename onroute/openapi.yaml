@@ -611,6 +611,7 @@ components:
             When `allow_overtime: true`, it's seen as a soft constraint and orders can be planned after `shiftend`.
         overconstrained:
           type: boolean
+          default: false
           description: |
             If you do not need to assign every order to a vehicle, then set `overconstrained: true`.
         minimize_vehicle_use:
@@ -647,6 +648,10 @@ components:
         max_time_for_duration_Squash:
           type: integer
           default: 1
+          description: This setting determines whether an order duration gets squashed or not, given that `order.duration_squash` is set. In order for a squash to occur, the travel time from the location of the previous order to the current one must be strictly less than `max_time_for_duration_Squash`. For example, the default setting of `1` only allows squashing an order with its predecessor if the travel time is `0`.
+        max_waiting_time_for_linkedOrders:
+          type: integer
+          default: 120
           description: This setting determines whether an order duration gets squashed or not, given that `order.duration_squash` is set. In order for a squash to occur, the travel time from the location of the previous order to the current one must be strictly less than `max_time_for_duration_Squash`. For example, the default setting of `1` only allows squashing an order with its predecessor if the travel time is `0`.
         capacitySpread:
           type: boolean
