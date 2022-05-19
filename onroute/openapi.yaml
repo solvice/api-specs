@@ -1073,6 +1073,7 @@ components:
           description: In the case of overconstrained planning, this indicates whether this order should be integrated into the planning or not.
         hardWeight:
           type: integer
+          maximum: 1000
           description: In the case of overconstrained planning, this indicates the weight whether this order should be integrated into the planning or not.
         softTypes:
           type: array
