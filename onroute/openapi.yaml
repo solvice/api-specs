@@ -813,6 +813,10 @@ components:
           type: string
           example: locatie1
           description: End address of the vehicle. The optimisation takes into account the travel back to this location.
+        activation_cost:
+          type: integer
+          example: 30
+          description: Cost associated with this vehicle being used (a flat cost independent of the driven route).
         capacity:
           type: integer
           example: 30
