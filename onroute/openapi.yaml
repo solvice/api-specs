@@ -395,7 +395,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
+                oneOf:
                   - $ref: '#/components/schemas/RoutingSolution'
                   - $ref: '#/components/schemas/PeriodicRoutingSolution'
                   - $ref: '#/components/schemas/CapacitySolution'
