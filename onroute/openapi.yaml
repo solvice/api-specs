@@ -1402,7 +1402,7 @@ components:
           description: Date on which this visit is scheduled.
         activity:
           type: string
-          description: Type of visit (pickup, delivery or execution)
+          description: Type of visit (pickup, delivery, execution or break)
         coords:
           $ref: '#/components/schemas/Location'
 
