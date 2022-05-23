@@ -652,7 +652,7 @@ components:
         max_waiting_time_for_linkedOrders:
           type: integer
           default: 120
-          description: This setting determines whether an order duration gets squashed or not, given that `order.duration_squash` is set. In order for a squash to occur, the travel time from the location of the previous order to the current one must be strictly less than `max_time_for_duration_Squash`. For example, the default setting of `1` only allows squashing an order with its predecessor if the travel time is `0`.
+          description: The maximum waiting time for a visit so that it can synchronise with a link to perform an activity together.
         capacitySpread:
           type: boolean
           description: Create a fair workload for every vehicle.
