@@ -1058,7 +1058,7 @@ components:
               hard:
                 type: boolean
         duration_squash:
-          description: When multiple orders are on the same location, the service duration can be lower due to simultaneous handling. The duration will then be this value. This feature is useful when you have many stops at the same location, which could be an apartment complex. Normally, each stop has a duration value of let's say 10 minutes, which accounts for parking and finding the entrance. If you had 6 stops assigned to a driver at the same time, it doesn't take an hour in total! Use this parameter to squash the durations of each subsequent delivery at the same address. If you set this parameter to 1, all non-first orders will have their duration squashed to 1 minute, so the total duration for the mentioned 6 stops would be 15 minutes (10+6-1).
+          description: This feature is useful when you have more than one stop at the same location, which can be the case for an apartment complex. If it takes a travel time of `0` (<`options.max_time_for_duration_Squash`) to go from one order to to the next, and the second order visited has `duration = 7` and `duration_squash = -5`, then its associated `Visit.finish` will only be `7-5 = 2` time units after the first visit, instead of its full duration of `7`. This feature also works for chains of any amount of visits.
           type: integer
           example: 5
         dateWindows:
