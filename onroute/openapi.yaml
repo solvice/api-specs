@@ -1369,33 +1369,53 @@ components:
       type: object
       properties:
         location:
-          description: Location name.
           type: string
           example: "Ghent, Belgium"
+          description: Location name.
         order:
-          description: Order name.
           type: string
           example: "order_233062"
+          description: Order name.
+        nextLocation:
+          type: string
+          example: "Brussels, Belgium"
+          description: Next location name.
         arrival:
-          description: Arrival at visit
           type: integer
-          example: 730
           minimum: 0
           maximum: 1440
+          example: 730
+          description: Arrival at visit.
         finish:
           type: integer
-          example: 750
           minimum: 0
           maximum: 1440
+          example: 750
+          description: Finish time of visit.
+        wait:
+          type: integer
+          example: 3
+          description: Time spent waiting before arriving (used for synchronisation).
         drive:
           type: integer
           example: 5
-          minimum: 0
           description: Drive time to next location in minutes.
         distance:
           type: integer
           example: 4294
           description: Distance to next location in meters.
+        service:
+          type: integer
+          example: 10
+          description: Service time for this visit.
+        demand:
+          type: integer
+          example: 10
+          description: Load in cargo for capacity type 1.
+        demand2:
+          type: integer
+          example: 32
+          description: Load in cargo for capacity type 2.
         date:
           type: string
           format: date
