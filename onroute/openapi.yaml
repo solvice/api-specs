@@ -652,7 +652,7 @@ components:
         max_waiting_time_for_linkedOrders:
           type: integer
           default: 120
-          description: The maximum waiting time for a visit so that it can synchronise with a link to perform an activity together.
+          description: The maximum waiting time for a visit so that it can synchronise with a link to perform an activity together. See interaction with `Options.use_snapUnit_for_waitRange`.
         capacitySpread:
           type: boolean
           description: Create a fair workload for every vehicle.
@@ -674,9 +674,15 @@ components:
           example: 0.05
         snapUnit:
           type: integer
+          default: 1
           minimum: 1
           example: 5
-          description: The smallest steps in arrival time to which results will be snapped. The snapping policy is round-up and is used at runtime, implying it influences the score calculation. Unless a post-calculation feature such as order padding is used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will yield `395`.
+          description: The smallest steps in arrival time to which results will be snapped. The snapping policy is round-up and is used at runtime, implying it influences the score calculation. Unless a post-calculation feature such as order padding is used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
+        use_snapUnit_for_waitRange:
+          default: false
+          minimum: 1
+          type: boolean
+          description: The possible waiting times for linked orders are whole multiples of `Options.snapUnit`, bounded by `Options.max_waiting_time_for_linkedOrders`. If `use_snapUnit_for_waitRange = true` with `snapUnit = 15` and `max_waiting_time_for_linkedOrders = 50`, possible waiting times are `0`, `15`, `30`, `45`. If `snapUnit` were to be higher than the maximum waiting time, the solver defaults to `snapUnit = 1`.
 
     Weights:
       type: object
