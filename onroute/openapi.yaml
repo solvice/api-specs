@@ -967,7 +967,7 @@ components:
               type: integer
               minimum: 0
               maximum: 1439
-              description: Earliest starting time of break
+              description: Earliest starting time of break.
               example: 780
             breakend:
               type: integer
