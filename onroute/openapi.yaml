@@ -1018,7 +1018,7 @@ components:
           example: 0
         departure_location:
           type: string
-          description: Location from where this order departs
+          description: After this order has been completed and the vehicle departs, it has to pass through the order's `departure_location`, unless the vehicle is at the end of its route. In that case, `departure_location` is ignored (see `Vehicle.endlocation` to enforce end-of-route behaviour). Note that in the first case there doesn't have to be an order at `departure_location` and the vehicle will still pass through that location without actually doing anything there, thus not yielding any `Visit`, which can result in a higher `Visit.drive` value for the next order.
         duration:
           type: integer
           description: Duration of the service in minutes
