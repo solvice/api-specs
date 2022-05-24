@@ -676,7 +676,7 @@ components:
           type: integer
           minimum: 1
           example: 5
-          description: The smallest steps in time to which results will be snapped. Unless a post-process feature such as order padding is used, a calculated time of 393 with a snapUnit of 5 will yield 395.
+          description: The smallest steps in arrival time to which results will be snapped. The snapping policy is round-up and is used at runtime, implying it influences the score calculation. Unless a post-calculation feature such as order padding is used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will yield `395`.
 
     Weights:
       type: object
