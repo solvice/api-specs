@@ -895,31 +895,33 @@ components:
                 description: Ignore the travel time from the start location to the first order
 
         breaks:
-          type: object
+          type: array
           description: Break definitions
-          required:
-            - breakstart
-            - breakend
-            - breakduration
-          properties:
-            breakstart:
-              type: integer
-              minimum: 0
-              maximum: 1439
-              description: Earliest starting time of break
-              example: 780
-            breakend:
-              type: integer
-              minimum: 0
-              maximum: 1439
-              description: Earliest ending time of break.
-              example: 860
-            breakduration:
-              type: integer
-              minimum: 0
-              maximum: 1439
-              description: Duration of break, should be less than end minus start.
-              example: 30
+          items:
+            type: object
+            required:
+              - breakstart
+              - breakend
+              - breakduration
+            properties:
+              breakstart:
+                type: integer
+                minimum: 0
+                maximum: 1439
+                description: Earliest starting time of break
+                example: 780
+              breakend:
+                type: integer
+                minimum: 0
+                maximum: 1439
+                description: Earliest ending time of break.
+                example: 860
+              breakduration:
+                type: integer
+                minimum: 0
+                maximum: 1439
+                description: Duration of break, should be less than end minus start.
+                example: 30
         category:
           type: string
           enum:
