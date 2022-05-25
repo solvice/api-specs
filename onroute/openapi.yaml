@@ -582,15 +582,19 @@ components:
               type: array
               description: List of Linked Orders.
               items:
-                description: Make sure that an order will always be executed at the same time with another order. Vehicle will be different as a result.
-                type: object
-                properties:
-                  order1:
-                    type: string
-                    description: Leading linked order
-                  order2:
-                    type: string
-                    description: Following linked order
+                $ref: '#/components/schemas/LinkedOrder'
+
+    LinkedOrder:
+      type: object
+      description: The linked order object describes the orders that need to  be executed at the same time with another order.
+      The vehicle will be different as a result.
+      properties:
+        order1:
+          type: string
+          description: Leading linked order
+        order2:
+          type: string
+          description: Following linked order
 
 
     options:
