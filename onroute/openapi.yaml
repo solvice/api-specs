@@ -586,8 +586,7 @@ components:
 
     LinkedOrder:
       type: object
-      description: The linked order object describes the orders that need to  be executed at the same time with another order.
-      The vehicle will be different as a result.
+      description: The linked order object describes the orders that need to  be executed at the same time with another order. The vehicle will be different as a result.
       properties:
         order1:
           type: string
