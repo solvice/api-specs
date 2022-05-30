@@ -1116,13 +1116,13 @@ components:
         plannedDate:
           type: string
           format: date
-          description: Fixed date on which this order is already planned and should hence be taken into account in the planning.
+          description: Fixed date on which this order is already planned and should hence be taken into account in the planning (PVRP).
         plannedVehicle:
           type: string
-          description: Name of the vehicle to which this order is already planned and should hence be taken into account in the next planning.
+          description: Name of the vehicle to which this order is already planned and should hence be taken into account in the next planning (PVRP).
         plannedArrival:
           type: integer
-          description: The minute of day at which the order is planned to complete. The difference with the actual arrival time is scaled in the score with plannedWeight.
+          description: The minute of day at which the order is planned to complete. The difference with the actual arrival time is scaled in the score with plannedWeight (PVRP).
         hard:
           type: boolean
           description: In the case of overconstrained planning, this indicates whether this order should be integrated into the planning or not.
