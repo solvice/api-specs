@@ -851,11 +851,11 @@ components:
         startlocation:
           type: string
           example: location1
-          description: Start address of the vehicle
+          description: Start address of the vehicle. The optimisation takes into account the travel from this location.
         endlocation:
           type: string
           example: location1
-          description: End address of the vehicle. The optimisation takes into account the travel back to this location.
+          description: End address of the vehicle. The optimisation takes into account the travel back to this location. Only gets enforced if the vehicle has at least one visit.
         capacity:
           type: integer
           example: 30
@@ -977,12 +977,6 @@ components:
               maximum: 1439
               description: Duration of break, should be less than end minus start.
               example: 30
-        category:
-          type: string
-          enum:
-            - CAR
-            - BIKE
-            - TRUCK
         region:
           type: string
 
