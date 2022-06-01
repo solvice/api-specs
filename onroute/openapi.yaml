@@ -694,12 +694,6 @@ components:
           default: 1
           maximum: 100
           description: Weight modifier for `order.priority` that ensures that priority orders are scheduled. Note that this does not make sure that they are scheduled sooner.
-        overtimeWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for overtime penalties.
         preferredVehicleWeight:
           type: integer
           minimum: 0
@@ -726,14 +720,6 @@ components:
           default: 1
           maximum: 100
           description: Weight modifier for planned vehicle and planned date requirement.
-
-        typeWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for Type requirements for `vehicle.type` linking to `order.type`.
-
 
         ASAPWeight:
           type: integer
