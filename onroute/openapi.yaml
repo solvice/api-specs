@@ -630,7 +630,7 @@ components:
             - SECONDS
           description: Calculate in minutes or seconds. Minutes is advised.
           default: MINUTES
-        force_type_constraints:
+        force_type_constraint:
           type: boolean
           description: If yes, then the type constraints violations are not allowed. Only do this when you are sure about type definitions.
         ignore_travel_time_to_first_job:
