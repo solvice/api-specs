@@ -694,12 +694,6 @@ components:
           default: 1
           maximum: 100
           description: Weight modifier for `order.priority` that ensures that priority orders are scheduled. Note that this does not make sure that they are scheduled sooner.
-        capacitySpreadWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for travel time per vehicle day.
         overtimeWeight:
           type: integer
           minimum: 0
