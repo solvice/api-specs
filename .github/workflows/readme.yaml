@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./onroute/openapi.yaml --key=rdme_xn8s9h3f81dcffa013cd1ef240ec13290b4fb9972838159d8e926dd89dd90527c81fb7 --id=v1.1
+          rdme: openapi ./onroute/openapi.yaml --key=rdme_xn8s9h3f81dcffa013cd1ef240ec13290b4fb9972838159d8e926dd89dd90527c81fb7
 #          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a0dbf1a3a7bbb15c90a02f
 #          # OPTIONAL CONFIG, use if necessary
 #          oas-file-path: './onroute/openapi.yaml'
