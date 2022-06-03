@@ -9,10 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: readmeio/github-readme-sync@2.1.2
+      - uses: readmeio/rdme@7.2.0
         with:
-          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a0dbf1a3a7bbb15c90a02f
-          # OPTIONAL CONFIG, use if necessary
-          oas-file-path: './onroute/openapi.yaml'
-          api-version: 'v1.1'
+          rdme: openapi ./onroute/openapi.yaml --key=UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a0dbf1a3a7bbb15c90a02f --id=v1.1
+#          readme-oas-key: UvAWPMGDFa44GR7A0SHWJiu9EtosRkq3:61a0dbf1a3a7bbb15c90a02f
+#          # OPTIONAL CONFIG, use if necessary
+#          oas-file-path: './onroute/openapi.yaml'
+#          api-version: 'v1.1'
 
