@@ -583,6 +583,9 @@ components:
               description: List of Linked Orders.
               items:
                 $ref: '#/components/schemas/LinkedOrder'
+            solution:
+              $ref: '#/components/schemas/PeriodicRoutingSolution'
+
 
     LinkedOrder:
       type: object
