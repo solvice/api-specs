@@ -584,7 +584,12 @@ components:
               items:
                 $ref: '#/components/schemas/LinkedOrder'
             solution:
-              $ref: '#/components/schemas/PeriodicRoutingSolution'
+              type: object
+              additionalProperties:
+                type: object
+                additionalProperties:
+                  items:
+                    $ref: '#/components/schemas/Visit'
 
 
     LinkedOrder:
