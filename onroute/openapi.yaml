@@ -919,8 +919,8 @@ components:
           description: Break definitions
           items:
             anyOf:
-              - '#/components/schemas/WindowBreak'
-              - '#/components/schemas/DriveTimeBreak'
+              - $ref: '#/components/schemas/WindowBreak'
+              - $ref: '#/components/schemas/DriveTimeBreak'
         category:
           type: string
           enum:
