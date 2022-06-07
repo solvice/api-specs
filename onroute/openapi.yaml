@@ -913,30 +913,9 @@ components:
           type: array
           description: Break definitions
           items:
-            type: object
-            required:
-              - breakstart
-              - breakend
-              - breakduration
-            properties:
-              breakstart:
-                type: integer
-                minimum: 0
-                maximum: 1439
-                description: Earliest starting time of break
-                example: 780
-              breakend:
-                type: integer
-                minimum: 0
-                maximum: 1439
-                description: Earliest ending time of break.
-                example: 860
-              breakduration:
-                type: integer
-                minimum: 0
-                maximum: 1439
-                description: Duration of break, should be less than end minus start.
-                example: 30
+            anyOf:
+              - '#/components/schemas/WindowBreak'
+              - '#/components/schemas/DriveTimeBreak'
         category:
           type: string
           enum:
@@ -945,6 +924,52 @@ components:
             - TRUCK
         region:
           type: string
+
+    WindowBreak:
+      type: object
+      required:
+        - breakstart
+        - breakend
+        - breakduration
+      properties:
+        breakstart:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Earliest starting time of break
+          example: 780
+        breakend:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Earliest ending time of break.
+          example: 860
+        breakduration:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Duration of break, should be less than end minus start.
+          example: 30
+
+    DriveTimeBreak:
+      type: object
+      required:
+        - breakinit
+        - breakduration
+      properties:
+        breakinit:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: The drive time after which a break should be initialized
+          example: 780
+        breakduration:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Duration of break, should be less than end minus start.
+          example: 30
+
 
     Order:
       type: object
