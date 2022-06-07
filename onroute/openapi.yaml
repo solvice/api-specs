@@ -921,6 +921,12 @@ components:
             anyOf:
               - $ref: '#/components/schemas/WindowBreak'
               - $ref: '#/components/schemas/DriveTimeBreak'
+          example:
+            - breakStart: 780
+              breakend: 860
+              breakduration: 30
+            - breakinit: 120
+              breakduration: 30
         category:
           type: string
           enum:
