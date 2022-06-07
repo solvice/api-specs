@@ -12,4 +12,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: readmeio/rdme@7.2.0
         with:
-          rdme: openapi ./onshift/openapi.yaml --key=rdme_xn8s9h3f81dcffa013cd1ef240ec13290b4fb9972838159d8e926dd89dd90527c81fb7 --id=61af6819429f960f63440868
+          rdme: openapi ./onstock/openapi.yaml --key=rdme_xn8s9h3f81dcffa013cd1ef240ec13290b4fb9972838159d8e926dd89dd90527c81fb7 --id=61af6819429f960f63440868
