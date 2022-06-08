@@ -918,7 +918,7 @@ components:
           type: array
           description: Break definitions
           items:
-            - $ref: '#/components/schemas/Break'
+            $ref: '#/components/schemas/Break'
 
         category:
           type: string
