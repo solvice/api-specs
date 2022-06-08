@@ -919,14 +919,6 @@ components:
           description: Break definitions
           items:
             - $ref: '#/components/schemas/Break'
-#            oneOf:
-#              - $ref: '#/components/schemas/WindowBreak'
-#              - $ref: '#/components/schemas/DriveTimeBreak'
-#            discriminator:
-#              propertyName: type
-#              mapping:
-#                'WINDOW': '#/components/schemas/WindowBreak'
-#                'DRIVETIME': '#/components/schemas/DriveTimeBreak'
 
         category:
           type: string
