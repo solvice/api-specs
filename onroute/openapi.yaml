@@ -918,14 +918,15 @@ components:
           type: array
           description: Break definitions
           items:
-            oneOf:
-              - $ref: '#/components/schemas/WindowBreak'
-              - $ref: '#/components/schemas/DriveTimeBreak'
-            discriminator:
-              propertyName: type
-              mapping:
-                'WINDOW': '#/components/schemas/WindowBreak'
-                'DRIVETIME': '#/components/schemas/DriveTimeBreak'
+            - $ref: '#/components/schemas/Break'
+#            oneOf:
+#              - $ref: '#/components/schemas/WindowBreak'
+#              - $ref: '#/components/schemas/DriveTimeBreak'
+#            discriminator:
+#              propertyName: type
+#              mapping:
+#                'WINDOW': '#/components/schemas/WindowBreak'
+#                'DRIVETIME': '#/components/schemas/DriveTimeBreak'
 
         category:
           type: string
@@ -936,24 +937,36 @@ components:
         region:
           type: string
 
-    BreakType:
+    Break:
       type: object
-      description: A break type
       required:
         - type
+        - breakduration
       properties:
         type:
           type: string
-          enum: ['WINDOW', 'DRIVETIME']
+          enum:
+            - window
+            - drivetime
+        breakduration:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Duration of break, should be less than end minus start.
+          example: 30
+      discriminator:
+        propertyName: type
+        mapping:
+          'window' : '#/components/schemas/WindowBreak'
+          'drivetime': '#/components/schemas/DriveTimeBreak'
 
     WindowBreak:
       allOf:
-        - $ref: '#/components/schemas/BreakType'
+        - $ref: '#/components/schemas/Break'
         - type: object
           required:
             - breakstart
             - breakend
-            - breakduration
           properties:
             breakstart:
               type: integer
@@ -967,20 +980,14 @@ components:
               maximum: 1439
               description: Earliest ending time of break.
               example: 860
-            breakduration:
-              type: integer
-              minimum: 0
-              maximum: 1439
-              description: Duration of break, should be less than end minus start.
-              example: 30
+
 
     DriveTimeBreak:
       allOf:
-        - $ref: '#/components/schemas/BreakType'
+        - $ref: '#/components/schemas/Break'
         - type: object
           required:
             - breakinit
-            - breakduration
           properties:
             breakinit:
               type: integer
@@ -988,12 +995,6 @@ components:
               maximum: 1439
               description: The drive time after which a break should be initialized
               example: 780
-            breakduration:
-              type: integer
-              minimum: 0
-              maximum: 1439
-              description: Duration of break, should be less than end minus start.
-              example: 30
 
 
     Order:
