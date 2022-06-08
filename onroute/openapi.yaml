@@ -918,15 +918,8 @@ components:
           type: array
           description: Break definitions
           items:
-            anyOf:
-              - $ref: '#/components/schemas/WindowBreak'
-              - $ref: '#/components/schemas/DriveTimeBreak'
-          example:
-            - breakStart: 780
-              breakend: 860
-              breakduration: 30
-            - breakinit: 120
-              breakduration: 30
+            $ref: '#/components/schemas/BreakType'
+
         category:
           type: string
           enum:
@@ -935,6 +928,18 @@ components:
             - TRUCK
         region:
           type: string
+
+    BreakType:
+      type: object
+      properties:
+        'type':
+          type: string
+          enum: ['WINDOW', 'DRIVETIME']
+      discriminator:
+        propertyName: type
+        mapping:
+          'WINDOW': '#/components/schemas/WindowBreak'
+          'DRIVETIME': '#/components/schemas/DriveTimeBreak'
 
     WindowBreak:
       type: object
