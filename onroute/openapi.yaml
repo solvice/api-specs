@@ -939,10 +939,10 @@ components:
     Break:
       type: object
       required:
-        - type
+        - breaktype
         - breakduration
       properties:
-        type:
+        breaktype:
           type: string
           enum:
             - window
