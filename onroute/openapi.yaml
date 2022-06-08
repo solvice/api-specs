@@ -918,7 +918,14 @@ components:
           type: array
           description: Break definitions
           items:
-            $ref: '#/components/schemas/Break'
+            anyOf:
+              - $ref: '#/components/schemas/WindowBreak'
+              - $ref: '#/components/schemas/DriveTimeBreak'
+            discriminator:
+              propertyName: type
+              mapping:
+                'window': '#/components/schemas/WindowBreak'
+                'drivetime': '#/components/schemas/DriveTimeBreak'
 
         category:
           type: string
