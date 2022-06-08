@@ -943,10 +943,7 @@ components:
         - breakduration
       properties:
         breaktype:
-          type: string
-          enum:
-            - window
-            - drivetime
+          $ref: 'components/schemas/BreakType'
         breakduration:
           type: integer
           minimum: 0
@@ -958,6 +955,12 @@ components:
         mapping:
           'window' : '#/components/schemas/WindowBreak'
           'drivetime': '#/components/schemas/DriveTimeBreak'
+
+    BreakType:
+      type: string
+      enum:
+        - window
+        - drivetime
 
     WindowBreak:
       allOf:
