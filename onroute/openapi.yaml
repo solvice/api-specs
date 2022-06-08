@@ -954,7 +954,7 @@ components:
           description: Duration of break, should be less than end minus start.
           example: 30
       discriminator:
-        propertyName: type
+        propertyName: breaktype
         mapping:
           'window' : '#/components/schemas/WindowBreak'
           'drivetime': '#/components/schemas/DriveTimeBreak'
