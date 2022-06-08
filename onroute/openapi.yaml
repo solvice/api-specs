@@ -918,7 +918,14 @@ components:
           type: array
           description: Break definitions
           items:
-            $ref: '#/components/schemas/BreakType'
+            oneOf:
+              - $ref: '#/components/schemas/WindowBreak'
+              - $ref: '#/components/schemas/DriveTimeBreak'
+            discriminator:
+              propertyName: type
+              mapping:
+                'WINDOW': '#/components/schemas/WindowBreak'
+                'DRIVETIME': '#/components/schemas/DriveTimeBreak'
 
         category:
           type: string
@@ -931,17 +938,13 @@ components:
 
     BreakType:
       type: object
+      description: A break type
       required:
-        - 'type'
+        - type
       properties:
-        'type':
+        type:
           type: string
           enum: ['WINDOW', 'DRIVETIME']
-      discriminator:
-        propertyName: type
-        mapping:
-          'WINDOW': '#/components/schemas/WindowBreak'
-          'DRIVETIME': '#/components/schemas/DriveTimeBreak'
 
     WindowBreak:
       allOf:
