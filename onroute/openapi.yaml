@@ -947,7 +947,7 @@ components:
           enum:
             - window
             - drivetime
-       breakduration:
+        breakduration:
           type: integer
           minimum: 0
           maximum: 1439
