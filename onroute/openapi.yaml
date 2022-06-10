@@ -467,6 +467,11 @@ components:
               $ref: '#/components/schemas/options'
             weights:
               $ref: '#/components/schemas/Weights'
+            solution:
+              type: object
+              additionalProperties:
+                items:
+                  $ref: '#/components/schemas/Visit'
 
 
     CAP:
