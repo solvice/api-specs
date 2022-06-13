@@ -461,11 +461,6 @@ components:
           required:
             - nodes
           properties:
-            networkNodes:
-              type: array
-              description: Node characteristics from your network.
-              items:
-                $ref: '#/components/schemas/RQNode'
             serviceTimeAssignments:
               type: array
               description: Pre made assignments that the solver should take into account
