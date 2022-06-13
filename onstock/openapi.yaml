@@ -422,11 +422,6 @@ components:
             - $ref: '#/components/schemas/Solution'
             - type: object
               properties:
-                networkNodes:
-                  type: array
-                  description: Node characteristics from your network.
-                  items:
-                    $ref: '#/components/schemas/Node'
                 serviceTimeAssignments:
                   type: array
                   description: Pre made assignments that the solver should take into account.
