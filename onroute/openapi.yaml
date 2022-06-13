@@ -1399,7 +1399,7 @@ components:
         wait:
           type: integer
           example: 3
-          description: Time spent waiting before arriving (used for synchronisation).
+          description: Time spent waiting before arriving (used for synchronisation)
         drive:
           type: integer
           example: 5
