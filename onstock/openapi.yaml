@@ -685,7 +685,8 @@ components:
           type: array
           description: The network nodes that succeed this node directly.
           items:
-            $ref: '#/components/schemas/Node'
+            type: string
+            description: The names of the succeeding nodes.
         avgCustomerDemand:
           type: number
           example: 52000
