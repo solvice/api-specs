@@ -2152,7 +2152,7 @@ components:
             solution:
               type: array
               items:
-                $ref: '#/components/schemas/FillAssignment'
+                $ref: '#/components/schemas/CreationAssignment'
     ShiftAssignment:
       type: object
       properties:
@@ -2256,6 +2256,18 @@ components:
           items:
             type: string
             description: skill
+    CreationAssignment:
+      type: object
+      properties:
+        pattern:
+          type: string
+          description: pattern
+        skill:
+          type: string
+          description: skill
+        value:
+          type: number
+          format: integer
     Stats:
       type: object
       properties:
