@@ -1,30 +1,39 @@
 openapi: 3.0.2
-
 servers:
-  - url: 'https://api.solvice.io/'
+  - url: https://api.solvice.io/
     description: Production cluster
-
 info:
-  version: "1.0.1"
+  version: 1.0.1
   title: OnShift API
   x-logo:
-    url: 'logo.png'
+    url: logo.png
     altText: OnShift API
-  description: |
+  description: >
 
-    Welcome to the Solvice API! You can use our API to access Solvice API endpoints,
+    Welcome to the Solvice API! You can use our API to access Solvice API
+    endpoints,
+
     which can get information on your solved jobs,
+
     their statuses and of course post new solve jobs.
+
 
     # Workforce Optimisation
 
 
-    OnShift is a solver engine for solving workforce optimisation problems through the Solvice Optimisation API Platform.
 
-    Creating an optimal roster for a team of employees based on forecasted demand and taking into account extensive labor agreement rules & other constraints.
+    OnShift is a solver engine for solving workforce optimisation problems
+    through the Solvice Optimisation API Platform.
 
 
-    The Solvice Workforce Optimisation API consists of the following RESTful web services:
+    Creating an optimal roster for a team of employees based on forecasted
+    demand and taking into account extensive labor agreement rules & other
+    constraints.
+
+
+
+    The Solvice Workforce Optimisation API consists of the following RESTful web
+    services:
      * [Shift Planning API](#section/Shift-scheduling)
      * [Fill Planning API](#section/Fill-scheduling)
      * [Task Sequencing API](#section/Task-sequencing)
@@ -36,6 +45,7 @@ info:
      3. Start using the API.
 
     ### Overview
+
 
     > Test our API in just one command
 
@@ -53,7 +63,8 @@ info:
 
 
 
-    The OnShift API is as simple as it gets. There are only several important endpoints:
+    The OnShift API is as simple as it gets. There are only several important
+    endpoints:
 
      1. Solving an OnShift optimisation problem is as simple as an POST to our `/solve` endpoint.
      2. The Job `id` is returned.
@@ -62,47 +73,75 @@ info:
 
     Thats's it! Could not be easier.
 
-    To use our Workforce Optimisation API commercially, you can subscribe to a paid plan [here](https://www.solvice.io/onshift/api#pricing).
+
+    To use our Workforce Optimisation API commercially, you can subscribe to a
+    paid plan [here](https://www.solvice.io/onshift/api#pricing).
+
 
     ### Problems or Questions?
+
     If you have problems or questions, we offer you the following options:
      * [FAQ](https://www.solvice.io/faq)
      * [Open ticket]()
      * [Contact us](https://www.solvice.io/contact)
 
-    <!---To get informed about the newest features and development follow us at [twitter](https://twitter.com/solvice_io/). Furthermore you can watch [this git repository](https://github.com/solvice/workforce-api-docs) of this documentation, sign up at our [dashboard](https://dashboard.solvice.io/).--->
+    <!---To get informed about the newest features and development follow us at
+    [twitter](https://twitter.com/solvice_io/). Furthermore you can watch [this
+    git repository](https://github.com/solvice/workforce-api-docs) of this
+    documentation, sign up at our
+    [dashboard](https://dashboard.solvice.io/).--->
+
 
 
 
     ## Explore our APIs
 
 
+
     #### Insomnia
+
     To explore our APIs with Insomnia, follow these steps:
-    [![Run in Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=OnShift%20API&uri=https%3A%2F%2Fdocs2.solvice.io%2Fonshift%2Finsomnia_fill.json)
 
-
-
-
+    [![Run in
+    Insomnia}](https://insomnia.rest/images/run.svg)](https://insomnia.rest/run/?label=OnShift%20API&uri=https%3A%2F%2Fdocs2.solvice.io%2Fonshift%2Finsomnia_fill.json)
 tags:
   - name: Workforce Optimisation
-    description: |
+    description: >
 
       OnShift can solve different workforce optimisation problems.
 
 
+
       ## Shift scheduling
-      Creating an optimal roster for a team of employees based on forecasted demand and taking into account extensive labor agreement rules & constraints.
-      - Based on last weeks sales, last planning, predicted weather, revenue and reservations, a clear demand can be generated used as base occupation per skill, per location, per time block.
-      - Collective Work Agreements are numerous and complex. Our optimisation already takes into account hundreds of specific employee constraints. Not enough? Simply create your own work rules.
-      - Not only automagically generate a plan in seconds, but define what is important in the optimisation. Is financial wage cost minimisation more important than fairness? It's just a parameter. Our advanced mathematical solver engine can handle any request.
+
+      Creating an optimal roster for a team of employees based on forecasted
+      demand and taking into account extensive labor agreement rules &
+      constraints.
+
+      - Based on last weeks sales, last planning, predicted weather, revenue and
+      reservations, a clear demand can be generated used as base occupation per
+      skill, per location, per time block.
+
+      - Collective Work Agreements are numerous and complex. Our optimisation
+      already takes into account hundreds of specific employee constraints. Not
+      enough? Simply create your own work rules.
+
+      - Not only automagically generate a plan in seconds, but define what is
+      important in the optimisation. Is financial wage cost minimisation more
+      important than fairness? It's just a parameter. Our advanced mathematical
+      solver engine can handle any request.
+
 
 
       ## Fill scheduling
 
 
+
       ### Input
-      Filling in pre-defined shifts with employees according to contractual agreements that enforce fair and cost efficient rosters.
+
+      Filling in pre-defined shifts with employees according to contractual
+      agreements that enforce fair and cost efficient rosters.
+
       The input requires you to make up:
 
        - contract definitions
@@ -110,8 +149,12 @@ tags:
        - available employees
 
       #### Contract
-      A contract definition consists of a multitude of labour restricting constraints such as the maximum number of consecutive working days,
+
+      A contract definition consists of a multitude of labour restricting
+      constraints such as the maximum number of consecutive working days,
+
       the maximum number of shifts per day, number of resting days, etc...
+
 
       ```json
         {
@@ -127,14 +170,24 @@ tags:
         }
       ```
 
+
       #### Shifts
 
-      The shifts represent the demand. These shifts need to be filled in with employees.
-      A shift in its simplest form can be defined by a shift start time (`from`) and an end time (`to`).
+
+      The shifts represent the demand. These shifts need to be filled in with
+      employees.
+
+      A shift in its simplest form can be defined by a shift start time (`from`)
+      and an end time (`to`).
+
       Shifts are uniquely identified by a `name` and require a specific `skill`.
-      You can define the number of employees that need to be assigned to this shift with `value`.
+
+      You can define the number of employees that need to be assigned to this
+      shift with `value`.
+
 
       ```json
+
       {
          "name": "Shift 1",
          "from": "2020-06-26T08:00:00",
@@ -144,11 +197,16 @@ tags:
        }
       ```
 
+
       #### Employee
 
-      Define the resources or employees with whom you want to fill up the shifts.
+
+      Define the resources or employees with whom you want to fill up the
+      shifts.
+
 
       ```json
+
       {
         "name": "John Dory",
         "contract": "FULL",
@@ -164,13 +222,20 @@ tags:
         ],
         "hourlyPay": 15.5
       }
+
       ```
+
       ### Output
 
-      Simply fetch the solution in the `jobs/:id/solution` endpoint and receive the shift assignments.
+
+      Simply fetch the solution in the `jobs/:id/solution` endpoint and receive
+      the shift assignments.
+
       For every shift defined by its `name` we will assign the best `employee`.
 
+
       ```json
+
       [
         {
           "name": "Morning Shift 1",
@@ -183,65 +248,149 @@ tags:
           ]
         }
       ]
+
       ```
+
 
 
       ### Constraints
 
-      We take into account many constraints. Let us know if there are any constraints that you think are missing.
+
+      We take into account many constraints. Let us know if there are any
+      constraints that you think are missing.
+
 
       | Code             | Level  | Description                               |
+
       |------------------|--------|--------------------------------------------|
-      | Maximum Working Days | HARD | An employee should not work more than `contract.maxWorkingDays` days in the planning horizon.  |
-      | Maximum Hours | HARD | An employee should not work more than `contract.max` hours in the planning horizon. |
-      | Minimum Hours | HARD | An employee should not work less than `contract.min` hours in the planning horizon. Please ensure minimum feasibility over the whole workforce.  |
-      | Earliest Shift Start  | HARD| Earliest time `contract.earliestShiftStart` in a day when an employee is allowed to work |
-      | Latest Shift Start  | HARD| Earliest time `contract.latestShiftStart` in a day when an employee is allowed to start work |
-      | Latest Shift End  | HARD| Latest time `contract.latestShiftEnd` in a day when an employee is allowed to end work  |
-      | Maximum Shift Length | HARD | Maximum time `contract.maxShiftLength` that an employee is allowed to work |
-      | DayOfWeek Working | HARD | Restricts employee availability based on days in the week that  |
-      | Minimum Shift Length | HARD | Minimum time `contract.maxShiftLength` that an employee is allowed to work |
-      | Maximum Shifts On Same Day  | HARD| Maximum number of shifts that an employee is allowed to work |
-      | Minimum Rest On Same Day | HARD | Minimum resting period between two shifts on the same day |
-      | Employee Availability | HARD | Date-time range of employee's availability |
+
+      | Maximum Working Days | HARD | An employee should not work more than
+      `contract.maxWorkingDays` days in the planning horizon.  |
+
+      | Maximum Hours | HARD | An employee should not work more than
+      `contract.max` hours in the planning horizon. |
+
+      | Minimum Hours | HARD | An employee should not work less than
+      `contract.min` hours in the planning horizon. Please ensure minimum
+      feasibility over the whole workforce.  |
+
+      | Earliest Shift Start  | HARD| Earliest time
+      `contract.earliestShiftStart` in a day when an employee is allowed to work
+      |
+
+      | Latest Shift Start  | HARD| Earliest time `contract.latestShiftStart` in
+      a day when an employee is allowed to start work |
+
+      | Latest Shift End  | HARD| Latest time `contract.latestShiftEnd` in a day
+      when an employee is allowed to end work  |
+
+      | Maximum Shift Length | HARD | Maximum time `contract.maxShiftLength`
+      that an employee is allowed to work |
+
+      | DayOfWeek Working | HARD | Restricts employee availability based on days
+      in the week that  |
+
+      | Minimum Shift Length | HARD | Minimum time `contract.maxShiftLength`
+      that an employee is allowed to work |
+
+      | Maximum Shifts On Same Day  | HARD| Maximum number of shifts that an
+      employee is allowed to work |
+
+      | Minimum Rest On Same Day | HARD | Minimum resting period between two
+      shifts on the same day |
+
+      | Employee Availability | HARD | Date-time range of employee's
+      availability |
+
       | Travel Time  | SOFT | Travel from home to shift location |
+
       | Priority | SOFT | Shift Priorities |
-      | Locked Assignment | HARD | Take into account assignments that are fixed during the solve |
-      | Maximum Consecutive Working Days | HARD | No more than `contract.maxConsecutiveWorkDays` consecutive shifts. |
-      | Minimum Rest | HARD | Minimum resting between two shifts (irrespective of shifts) |
-      | Shift Employee Preference  | SOFT| A preference for a certain shift assignment for an employee |
-      | Financial Costs | SOFT | Some shifts incurr a higher cost when they are assigned to (opposite of priority) |
-      | Wage Costs per Employee  | SOFT| Hourly wage cost per employee influences choice of employee |
-      | Unassigned Employee| SOFT | Minimise the number of unassigned employees |
-      | No Concurrent Assignments| HARD | An employee cannot have two assignments on the same time. (This should never happen)  |
-      | Skill Requirement for shifts | HARD | Multiple shifts can have a shared requirement for a skill |
-      | Employee Skill Match | HARD| Assign employees to match according to their skills and the required skills for a shift |
-      | Employee Skill Match Soft | SOFT | Assign employees to match according to their skills and the required skills for a shift (soft rule) |
-      | Employee Critical Skill Match | SOFT | Prefer assigning critical shifts first  |
+
+      | Locked Assignment | HARD | Take into account assignments that are fixed
+      during the solve |
+
+      | Maximum Consecutive Working Days | HARD | No more than
+      `contract.maxConsecutiveWorkDays` consecutive shifts. |
+
+      | Minimum Rest | HARD | Minimum resting between two shifts (irrespective
+      of shifts) |
+
+      | Shift Employee Preference  | SOFT| A preference for a certain shift
+      assignment for an employee |
+
+      | Financial Costs | SOFT | Some shifts incurr a higher cost when they are
+      assigned to (opposite of priority) |
+
+      | Wage Costs per Employee  | SOFT| Hourly wage cost per employee
+      influences choice of employee |
+
+      | Unassigned Employee| SOFT | Minimise the number of unassigned employees
+      |
+
+      | No Concurrent Assignments| HARD | An employee cannot have two
+      assignments on the same time. (This should never happen)  |
+
+      | Skill Requirement for shifts | HARD | Multiple shifts can have a shared
+      requirement for a skill |
+
+      | Employee Skill Match | HARD| Assign employees to match according to
+      their skills and the required skills for a shift |
+
+      | Employee Skill Match Soft | SOFT | Assign employees to match according
+      to their skills and the required skills for a shift (soft rule) |
+
+      | Employee Critical Skill Match | SOFT | Prefer assigning critical shifts
+      first  |
+
 
 
       ## Task sequencing
-      Sequencing tasks in time according to the available resources: A task sequencing problem can be solved for work defined according to two hierarchies: *orders* and *tasks*
-      If only orders are provided, they will be scheduled as if they are the lowest level detail that needs to be handled by the sequencing model. If however, orders are defined that contain tasks,
-      these tasks are considered the lowest level detail of work that needs to be sequenced. The order level is then only used to incorporate priorities.
+
+      Sequencing tasks in time according to the available resources: A task
+      sequencing problem can be solved for work defined according to two
+      hierarchies: *orders* and *tasks*
+
+      If only orders are provided, they will be scheduled as if they are the
+      lowest level detail that needs to be handled by the sequencing model. If
+      however, orders are defined that contain tasks,
+
+      these tasks are considered the lowest level detail of work that needs to
+      be sequenced. The order level is then only used to incorporate priorities.
+
 
 
       ### Model
 
+
       #### Order
 
-      An Order is an executable piece of work that can take a pre-determined amount of time, and that needs to be handled with a certain priority. It can contain multiple tasks.
-      If tasks are provided, they are sequenced rather than the order itself. An order can have an availability and should have a resourceRequirement.
+
+      An Order is an executable piece of work that can take a pre-determined
+      amount of time, and that needs to be handled with a certain priority. It
+      can contain multiple tasks.
+
+      If tasks are provided, they are sequenced rather than the order itself. An
+      order can have an availability and should have a resourceRequirement.
+
 
 
       #### Task
 
-      A task is the lowest-level detail for work that needs to be scheduled that can be provided in the model. If provided, it is always defined under the higher hierarchy of an order. Futher, we define tasks using
-      a duration (pre-determined amount of time to finish the task), a resourceRequirement and (optionally) an availability.
+
+      A task is the lowest-level detail for work that needs to be scheduled that
+      can be provided in the model. If provided, it is always defined under the
+      higher hierarchy of an order. Futher, we define tasks using
+
+      a duration (pre-determined amount of time to finish the task), a
+      resourceRequirement and (optionally) an availability.
+
 
       #### ResourceRequirement
 
-      For the work that is incorporated in the model (from either orders or tasks), a resource requirement can be defined. A resource requirement can be specified using three different constructs:
+
+      For the work that is incorporated in the model (from either orders or
+      tasks), a resource requirement can be defined. A resource requirement can
+      be specified using three different constructs:
         - a combination of the name of the *capacitated* resource type and how many of these resources are required.
         - a combination of the name of the *plannable* resource type and the name of the specific resource that is required.
         - a combination of the name of the *plannable* resource type and an object that incorporates how many resources and what (additional) skills they require.
@@ -257,6 +406,7 @@ tags:
             }
       ```
 
+
       #### Resource
 
        There are 2 types of Resources:
@@ -264,15 +414,29 @@ tags:
        - a *Plannable* Resource: demands that a resource is explicitly assigned to a task.
        - a *Capacitated* Resource: only requires available capacity of a resource. Specific assignment is not necessary.
 
-      For example, take the assignment problem of a task "hammer a nail" that requires a technician and a hammer to execute that task.
-      Usually, we don't need to know that for task "hammer a nail", you need a specific hammer with serial number SNxxx.
-      You just need to know that there are ample hammers availabe for all tasks that require a hammer to be performed at the same time.  E.g. there are 4 hammers available and you will take 1.
-      For a technician however, it might be required that the schedule points out who will execute that task.
+      For example, take the assignment problem of a task "hammer a nail" that
+      requires a technician and a hammer to execute that task.
+
+      Usually, we don't need to know that for task "hammer a nail", you need a
+      specific hammer with serial number SNxxx.
+
+      You just need to know that there are ample hammers availabe for all tasks
+      that require a hammer to be performed at the same time.  E.g. there are 4
+      hammers available and you will take 1.
+
+      For a technician however, it might be required that the schedule points
+      out who will execute that task.
+
       Will it be John, Alex or Lee?
-      Therfore, a hammer can be considered a Capacitated Resource, while a technician is a Plannable Resource in this example.
+
+      Therfore, a hammer can be considered a Capacitated Resource, while a
+      technician is a Plannable Resource in this example.
+
 
       Structure of a Capacitated Resource:
+
       ```json
+
       {
         "type": "capacitated",
         "name": "hammer",
@@ -282,10 +446,14 @@ tags:
           "to": "2021-02-06T18:00:00"
         }]
       }
+
       ```
 
+
       Structure of a Plannable Resource:
+
       ```json
+
       {
         "type": "plannable",
         "name": "technician",
@@ -300,35 +468,64 @@ tags:
           }
         ]
       }
+
       ```
+
 
       ### Constraints
 
 
+
       | Code             | Description                               |
+
       |------------------|-------------------------------------------|
-      | Resource Availability | A task should not be planned to a resource outside its availability  |
-      | Resource Capacity | A resource should not assigned at the same time to more than one task. |
-      | Order Priority | The priority of the orders that are assigned is maximized.  |
+
+      | Resource Availability | A task should not be planned to a resource
+      outside its availability  |
+
+      | Resource Capacity | A resource should not assigned at the same time to
+      more than one task. |
+
+      | Order Priority | The priority of the orders that are assigned is
+      maximized.  |
+
 
 
       ## Shift Creation
 
-      Assigning an amount of people to certain shifts according to demand and resource constraints.
+
+      Assigning an amount of people to certain shifts according to demand and
+      resource constraints.
+
 
       ### Input
+
       The input requires two main things.
 
+
       - shift patterns: which shifts can the solver choose from
+
       - demands: how many people are needed and at what time?
 
-      The demands can be provided in two different ways. Depending on which kind of demands are used, the solver will run in either `fixed` or `flexible` mode.
+
+      The demands can be provided in two different ways. Depending on which kind
+      of demands are used, the solver will run in either `fixed` or `flexible`
+      mode.
+
 
       #### Shift Pattern
-      A `Shift Pattern` is the central unit modified by the solver. The main goal for the solver is to find the optimal nubmer of people to assign to each shift.
-      Here is an example of a shift from Monday to Friday from 9AM to 5PM. The solver will choose somewhere between 0 and 10 people to assign to this shift.
+
+      A `Shift Pattern` is the central unit modified by the solver. The main
+      goal for the solver is to find the optimal nubmer of people to assign to
+      each shift.
+
+      Here is an example of a shift from Monday to Friday from 9AM to 5PM. The
+      solver will choose somewhere between 0 and 10 people to assign to this
+      shift.
+
 
       ```json
+
       {
         "name": "MON:9-5",
         "min": 0,
@@ -351,28 +548,50 @@ tags:
           }
         ]
       }
+
       ```
+
 
       #### Demand
 
-      Two types of demand are possible, an example of each type will be given here. The demands used in `fixed` mode are the most intuitive. During this mode, the
-      value given with each demand interval denotes the expected number of people between this interval.
-      Here is an example where 5 technicians are needed between 9AM and 5PM on Moday Oktober 4th.
+
+      Two types of demand are possible, an example of each type will be given
+      here. The demands used in `fixed` mode are the most intuitive. During this
+      mode, the
+
+      value given with each demand interval denotes the expected number of
+      people between this interval.
+
+      Here is an example where 5 technicians are needed between 9AM and 5PM on
+      Moday Oktober 4th.
+
 
       ```json
+
       {
         "from": "2021-10-04T09:00,
         "to": "2021-10-04T17:00",
         "skill": "technician",
         "demand": 5
       }
+
       ```
 
-      For `flexible` mode, the demands look slightly different. Instead of the `demand` atribute, a `min` and `max` need to be provided. These tell the solver that at the
-      start of this interval, already `min` number of minutes of work needs to have been done. By end of this interval, a total of `max` amount of minutes may be done.
-      `min` can be seen as work that has to be completed and `max` can be seen as the total amount of work that is available.
+
+      For `flexible` mode, the demands look slightly different. Instead of the
+      `demand` atribute, a `min` and `max` need to be provided. These tell the
+      solver that at the
+
+      start of this interval, already `min` number of minutes of work needs to
+      have been done. By end of this interval, a total of `max` amount of
+      minutes may be done.
+
+      `min` can be seen as work that has to be completed and `max` can be seen
+      as the total amount of work that is available.
+
 
       ```json
+
       {
         "from": "2021-10-04T09:00,
         "to": "2021-10-04T17:00",
@@ -380,27 +599,41 @@ tags:
         "min": 60,
         "max": 180,
       }
+
       ```
+
 
       Fixed and Flexible demands cannot be mixed in the same creation request.
 
+
       #### Resources
 
-      Resources can be used to further constrain the problem. A `resource` is a named unit with a finite supply that can be used by shifts. Available resources are listed in the model
+
+      Resources can be used to further constrain the problem. A `resource` is a
+      named unit with a finite supply that can be used by shifts. Available
+      resources are listed in the model
+
       in the follwoing way.
 
+
       ```json
+
       {
         "resourceAvailabilities": [
           {"resourceName": "hammer", "max": 10},
           {"resourceName": "screwdriver", "max": 5}
         ]
       }
+
       ```
 
-      This is how a shift can be configured to use one or more resources. This build on the first example of a Shift Pattern.
+
+      This is how a shift can be configured to use one or more resources. This
+      build on the first example of a Shift Pattern.
+
 
       ```json
+
       {
         "name": "MON:9-5",
         "min": 0,
@@ -427,62 +660,90 @@ tags:
           }
         ]
       }
+
       ```
+
 
       ### Output
 
-      The output of the creation solver is a list of shifts of the following form. The `pattern` value refers to the unique name given to each shift on the input side.
+
+      The output of the creation solver is a list of shifts of the following
+      form. The `pattern` value refers to the unique name given to each shift on
+      the input side.
+
 
       ```json
+
       [
         {"pattern": "9-5, MON-FRI: technician", "skill": "technician", "value": 3},
         {"pattern": "9-5, MON-FRI: mechanic", "skill": "mechanic", "value": 2}
       ]
+
       ```
+
 
       ### Constraints
 
-      The following constraints are used when solving the problem. Some are only valid in either `fixed` or `flexible` mode.
+
+      The following constraints are used when solving the problem. Some are only
+      valid in either `fixed` or `flexible` mode.
+
 
       | Code             | Level  | Description                               |
+
       |------------------|--------|--------------------------------------------|
-      |Total Demand | HARD | The total required demand must be met. Only applicable in `fixed mode`. |
-      |Resource Availability | HARD | For every resource, the solver tracks how many are being used at each point in time. It minimises the amount of over-usage that occurs for each resource. |
-      |Under Demand | MEDIUM | For every demand interval, the supply that is less than the demand must be minimised. Only applicable in `fixed` mode. |
-      |Over Demand | MEDIUM | For every demand interval, the supply that is more than the demand must be minimised. Only applicable in `fixed` mode. |
-      |Under Demand Cumulative | MEDIUM | For every demand interval, the total amount of work done needs to be more than the minimum required amount of work that has been done. Only applicable in `flexible` mode. |
-      |Over Demand Cumulative | MEDIUM | When staffing so many people that the total amount of work done exceeds the amount of work available, some people are doing nothing during their shift. Minimise this time that is being wasted. Only applicable in `flexible` mode. |
-      |As Late As Possible | SOFT | Execute the required amount of work as late as possible. This also means that the solver will try to execute a minimum amount of work. Only applicable in `flexible` mode. |
+
+      |Total Demand | HARD | The total required demand must be met. Only
+      applicable in `fixed mode`. |
+
+      |Resource Availability | HARD | For every resource, the solver tracks how
+      many are being used at each point in time. It minimises the amount of
+      over-usage that occurs for each resource. |
+
+      |Under Demand | MEDIUM | For every demand interval, the supply that is
+      less than the demand must be minimised. Only applicable in `fixed` mode. |
+
+      |Over Demand | MEDIUM | For every demand interval, the supply that is more
+      than the demand must be minimised. Only applicable in `fixed` mode. |
+
+      |Under Demand Cumulative | MEDIUM | For every demand interval, the total
+      amount of work done needs to be more than the minimum required amount of
+      work that has been done. Only applicable in `flexible` mode. |
+
+      |Over Demand Cumulative | MEDIUM | When staffing so many people that the
+      total amount of work done exceeds the amount of work available, some
+      people are doing nothing during their shift. Minimise this time that is
+      being wasted. Only applicable in `flexible` mode. |
+
+      |As Late As Possible | SOFT | Execute the required amount of work as late
+      as possible. This also means that the solver will try to execute a minimum
+      amount of work. Only applicable in `flexible` mode. |
+
       |Costs | SOFT | Cost based minimisation of the shifts. |
+
       |Preference | SOFT | Preference based maximisation of the shifts. |
-
-
-
   - name: Jobs
-    description: The Jobs endpoint allows to retrieve information of a posted request, its status, the score or even detailed statistics.
-
-
+    description: >-
+      The Jobs endpoint allows to retrieve information of a posted request, its
+      status, the score or even detailed statistics.
   - name: Scheduling
-    description: |
-      It is possible to generate the planning by doing a `solve` or either `evaluate` a current solution by doing a `evaluate`.
+    description: >
+      It is possible to generate the planning by doing a `solve` or either
+      `evaluate` a current solution by doing a `evaluate`.
+
       Post a new solve request to the Workforce Optimisation Engine.
+
 
       The optimisation engine can accept different problems:
        - CREATE: `CreateRequest`
        - FILL: `ShiftFillRequest`
        - TASK: `TaskRequest`
-
   - name: Solution
     description: Retrieve the optimal solution to the problem.
   - name: FAQ
-    description: |
-
-
-
-
+    description: ''
 security:
   - ApiKey: []
-
 paths:
   /solve:
     post:
@@ -496,8 +757,9 @@ paths:
           example: 20
           schema:
             type: integer
-          description: The number of seconds you give the solver to optimise the problem. By default, the solver decides.
-
+          description: >-
+            The number of seconds you give the solver to optimise the problem.
+            By default, the solver decides.
       description: |
         Endpoint for solving shift optimisation problem.
         There are multiple possible problems:
@@ -537,8 +799,6 @@ paths:
                   FILL: '#/components/schemas/ShiftFillRequest'
                   CREATE: '#/components/schemas/CreationRequest'
                   TASK: '#/components/schemas/TaskRequest'
-
-
       responses:
         '200':
           description: solve job accepted to queue
@@ -550,7 +810,6 @@ paths:
           $ref: '#/components/responses/WrongFormat'
         '401':
           $ref: '#/components/responses/Unauthorized'
-
   /evaluate:
     post:
       tags:
@@ -579,15 +838,15 @@ paths:
           $ref: '#/components/responses/WrongFormat'
         '401':
           $ref: '#/components/responses/Unauthorized'
-
-  '/jobs/{jobId}':
+  /jobs/{jobId}:
     get:
       tags:
         - Jobs
       summary: Job
       operationId: getJob
-      description: When posting a new solve request, this job can be checked again under this endpoint.
-        In fact, it should be the entire request posted as-is.
+      description: >-
+        When posting a new solve request, this job can be checked again under
+        this endpoint. In fact, it should be the entire request posted as-is.
       parameters:
         - in: path
           name: jobId
@@ -604,8 +863,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusJob'
         '404':
-          description: 'Job not found'
-
+          description: Job not found
   /v1/stats/{jobId}:
     get:
       tags:
@@ -620,9 +878,12 @@ paths:
           schema:
             type: string
             format: uuid
-      description: |
+      description: >
         Returns the information on why a job has been solved the way it's been.
-        Information includes specific unresolved objects. Want to know how it is optimised?
+
+        Information includes specific unresolved objects. Want to know how it is
+        optimised?
+
         This endpoint lets you know what rules have been overruled.
       responses:
         '200':
@@ -632,8 +893,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Stats'
         '404':
-          description: 'Job not found'
-
+          description: Job not found
   /jobs/{jobId}/status:
     get:
       tags:
@@ -657,7 +917,6 @@ paths:
                 $ref: '#/components/schemas/StatusJob'
         '400':
           description: bad input parameter
-
   /jobs/{jobId}/solution:
     get:
       tags:
@@ -695,12 +954,10 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-
-
 components:
   schemas:
     ShiftRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
@@ -710,12 +967,16 @@ components:
           properties:
             demand:
               type: array
-              description: Demand blocks for which a certain number of employees by a certain skill and on a certain location are required.
+              description: >-
+                Demand blocks for which a certain number of employees by a
+                certain skill and on a certain location are required.
               items:
                 $ref: '#/components/schemas/Demand'
             employees:
               type: array
-              description: Group of employees available to be planned in the planning period defined by the demand.
+              description: >-
+                Group of employees available to be planned in the planning
+                period defined by the demand.
               items:
                 $ref: '#/components/schemas/Employee'
             statutes:
@@ -728,10 +989,8 @@ components:
               description: Pre made assignments that the solver should take into account
               items:
                 $ref: '#/components/schemas/ShiftAssignment'
-
-
     ShiftFillRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
@@ -751,41 +1010,29 @@ components:
                 $ref: '#/components/schemas/Contract'
             employees:
               type: array
-              description: Group of employees available to be planned in the planning period defined by the demand.
+              description: >-
+                Group of employees available to be planned in the planning
+                period defined by the demand.
               items:
                 $ref: '#/components/schemas/FillEmployee'
             requirements:
               type: array
               description: An optional list of shared resource requirements
               items:
-                  $ref: '#/components/schemas/ResourceRequirement'
+                $ref: '#/components/schemas/ResourceRequirement'
             options:
               $ref: '#/components/schemas/FillOptions'
             weights:
               $ref: '#/components/schemas/FillWeights'
-
-
-
     TaskRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolveJob'
+        - $ref: '#/components/schemas/ResourceUser'
         - type: object
           required:
             - orders
             - resources
           properties:
-            resources:
-              type: array
-              description: Define the available resources
-              items:
-                oneOf:
-                  - $ref: '#/components/schemas/PlannableResource'
-                  - $ref: '#/components/schemas/CapacitatedResource'
-                discriminator:
-                  propertyName: type
-                  mapping:
-                    plannable: '#/components/schemas/PlannableResource'
-                    capacitated: '#/components/schemas/CapacitatedResource'
             orders:
               type: array
               description: Define the orders that need to be assigned to Resources.
@@ -793,11 +1040,24 @@ components:
                 $ref: '#/components/schemas/Order'
             period:
               $ref: '#/components/schemas/PlanningPeriod'
-
-
+    ResourceUser:
+      type: object
+      properties:
+        resources:
+          type: array
+          description: Define the available resources
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/PlannableResource'
+              - $ref: '#/components/schemas/CapacitatedResource'
+            discriminator:
+              propertyName: type
+              mapping:
+                plannable: '#/components/schemas/PlannableResource'
+                capacitated: '#/components/schemas/CapacitatedResource'
 
     CapacityRequest:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
@@ -806,7 +1066,9 @@ components:
           properties:
             demand:
               type: array
-              description: Predicted demand for a pred-fined period of time (usually multiple weeks & months).
+              description: >-
+                Predicted demand for a pred-fined period of time (usually
+                multiple weeks & months).
               items:
                 $ref: '#/components/schemas/Demand'
             statutes:
@@ -814,9 +1076,8 @@ components:
               description: Possible Statute definitions used by employees.
               items:
                 $ref: '#/components/schemas/Statute'
-
     CreationRequest:
-      allOf: # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolveJob'
         - type: object
           required:
@@ -825,20 +1086,27 @@ components:
           properties:
             demands:
               type: array
-              description: demands with either a 'value' or a 'min' and 'max' specifying the demand for a certain skill between two points in time.
+              description: >-
+                demands with either a 'value' or a 'min' and 'max' specifying
+                the demand for a certain skill between two points in time.
               items:
                 $ref: '#/components/schemas/CreationDemand'
             patterns:
               type: array
-              description: definition of a possible shift for a certain skill. This contains the time intevals during which this shift takes place aswell as the minimum and maximum number of people that can be assigned to this shift.
+              description: >-
+                definition of a possible shift for a certain skill. This
+                contains the time intevals during which this shift takes place
+                aswell as the minimum and maximum number of people that can be
+                assigned to this shift.
               items:
                 $ref: '#/components/schemas/CreationShiftPattern'
             resourceAvailabilities:
               type: array
-              description: definition of a certain resource and how many units of that resouce are available.
+              description: >-
+                definition of a certain resource and how many units of that
+                resouce are available.
               items:
                 $ref: '#/components/schemas/CreationResourceAvailability'
-
     SolveJob:
       type: object
       required:
@@ -849,9 +1117,9 @@ components:
         hook:
           type: string
           format: uri
-          description: Webhook returns solution status after solving in the form of a POST request to the uri given.
-
-
+          description: >-
+            Webhook returns solution status after solving in the form of a POST
+            request to the uri given.
     Error:
       type: object
       properties:
@@ -859,7 +1127,6 @@ components:
           type: string
         description:
           type: string
-
     ErrorCode:
       type: object
       properties:
@@ -871,7 +1138,6 @@ components:
           type: integer
         column:
           type: integer
-
     Status:
       type: string
       enum:
@@ -879,9 +1145,11 @@ components:
         - SOLVING
         - SOLVED
         - ERROR
-      example: "SOLVING"
-      description: The current status of the job. After arriving at the solver engine, it gets `QUEUED` to the right solver, then processed (`SOLVING`) and when finished the status is `SOLVED`.
-
+      example: SOLVING
+      description: >-
+        The current status of the job. After arriving at the solver engine, it
+        gets `QUEUED` to the right solver, then processed (`SOLVING`) and when
+        finished the status is `SOLVED`.
     Solver:
       type: string
       enum:
@@ -889,14 +1157,17 @@ components:
         - SHIFT
         - TASK
         - CREATE
-
     Score:
-      description: The score of a solution shows how good this solution is w.r.t all the constraints.
+      description: >-
+        The score of a solution shows how good this solution is w.r.t all the
+        constraints.
       type: object
       properties:
         hardScore:
           type: integer
-          description: The score of the constraints that are hard. This should be 0 in order to be feasible.
+          description: >-
+            The score of the constraints that are hard. This should be 0 in
+            order to be feasible.
         mediumScore:
           type: integer
           description: The score of the constraints that are medium.
@@ -905,15 +1176,16 @@ components:
           description: The score of the constraints that are soft.
         feasible:
           type: boolean
-          description: Feasibility check on hard constraints. Check unresolved parameter if you cannot reach feasibility.
-
+          description: >-
+            Feasibility check on hard constraints. Check unresolved parameter if
+            you cannot reach feasibility.
     Statute:
       required:
         - name
       properties:
         name:
           type: string
-          example: "FULLTIME"
+          example: FULLTIME
           description: Unique name for a definition of a statute.
         minShiftLength:
           type: integer
@@ -923,7 +1195,9 @@ components:
           description: The maximum number of hours in a shift for an employee
         minRestBetweenShifts:
           type: integer
-          description: The minimum duration (in hours) of a rest period between two shifts for this employee
+          description: >-
+            The minimum duration (in hours) of a rest period between two shifts
+            for this employee
         maxConsecutiveWorkDays:
           type: integer
           description: The maximum days consecutive that this employee can be working
@@ -932,16 +1206,24 @@ components:
           description: The maximum number of hours this employee can be working in a week
         minHrsPerWeek:
           type: integer
-          description: The minimum number of hours this employee should be working in a week
+          description: >-
+            The minimum number of hours this employee should be working in a
+            week
         shiftStart:
           type: number
-          description: The earliest this employee can start working (expressed as decimal in 24 hour-format)
+          description: >-
+            The earliest this employee can start working (expressed as decimal
+            in 24 hour-format)
         latestShiftStart:
           type: number
-          description: The latest this employee can start working (expressed as decimal in 24 hour-format)
+          description: >-
+            The latest this employee can start working (expressed as decimal in
+            24 hour-format)
         shiftEnd:
           type: number
-          description: The latest this employee can work on a day (expressed as decimal in 24 hour-format)
+          description: >-
+            The latest this employee can work on a day (expressed as decimal in
+            24 hour-format)
         minHoursMonth:
           type: integer
           description: The minimum hours per month this employee should be working
@@ -950,30 +1232,42 @@ components:
           description: The maximum hours per month this employee should be working
         overTimeThreshold1:
           type: number
-          description: The first time threshold for overtime (expressed as decimal in 24 hour-format)
+          description: >-
+            The first time threshold for overtime (expressed as decimal in 24
+            hour-format)
         overTimeRaise1:
           type: number
-          description: The raise after the first time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
+          description: >-
+            The raise after the first time threshold for overtime (e.q. 1.2
+            means a 20% raise per hour)
         overTimeThreshold2:
           type: number
-          description: The second time threshold for overtime (expressed as decimal in 24 hour-format)
+          description: >-
+            The second time threshold for overtime (expressed as decimal in 24
+            hour-format)
         overTimeRaise2:
           type: number
-          description: The raise after the second time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
+          description: >-
+            The raise after the second time threshold for overtime (e.q. 1.2
+            means a 20% raise per hour)
         overTimeWeeklyThreshold1:
           type: number
-          description:   The number of hours per week after which a "weekly overtime" raise should be given
+          description: >-
+            The number of hours per week after which a "weekly overtime" raise
+            should be given
         overTimeWeeklyRaise1:
           type: number
           description: The weekly overtime raise (e.q. 1.2 means a 20% raise per hour)
         nightlyThreshold1:
           type: number
-          description: The time threshold to be considered for a night raise (expressed as decimal in 24 hour-format)
+          description: >-
+            The time threshold to be considered for a night raise (expressed as
+            decimal in 24 hour-format)
         nightlyRaise:
           type: number
-          description: The raise after the first time threshold for overtime (e.q. 1.2 means a 20% raise per hour)
-
-
+          description: >-
+            The raise after the first time threshold for overtime (e.q. 1.2
+            means a 20% raise per hour)
     Contract:
       type: object
       description: Collection of labour agreement rule parameters.
@@ -983,10 +1277,14 @@ components:
           description: Unique name and definition of the contract.
         maxConsecutiveWorkDays:
           type: integer
-          description: Maximum number of successive consecutive working days that an employee under this contract is allowed to work.
+          description: >-
+            Maximum number of successive consecutive working days that an
+            employee under this contract is allowed to work.
         maxShiftsDay:
           type: integer
-          description: Maximum number of shift per day that an employee under this contract is allowed to work.
+          description: >-
+            Maximum number of shift per day that an employee under this contract
+            is allowed to work.
         minRestBetweenShiftsSameDay:
           type: integer
           description: Minimum resting time for two successive shifts in the same day.
@@ -999,15 +1297,21 @@ components:
         latestShiftStart:
           type: string
           format: time
-          description: Latest time at which an employee under this contract can start its shift.
+          description: >-
+            Latest time at which an employee under this contract can start its
+            shift.
         earliestShiftStart:
           type: string
           format: time
-          description: Earliest time at which an employee under this contract can start its shift.
+          description: >-
+            Earliest time at which an employee under this contract can start its
+            shift.
         latestShiftEnd:
           type: string
           format: time
-          description: Latest time at which an employee under this contract can finish its shift.
+          description: >-
+            Latest time at which an employee under this contract can finish its
+            shift.
         min:
           type: string
           format: time
@@ -1016,7 +1320,6 @@ components:
           type: string
           format: time
           description: Maximum number of hours to work in the planning period.
-
     ShiftLocation:
       type: object
       properties:
@@ -1029,10 +1332,11 @@ components:
         address:
           description: Address information or name of location.
           type: string
-
     Shift:
       type: object
-      description: A specific shift that starts at `from` and ends at `to` for which `value` number of employees should be scheduled to according to a skill.
+      description: >-
+        A specific shift that starts at `from` and ends at `to` for which
+        `value` number of employees should be scheduled to according to a skill.
       required:
         - name
         - from
@@ -1051,19 +1355,25 @@ components:
           format: date-time
         cost:
           type: number
-          description: Financial cost related to this shift. Will be minimised when overconstrained.
+          description: >-
+            Financial cost related to this shift. Will be minimised when
+            overconstrained.
         value:
           description: Actual number of employees that should be assigned to this shift
           type: number
         priority:
-          description: Forces a priority constraint on this shift with 1 being highest priority and 10 being the lowest.
+          description: >-
+            Forces a priority constraint on this shift with 1 being highest
+            priority and 10 being the lowest.
           type: number
           minimum: 1
         location:
           $ref: '#/components/schemas/ShiftLocation'
         skills:
           type: array
-          description: Skill requirement definition that should match with skills from Employee. All are required
+          description: >-
+            Skill requirement definition that should match with skills from
+            Employee. All are required
           items:
             $ref: '#/components/schemas/SkillRequirement'
         employees:
@@ -1074,20 +1384,23 @@ components:
             description: Employee name
         locked:
           type: array
-          description: List of locked employees. Should be equal size as `employees` and maximum `value`.
+          description: >-
+            List of locked employees. Should be equal size as `employees` and
+            maximum `value`.
           items:
             type: boolean
             description: Employee name
         critical:
           type: boolean
-          description: Critical shift. These should be assigned first. Similar to `shift.cost`
+          description: >-
+            Critical shift. These should be assigned first. Similar to
+            `shift.cost`
         blacklist:
           type: array
           description: List of employees that cannot be used for this shift.
           items:
             type: string
             description: Employee name.
-
     Skill:
       type: object
       properties:
@@ -1099,12 +1412,12 @@ components:
           type: string
           format: date
         weight:
-          description: Weight of skill when matching. The higher, the more impartant the skill is to be assigned to someone with that skill.
+          description: >-
+            Weight of skill when matching. The higher, the more impartant the
+            skill is to be assigned to someone with that skill.
           minimum: 1
           maximum: 10
           type: integer
-
-
     SkillRequirement:
       type: object
       required:
@@ -1114,15 +1427,16 @@ components:
           description: Required Skill name. Should match skill name of employee.
           type: string
         weight:
-          description: Weight of skill when matching. The higher, the more impartant the skill is to be assigned to someone with that skill.
+          description: >-
+            Weight of skill when matching. The higher, the more impartant the
+            skill is to be assigned to someone with that skill.
           maximum: 10
           type: integer
         hard:
-          description: Whether the skill matching should be seen as a hard constraint or not.
+          description: >-
+            Whether the skill matching should be seen as a hard constraint or
+            not.
           type: boolean
-
-
-
     FillOptions:
       type: object
       properties:
@@ -1140,136 +1454,158 @@ components:
           example: true
         full:
           type: boolean
-          description: All shifts should be assigned (full solver). Or try to fill most (not full solver)
+          description: >-
+            All shifts should be assigned (full solver). Or try to fill most
+            (not full solver)
           example: true
-
-
     FillWeights:
       type: object
       properties:
         unassigned:
           type: string
           description: Weight of having unassigned assignments (hard or medium)
-          example: "1medium"
-        maxWorkingDays:	 
-          description:	An employee should not work more than contract.maxWorkingDays days in the planning horizon.
+          example: 1medium
+        maxWorkingDays:
+          description: >-
+            An employee should not work more than contract.maxWorkingDays days
+            in the planning horizon.
           type: string
-          example: "1hard"        
-        maxHours:	 
-          description:	An employee should not work more than contract.max hours in the planning horizon.
+          example: 1hard
+        maxHours:
+          description: >-
+            An employee should not work more than contract.max hours in the
+            planning horizon.
           type: string
-          example: "1hard"          
-        minHours:	 
-          description:	An employee should not work less than contract.min hours in the planning horizon. Please ensure minimum feasibility over the whole workforce.
+          example: 1hard
+        minHours:
+          description: >-
+            An employee should not work less than contract.min hours in the
+            planning horizon. Please ensure minimum feasibility over the whole
+            workforce.
           type: string
-          example: "1hard"          
-        shiftStart:	 
-          description:	Earliest time contract.earliestShiftStart in a day when an employee is allowed to work
+          example: 1hard
+        shiftStart:
+          description: >-
+            Earliest time contract.earliestShiftStart in a day when an employee
+            is allowed to work
           type: string
-          example: "1hard"          
-        latestShiftStart: 
-          description:	Earliest time contract.latestShiftStart in a day when an employee is allowed to start work
+          example: 1hard
+        latestShiftStart:
+          description: >-
+            Earliest time contract.latestShiftStart in a day when an employee is
+            allowed to start work
           type: string
-          example: "1hard"          
-        shiftEnd:	 
-          description:	Latest time contract.latestShiftEnd in a day when an employee is allowed to end work
+          example: 1hard
+        shiftEnd:
+          description: >-
+            Latest time contract.latestShiftEnd in a day when an employee is
+            allowed to end work
           type: string
-          example: "1hard"          
-        maxShift:	 
-          description:	Maximum time contract.maxShiftLength that an employee is allowed to work
+          example: 1hard
+        maxShift:
+          description: >-
+            Maximum time contract.maxShiftLength that an employee is allowed to
+            work
           type: string
-          example: "1hard"          
-        dayOfWeek:	 
-          description:	Restricts employee availability based on days in the week that
+          example: 1hard
+        dayOfWeek:
+          description: Restricts employee availability based on days in the week that
           type: string
-          example: "1hard"          
-        minShift:	 
-          description:	Minimum time contract.maxShiftLength that an employee is allowed to work
+          example: 1hard
+        minShift:
+          description: >-
+            Minimum time contract.maxShiftLength that an employee is allowed to
+            work
           type: string
-          example: "1hard"          
-        sameDay:	 
-          description:	Maximum number of shifts that an employee is allowed to work
+          example: 1hard
+        sameDay:
+          description: Maximum number of shifts that an employee is allowed to work
           type: string
-          example: "1hard"          
-        sameDayMinRest:	
-          description:	Minimum resting period between two shifts on the same day
+          example: 1hard
+        sameDayMinRest:
+          description: Minimum resting period between two shifts on the same day
           type: string
-          example: "1hard"          
-        availability:	
-          description:	Date-time range of employee's availability
+          example: 1hard
+        availability:
+          description: Date-time range of employee's availability
           type: string
-          example: "1hard"          
-        locked:		
-          description:	Take into account assignments that are fixed during the solve
+          example: 1hard
+        locked:
+          description: Take into account assignments that are fixed during the solve
           type: string
-          example: "1000hard"          
-        maxConsecutive:	
-          description:	No more than contract.maxConsecutiveWorkDays consecutive shifts.
+          example: 1000hard
+        maxConsecutive:
+          description: No more than contract.maxConsecutiveWorkDays consecutive shifts.
           type: string
-          example: "1hard"          
-        minRest:		 
-          description:	Minimum resting between two shifts (irrespective of shifts)
+          example: 1hard
+        minRest:
+          description: Minimum resting between two shifts (irrespective of shifts)
           type: string
-          example: "1hard"          
-        concurrent:	
-          description:	An employee cannot have two assignments on the same time. (This should never happen)
+          example: 1hard
+        concurrent:
+          description: >-
+            An employee cannot have two assignments on the same time. (This
+            should never happen)
           type: string
-          example: "1000hard"          
-        requirements:	
-          description:	Multiple shifts can have a shared requirement for a skill
+          example: 1000hard
+        requirements:
+          description: Multiple shifts can have a shared requirement for a skill
           type: string
-          example: "1hard"       
-        skills:   	
-          description:	Assign employees to match according to their skills and the required skills for a shift
+          example: 1hard
+        skills:
+          description: >-
+            Assign employees to match according to their skills and the required
+            skills for a shift
           type: string
-          example: "1hard"          
-        distance:	
-          description:	Travel from home to shift location
+          example: 1hard
+        distance:
+          description: Travel from home to shift location
           type: string
-          example: "1soft"          
-        priority:	 
-          description:	Shift Priorities
+          example: 1soft
+        priority:
+          description: Shift Priorities
           type: string
-          example: "1soft"          
-        pref:	        
-          description:	A preference for a certain shift assignment for an employee
+          example: 1soft
+        pref:
+          description: A preference for a certain shift assignment for an employee
           type: string
-          example: "1medium"          
-        costs:	        
-          description:	Some shifts incur a higher cost when they are assigned to (opposite of priority)
+          example: 1medium
+        costs:
+          description: >-
+            Some shifts incur a higher cost when they are assigned to (opposite
+            of priority)
           type: string
-          example: "1soft"          
-        wages:	        
-          description:	Hourly wage cost per employee influences choice of employee
+          example: 1soft
+        wages:
+          description: Hourly wage cost per employee influences choice of employee
           type: string
-          example: "1soft"          
-        softSkills:	 
-          description:	Assign employees to match according to their skills and the required skills for a shift (soft rule)
+          example: 1soft
+        softSkills:
+          description: >-
+            Assign employees to match according to their skills and the required
+            skills for a shift (soft rule)
           type: string
-          example: "1soft"          
-        criticalSkills:	 
-          description:	Prefer assigning critical shifts first
+          example: 1soft
+        criticalSkills:
+          description: Prefer assigning critical shifts first
           type: string
-          example: "1hard"      
+          example: 1hard
         working:
           description: Respect employee working days
           type: string
-          example: "1hard"
+          example: 1hard
         blacklist:
           description: Respect the shift's blacklist
           type: string
-          example: "1hard"
+          example: 1hard
         efficiency:
           description: Efficiency costs per employee
           type: string
-          example: "1soft"
+          example: 1soft
         softSkillsLevel:
           description: Respect employee skill level match
           type: string
-          example: "1soft"
-
-
-
+          example: 1soft
     FillEmployee:
       type: object
       required:
@@ -1292,11 +1628,15 @@ components:
           description: Efficiency rate of employee. 1.0 is normal and default
         hourlyPay:
           type: number
-          description: Hourly wage/pay for employee. Total costs are minimised by the optimiser.
+          description: >-
+            Hourly wage/pay for employee. Total costs are minimised by the
+            optimiser.
         lastRestDate:
           type: string
           format: date
-          description: The last date on which the employee had a rest before the planning period.
+          description: >-
+            The last date on which the employee had a rest before the planning
+            period.
         canWorkOn:
           type: array
           description: List of days of week on which the employee can work.
@@ -1315,9 +1655,6 @@ components:
           items:
             type: string
             description: Shift name that should be preferred.
-
-
-
     Employee:
       type: object
       required:
@@ -1339,13 +1676,15 @@ components:
           description: Efficiency rate of employee. 1.0 is normal and default
         hourlyPay:
           type: number
-          description: Hourly wage/pay for employee. Total costs are minimised by the optimiser.
+          description: >-
+            Hourly wage/pay for employee. Total costs are minimised by the
+            optimiser.
         lastRestDate:
           type: string
           format: date
-          description: The last date on which the employee had a rest before the planning period.
-
-
+          description: >-
+            The last date on which the employee had a rest before the planning
+            period.
     DateTimeWindow:
       type: object
       description: Date time window
@@ -1357,16 +1696,17 @@ components:
           type: string
           format: date-time
           description: From datetime
-          example: "2022-01-01T22:00:00"
+          example: '2022-01-01T22:00:00'
         to:
           type: string
           format: date-time
           description: To datetime
-          example: "2022-01-03T06:00:00"
-
+          example: '2022-01-03T06:00:00'
     Demand:
       type: object
-      description: Preferred demand for a certain skill and for a specific block during the day.
+      description: >-
+        Preferred demand for a certain skill and for a specific block during the
+        day.
       required:
         - shift
         - skill
@@ -1378,7 +1718,9 @@ components:
           properties:
             index:
               type: number
-              description: Index time of shift block in day. (usually 0 - 23 for 1h blocks per day)
+              description: >-
+                Index time of shift block in day. (usually 0 - 23 for 1h blocks
+                per day)
             date:
               type: string
               format: date
@@ -1389,10 +1731,11 @@ components:
         prefDemand:
           type: integer
           description: The number of employees of that skill to be present.
-
     ShiftDemand:
       type: object
-      description: Preferred demand for a certain skill and for a specific block during the day.
+      description: >-
+        Preferred demand for a certain skill and for a specific block during the
+        day.
       required:
         - from
         - to
@@ -1403,12 +1746,12 @@ components:
           type: string
           format: date-time
           description: Starting time of demand
-          example: "2021-12-01T08:00:00"
+          example: '2021-12-01T08:00:00'
         to:
           type: string
           format: date-time
           description: Starting time of demand
-          example: "2021-12-01T16:00:00"
+          example: '2021-12-01T16:00:00'
         skill:
           type: string
           description: Skill type definition
@@ -1416,7 +1759,6 @@ components:
           type: integer
           description: The number of employees of that skill to be present.
           example: 1
-
     ResourceRequirement:
       type: object
       description: A shared resource requirement
@@ -1426,7 +1768,7 @@ components:
           description: a list of shiftnames this requirement applies to
           items:
             type: string
-            example: "shift"
+            example: shift
             description: shift name
         skill:
           type: string
@@ -1436,9 +1778,6 @@ components:
           type: integer
           description: the required number of shared resources with this skill
           example: 2
-
-
-
     TaskResourceRequirement:
       type: object
       description: A a combination of resource requirements grouped per resource.
@@ -1446,8 +1785,6 @@ components:
         type: array
         items:
           $ref: '#/components/schemas/TaskResourceRequirementDetail'
-
-
     TaskResourceRequirementDetail:
       type: object
       properties:
@@ -1461,15 +1798,14 @@ components:
           items:
             type: string
             description: Skill name
-            example: "technician"
+            example: technician
         allowed:
           type: array
           description: The allowed resources that can do this job.
           items:
             type: string
-            example: "resource 0"
+            example: resource 0
             description: Resource name
-
     Order:
       type: object
       description: An order to be planned. Can hold multiple tasks.
@@ -1477,12 +1813,13 @@ components:
         name:
           type: string
           description: unique name identifier
-          example: "order 0"
+          example: order 0
         duration:
           type: string
           description: duration of an order (ISO8601 Duration)
-          example: "PT1M"
-          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
+          example: PT1M
+          pattern: >-
+            ^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$
         priority:
           type: integer
           example: 10
@@ -1493,7 +1830,6 @@ components:
             $ref: '#/components/schemas/Task'
         resourceRequirements:
           $ref: '#/components/schemas/TaskResourceRequirement'
-
     Task:
       type: object
       description: Task within an order
@@ -1501,11 +1837,12 @@ components:
         name:
           type: string
           description: unique name identifier
-          example: "task 0"
+          example: task 0
         duration:
           type: string
           example: PT15M
-          pattern: '^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$'
+          pattern: >-
+            ^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d+[HMS])(\d+H)?(\d+M)?(\d+S)?)?$
           description: duration of a task (ISO8601 Duration)
         availability:
           type: array
@@ -1514,7 +1851,6 @@ components:
             $ref: '#/components/schemas/DateTimeWindow'
         resourceRequirements:
           $ref: '#/components/schemas/TaskResourceRequirement'
-
     Resource:
       type: object
       description: A resource definition
@@ -1525,7 +1861,7 @@ components:
         name:
           type: string
           description: unique name identifier for resource
-          example: "resourceType 0"
+          example: resourceType 0
         type:
           $ref: '#/components/schemas/ResourceType'
         availability:
@@ -1533,17 +1869,14 @@ components:
           description: Available date-time range for a resource.
           items:
             $ref: '#/components/schemas/DateTimeWindow'
-
     ResourceType:
       type: string
       description: Resource type, plannable or capacitated.
       enum:
         - plannable
         - capacitated
-
-
     PlannableResource:
-      allOf: # Combines the Resource and the inline model
+      allOf:
         - $ref: '#/components/schemas/Resource'
         - type: object
           properties:
@@ -1560,15 +1893,13 @@ components:
                   name:
                     type: string
                     description: unique identifier for resource item
-                    example: "named resource 0"
+                    example: named resource 0
                   skills:
                     type: array
                     items:
                       type: string
-                      example: "A"
+                      example: A
                     description: list of skills
-
-
     CapacitatedResource:
       allOf:
         - $ref: '#/components/schemas/Resource'
@@ -1583,11 +1914,11 @@ components:
               description: Available date-time range for a resource.
               items:
                 $ref: '#/components/schemas/DateTimeWindow'
-
-
     CreationDemand:
       type: object
-      description: A demand for a certain skill during a certain time interval used by the creation solver.
+      description: >-
+        A demand for a certain skill during a certain time interval used by the
+        creation solver.
       required:
         - from
         - to
@@ -1606,14 +1937,19 @@ components:
           description: The skill for which this demand is defined.
         demand:
           type: integer
-          description: The number of people needed for this shift during this time interval for this skill (only applicable to fixed mode).
+          description: >-
+            The number of people needed for this shift during this time interval
+            for this skill (only applicable to fixed mode).
         min:
           type: integer
-          description: The total amount of minutes that need to have been worked by the end of this interval for this skill (only applicable to flexible mode).
+          description: >-
+            The total amount of minutes that need to have been worked by the end
+            of this interval for this skill (only applicable to flexible mode).
         max:
           type: integer
-          description: The total maximum amount of minutes of work that is available at the start of this interval (only applicable to flexible mode).
-
+          description: >-
+            The total maximum amount of minutes of work that is available at the
+            start of this interval (only applicable to flexible mode).
     CreationShiftPattern:
       type: object
       description: A definition of a schedulable shift for the creation solver.
@@ -1645,8 +1981,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CreationResourceRequirement'
-          description: The required resources needed for each person assigned to this shift.
-
+          description: >-
+            The required resources needed for each person assigned to this
+            shift.
     PlanningPeriod:
       type: object
       description: The planning period
@@ -1658,13 +1995,14 @@ components:
           type: string
           format: date-time
           description: the starting date-time (ISO 8601 format) for the planning period
-          example: "2022-01-01T08:00:00"
+          example: '2022-01-01T08:00:00'
         to:
           type: string
           format: date-time
-          description: the end date-time (ISO 8601 format) for the planning period (inclusive)
-          example: "2022-01-05T17:00:00"
-
+          description: >-
+            the end date-time (ISO 8601 format) for the planning period
+            (inclusive)
+          example: '2022-01-05T17:00:00'
     CreationDatePattern:
       type: object
       description: A pattern definition denoting the time interval(s) for a certain shift.
@@ -1685,10 +2023,11 @@ components:
           items:
             $ref: '#/components/schemas/CreationBreak'
           description: The breaks during this shift.
-
     CreationBreak:
       type: object
-      description: A break is a time interval assigned to a date pattern of a shift during which no work is done.
+      description: >-
+        A break is a time interval assigned to a date pattern of a shift during
+        which no work is done.
       required:
         - start
         - end
@@ -1701,7 +2040,6 @@ components:
           type: string
           format: date-time
           description: The end date and time of this break.
-
     CreationResourceRequirement:
       type: object
       description: A required resource used by a certain shift.
@@ -1715,7 +2053,6 @@ components:
         value:
           type: integer
           description: How many units of this resource type is required for this shift.
-
     CreationResourceAvailability:
       type: object
       description: A limited availbale resource that can be used by certain shifts.
@@ -1728,14 +2065,13 @@ components:
           description: The unique name of the resource.
         max:
           type: integer
-          description: The maximum amount of units of this resource that can be used simultaneously.
-
+          description: >-
+            The maximum amount of units of this resource that can be used
+            simultaneously.
     JobId:
       type: string
       format: uuid
       description: Job ID
-
-
     SolutionJob:
       type: object
       properties:
@@ -1747,11 +2083,8 @@ components:
           $ref: '#/components/schemas/Status'
         score:
           $ref: '#/components/schemas/Score'
-
-
-
     ShiftSolution:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
           properties:
@@ -1761,21 +2094,17 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/BlockAssignment'
-
-
     TaskSolution:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
           properties:
             solution:
               type: array
               items:
-                  $ref: '#/components/schemas/TaskAssignment'
-
-
+                $ref: '#/components/schemas/TaskAssignment'
     CapacitySolution:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
           properties:
@@ -1785,10 +2114,8 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/WeekAssignment'
-
-
     FillSolution:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
           properties:
@@ -1796,10 +2123,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/FillAssignment'
-
-
     CreateSolution:
-      allOf:     # Combines the SolveJob and the inline model
+      allOf:
         - $ref: '#/components/schemas/SolutionJob'
         - type: object
           properties:
@@ -1807,9 +2132,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/FillAssignment'
-
-
-
     ShiftAssignment:
       type: object
       properties:
@@ -1834,7 +2156,6 @@ components:
         locked:
           type: boolean
           description: Date time of the start of the assignment
-
     BlockAssignment:
       type: object
       properties:
@@ -1845,7 +2166,6 @@ components:
         index:
           type: integer
           description: Index number of the block
-
     TaskAssignment:
       type: object
       properties:
@@ -1865,7 +2185,9 @@ components:
           description: end time of the order/task
         capacitated:
           type: object
-          description: the combination of capacitated resources used during excution of this order/task, grouped per type. 
+          description: >-
+            the combination of capacitated resources used during excution of
+            this order/task, grouped per type.
           additionalProperties:
             type: array
             items:
@@ -1873,15 +2195,14 @@ components:
               description: number of capacitated resources of this type used.
         plannable:
           type: object
-          description: the combination of plannable resources used during excution of this order/task, grouped per type. 
+          description: >-
+            the combination of plannable resources used during excution of this
+            order/task, grouped per type.
           additionalProperties:
             type: array
             items:
               type: string
               description: name of the capacitated resources of this type used.
-
-
-
     WeekAssignment:
       type: object
       properties:
@@ -1894,7 +2215,6 @@ components:
         totals:
           type: integer
           description: Total number of statute employees necessary
-
     FillAssignment:
       type: object
       properties:
@@ -1915,9 +2235,6 @@ components:
           items:
             type: string
             description: skill
-
-
-
     Stats:
       type: object
       properties:
@@ -1949,9 +2266,6 @@ components:
                       type: array
                       items:
                         type: string
-
-
-
     StatusJob:
       type: object
       properties:
@@ -1962,14 +2276,11 @@ components:
           description: Solver type
         status:
           $ref: '#/components/schemas/Status'
-
   securitySchemes:
-
     ApiKey:
       type: apiKey
       in: header
       name: Authorization
-
   responses:
     NotFound:
       description: The specified resource was not found
@@ -1994,6 +2305,3 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/ErrorCode'
-
-
-
