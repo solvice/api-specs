@@ -2237,6 +2237,8 @@ components:
           items:
             type: string
             description: skill
+        locked:
+          type: boolean
     Stats:
       type: object
       properties:
