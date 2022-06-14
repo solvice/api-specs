@@ -1622,7 +1622,9 @@ components:
         home:
           $ref: '#/components/schemas/ShiftLocation'
         skills:
-          $ref: '#/components/schemas/Skill'
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
         efficiency:
           type: number
           description: Efficiency rate of employee. 1.0 is normal and default
