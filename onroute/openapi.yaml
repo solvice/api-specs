@@ -1396,6 +1396,10 @@ components:
           example: 750
           minimum: 0
           maximum: 1440
+        wait:
+          type: integer
+          example: 3
+          description: Time spent waiting before arriving (used for synchronisation)
         drive:
           type: integer
           example: 5
