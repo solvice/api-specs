@@ -2085,6 +2085,25 @@ components:
           $ref: '#/components/schemas/Status'
         score:
           $ref: '#/components/schemas/Score'
+        unresolved:
+          type: array
+          description: The unresolved constraints show the list of constraints that could not achieve feasibility for the current solve.
+          items:
+            type: object
+            properties:
+              name:
+                description: Name of the constraint.
+                type: string
+              value:
+                description: Value of the unresolved constraint. The higher, the more deviation from perfection this constraint has.
+                type: integer
+              level:
+                description: Level of unresolved constraint.
+                type: string
+                enum:
+                  - HARD
+                  - SOFT
+                  - MEDIUM
     ShiftSolution:
       allOf:
         - $ref: '#/components/schemas/SolutionJob'
