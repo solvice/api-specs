@@ -1890,23 +1890,25 @@ components:
             supply:
               type: array
               items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: unique identifier for resource item
-                    example: named resource 0
-                  skills:
-                    type: array
-                    items:
-                      type: string
-                      example: A
-                    description: list of skills
-                  availability:
-                    type: array
-                    description: Available date-time range for a named resource.
-                    items:
-                      $ref: '#/components/schemas/DateTimeWindow'
+                $ref: '#/components/schemas/NamedResource'
+    NamedResource:
+      type: object
+      properties:
+        name:
+          type: string
+          description: unique identifier for resource item
+          example: named resource 0
+        skills:
+          type: array
+          items:
+            type: string
+            example: A
+          description: list of skills
+        availability:
+          type: array
+          description: Available date-time range for a named resource.
+          items:
+            $ref: '#/components/schemas/DateTimeWindow'
     CapacitatedResource:
       allOf:
         - $ref: '#/components/schemas/Resource'
