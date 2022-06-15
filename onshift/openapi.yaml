@@ -2136,6 +2136,11 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/BlockAssignment'
+            assignments:
+              type: array
+              description: Pre made assignments that the solver should take into account
+              items:
+                $ref: '#/components/schemas/ShiftAssignment'
     TaskSolution:
       allOf:
         - $ref: '#/components/schemas/SolutionJob'
