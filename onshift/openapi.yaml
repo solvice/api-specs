@@ -1671,8 +1671,10 @@ components:
           type: string
           description: Reference to Statute name
         skill:
-          type: string
-          description: Skill name owned by employee
+          type: array
+          description: Skills for this employee
+          items:
+            $ref: '#/components/schemas/SkillDetail'
         efficiency:
           type: number
           description: Efficiency rate of employee. 1.0 is normal and default
@@ -1687,6 +1689,18 @@ components:
           description: >-
             The last date on which the employee had a rest before the planning
             period.
+    SkillDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the skill
+        efficiency:
+          type: number
+          format: integer
+        preference:
+          type: number
+          format: double
     DateTimeWindow:
       type: object
       description: Date time window
