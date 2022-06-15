@@ -1902,6 +1902,11 @@ components:
                       type: string
                       example: A
                     description: list of skills
+                  availability:
+                    type: array
+                    description: Available date-time range for a named resource.
+                    items:
+                      $ref: '#/components/schemas/DateTimeWindow'
     CapacitatedResource:
       allOf:
         - $ref: '#/components/schemas/Resource'
