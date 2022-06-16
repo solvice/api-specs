@@ -989,6 +989,8 @@ components:
               description: Pre made assignments that the solver should take into account
               items:
                 $ref: '#/components/schemas/ShiftAssignment'
+            options:
+              $ref: '#/components/schemas/ShiftOptions'
     ShiftFillRequest:
       allOf:
         - $ref: '#/components/schemas/SolveJob'
@@ -1437,6 +1439,83 @@ components:
             Whether the skill matching should be seen as a hard constraint or
             not.
           type: boolean
+    ShiftOptions:
+      type: object
+      properties:
+        shiftBlocksPerDay:
+          type: number
+          format: integer
+          description: The number of time blocks per day (in a 24h period)
+        maxShiftBlocksPerDay:
+          type: number
+          format: integer
+          description: The maximum number of time blocks in a working day (can go past 24h)
+        startDate:
+          type: string
+          format: date
+          description: the startdate for the schedule
+        returnDummyEmployees:
+          type: boolean
+          description: whether to fill in the returning assignments for which no employee could be selected with a 'dummy' employee
+        absenceSkillList:
+          type: array
+          description: the names of the skills that are passed to the API to signal a planned absence
+          items:
+            type: string
+        mediumSkillPreference:
+          type: boolean
+          description: whether to the skill prefence should be scored as a medium constraint (true) or as a hard constraint (false)
+        allowSkillSwitchInShift:
+          type: boolean
+          description: whether to allow an employee to switch skills in a single assignent
+        numberOfShiftsPerSkill:
+          type: number
+          format: integer
+          description: by default at max 1 assignments can be made per skill, per day for an employee. This option handles how many times an employee can be assigned to the same skill in a day
+        weights:
+          type: object
+          description: define the weights to balance the different constraints
+          properties:
+            shiftDemandStarts:
+              type: number
+              format: integer
+              description: make an assignment start at the same timeblock the preferred demand rises
+            shiftDemandEnds:
+              type: number
+              format: integer
+              description: make an assignment start at the same timeblock the preferred demand decreases
+            restShiftSameDay:
+              type: number
+              format: integer
+              description: the rest between shifts in the same day
+            restShift:
+              type: number
+              format: integer
+              description: the rest between shifts on different days
+            overSupply:
+              type: number
+              format: integer
+              description: the oversupply
+            overSupplyNoDemand:
+              type: number
+              format: integer
+              description: the oversupply at timeblocks where there is no demand
+            underSupply:
+              type: number
+              format: integer
+              description: the underSupply at timeblocks where there is no demand
+            minMaxHour:
+              type: number
+              format: integer
+              description: the minimum and/or maximum duration of a shift
+            hardAvailability:
+              type: number
+              format: integer
+              description: the availability of an employee
+            maxDaysPerWeek:
+              type: number
+              format: integer
+              description: the maximum number of working days for an employee
     FillOptions:
       type: object
       properties:
