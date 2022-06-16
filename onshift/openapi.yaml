@@ -991,6 +991,26 @@ components:
                 $ref: '#/components/schemas/ShiftAssignment'
             options:
               $ref: '#/components/schemas/ShiftOptions'
+            allowedShifts:
+              type: object
+              additionalProperties:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ShiftTemplate'
+    ShiftTemplate:
+      type: object
+      description: a schift template to fill in
+      properties:
+        from:
+          description: the begin hour of the shift
+          type: number
+          format: integer
+        to:
+          description: the end hour of the shift
+          type: number
+          format: integer
     ShiftFillRequest:
       allOf:
         - $ref: '#/components/schemas/SolveJob'
