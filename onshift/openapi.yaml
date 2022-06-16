@@ -1270,6 +1270,12 @@ components:
           description: >-
             The raise after the first time threshold for overtime (e.q. 1.2
             means a 20% raise per hour)
+        allowedShiftLengths:
+          type: array
+          description: the allowed shift lengths (in hours) for this statute
+          items:
+            type: number
+            format: double
     Contract:
       type: object
       description: Collection of labour agreement rule parameters.
