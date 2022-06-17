@@ -419,14 +419,9 @@ components:
 
     BaseResponse:
           allOf: # Combines the SolveJob and the inline model
-            - $ref: '#/components/schemas/SolveJob'
+            - $ref: '#/components/schemas/Solution'
             - type: object
               properties:
-                networkNodes:
-                  type: array
-                  description: Node characteristics from your network.
-                  items:
-                    $ref: '#/components/schemas/Node'
                 serviceTimeAssignments:
                   type: array
                   description: Pre made assignments that the solver should take into account.
@@ -512,14 +507,9 @@ components:
 
     RQResponse:
           allOf:
-            - $ref: '#/components/schemas/SolveJob'
+            - $ref: '#/components/schemas/Solution'
             - type: object
               properties:
-                networkNodes:
-                  type: array
-                  description: Node characteristics from your network.
-                  items:
-                    $ref: '#/components/schemas/RQNode'
                 serviceTimeAssignments:
                   type: array
                   description: Assignments for the service times of nodes the solver was fed or decided on
@@ -572,6 +562,36 @@ components:
           format: uri
           description: Webhook returns solution status after solving in the form of a POST request to the uri given.
 
+    Solution:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/JobId'
+        solver:
+          $ref: '#/components/schemas/Solver'
+        status:
+          $ref: '#/components/schemas/Status'
+        score:
+          $ref: '#/components/schemas/Score'
+        unresolved:
+          type: array
+          description: The unresolved constraints show the list of constraints that could not achieve feasibility for the current solve.
+          items:
+            type: object
+            properties:
+              name:
+                description: Name of the constraint.
+                type: string
+              value:
+                description: Value of the unresolved constraint. The higher, the more deviation from perfection this constraint has.
+                type: integer
+              level:
+                description: Level of unresolved constraint.
+                type: string
+                enum:
+                  - HARD
+                  - SOFT
+                  - MEDIUM
 
     Error:
       type: object

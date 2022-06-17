@@ -395,7 +395,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
+                oneOf:
                   - $ref: '#/components/schemas/RoutingSolution'
                   - $ref: '#/components/schemas/PeriodicRoutingSolution'
                   - $ref: '#/components/schemas/CapacitySolution'
@@ -439,6 +439,13 @@ components:
               $ref: '#/components/schemas/options'
             weights:
               $ref: '#/components/schemas/Weights'
+            solution:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visit'
+
 
 
     PDP:
@@ -467,6 +474,11 @@ components:
               $ref: '#/components/schemas/options'
             weights:
               $ref: '#/components/schemas/Weights'
+            solution:
+              type: object
+              additionalProperties:
+                items:
+                  $ref: '#/components/schemas/Visit'
 
 
     CAP:
@@ -582,15 +594,26 @@ components:
               type: array
               description: List of Linked Orders.
               items:
-                description: Make sure that an order will always be executed at the same time with another order. Vehicle will be different as a result.
+                $ref: '#/components/schemas/LinkedOrder'
+            solution:
+              type: object
+              additionalProperties:
                 type: object
-                properties:
-                  order1:
-                    type: string
-                    description: Leading linked order
-                  order2:
-                    type: string
-                    description: Following linked order
+                additionalProperties:
+                  items:
+                    $ref: '#/components/schemas/Visit'
+
+
+    LinkedOrder:
+      type: object
+      description: The linked order object describes the orders that need to  be executed at the same time with another order. The vehicle will be different as a result.
+      properties:
+        order1:
+          type: string
+          description: Leading linked order
+        order2:
+          type: string
+          description: Following linked order
 
 
     options:
@@ -932,12 +955,57 @@ components:
                 description: Ignore the travel time from the start location to the first order
 
         breaks:
-          type: object
+          type: array
           description: Break definitions
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/WindowBreak'
+              - $ref: '#/components/schemas/DriveTimeBreak'
+            discriminator:
+              propertyName: type
+              mapping:
+                'window': '#/components/schemas/WindowBreak'
+                'drivetime': '#/components/schemas/DriveTimeBreak'
+
+        category:
+          type: string
+          enum:
+            - CAR
+            - BIKE
+            - TRUCK
+        region:
+          type: string
+
+    Break:
+      type: object
+      required:
+        - breaktype
+        - breakduration
+      properties:
+        breaktype:
+          type: string
+          enum:
+            - window
+            - drivetime
+        breakduration:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Duration of break, should be less than end minus start.
+          example: 30
+      discriminator:
+        propertyName: breaktype
+        mapping:
+          'window' : '#/components/schemas/WindowBreak'
+          'drivetime': '#/components/schemas/DriveTimeBreak'
+
+    WindowBreak:
+      allOf:
+        - $ref: '#/components/schemas/Break'
+        - type: object
           required:
             - breakstart
             - breakend
-            - breakduration
           properties:
             breakstart:
               type: integer
@@ -951,14 +1019,21 @@ components:
               maximum: 1439
               description: Earliest ending time of break.
               example: 860
-            breakduration:
+
+
+    DriveTimeBreak:
+      allOf:
+        - $ref: '#/components/schemas/Break'
+        - type: object
+          required:
+            - breakinit
+          properties:
+            breakinit:
               type: integer
               minimum: 0
               maximum: 1439
-              description: Duration of break, should be less than end minus start.
-              example: 30
-        region:
-          type: string
+              description: The drive time after which a break should be initialized
+              example: 780
 
     Order:
       type: object
@@ -1298,7 +1373,6 @@ components:
           properties:
             solution:
               type: object
-
               additionalProperties:
                 type: array
                 items:
