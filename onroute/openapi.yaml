@@ -622,7 +622,7 @@ components:
       properties:
         profile:
           type: string
-          description: All vehicles are either CAR or TRUCK.
+          description: All vehicles are either CAR or TRUCK. (This feature is in beta. Give us a heads-up if you want to use it!)
           enum:
             - CAR
             - TRUCK
@@ -969,6 +969,7 @@ components:
 
         category:
           type: string
+          description: Transportation type. (This feature is in beta. Give us a heads-up if you want to use it!)
           enum:
             - CAR
             - BIKE
