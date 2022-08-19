@@ -956,7 +956,7 @@ components:
 
         breaks:
           type: array
-          description: Break definitions
+          description: Break definitions. Note that in edge cases, using shiftstart/shiftend/workingtime definitions might be more suitable.
           items:
             anyOf:
               - $ref: '#/components/schemas/WindowBreak'
