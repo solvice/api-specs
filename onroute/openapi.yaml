@@ -686,14 +686,14 @@ components:
         workloadSpread:
           type: boolean
           default: false
-          description: If true, the workload (service time) will be spread over all vehicles and all days. (interacts with `Weights.workloadSpreadWeight` and `options.workloadFairnessDeviation`)
+          description: If true, the workload (service time) will be spread over all vehicles and all days. (interacts with `Weights.workloadSpreadWeight` and `options.workloadSensitivity`)
         workloadVehicleSpread:
           type: boolean
           default: false
-          description: If true, the workload (service time) will be spread over all days of one vehicle. (interacts with `Weights.workloadSpreadWeight` and `options.workloadFairnessDeviation`)
-        workloadFairnessDeviation:
+          description: If true, the workload (service time) will be spread over all days of one vehicle. (interacts with `Weights.workloadSpreadWeight` and `options.workloadSensitivity`)
+        workloadSensitivity:
           type: number
-          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadFairnessDeviation=10%, then it is a fair workload. A deviation of 5% would render it unfair.'
+          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadSensitivity=10%, then it is a fair workload. A deviation of 5% would render it unfair.'
           example: 0.05
         snapUnit:
           type: integer
