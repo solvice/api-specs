@@ -1749,8 +1749,7 @@ components:
           description: List of days of week on which the employee can work.
           items:
             type: string
-            format: date
-            description: Day of week
+            example: "MONDAY"
         availability:
           type: array
           description: Available date-time range of employee.
