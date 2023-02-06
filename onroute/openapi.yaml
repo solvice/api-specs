@@ -676,10 +676,6 @@ components:
           type: integer
           default: 120
           description: The maximum waiting time for a visit so that it can synchronise with a link to perform an activity together. See interaction with `Options.use_snapUnit_for_waitRange`.
-        capacitySpread:
-          type: boolean
-          description: Create a fair workload for every vehicle.
-          default: false
         minimize_driver_wait_time:
           type: boolean
           description: If true, this will minimise the wait time of the vehicles.
