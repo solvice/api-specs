@@ -756,7 +756,7 @@ components:
           description: Weight modifier for scheduling vehicles to their fixed `vehicle.region`
 
 
-        minimiseVehiclesWeight:
+        minimizeVehiclesWeight:
           type: integer
           minimum: 0
           default: 1
