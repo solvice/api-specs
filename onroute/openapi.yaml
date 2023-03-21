@@ -738,7 +738,7 @@ components:
           minimum: 0
           default: 1
           maximum: 100
-          description: Weight modifier for planned vehicle and planned date requirement.
+          description: Weight modifier for plannedDate, plannedVehicle and plannedArrival.
 
         ASAPWeight:
           type: integer
