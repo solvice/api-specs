@@ -763,6 +763,13 @@ components:
           maximum: 100
           description: Weight modifier for minimising the number of vehicles.
 
+        softTypesWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for order soft types.
+
         linkedOrdersWeight:
           type: integer
           minimum: 0
