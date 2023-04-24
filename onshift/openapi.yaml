@@ -729,6 +729,26 @@ components:
               items:
                 $ref: '#/components/schemas/ShiftAssignment'
 
+    FairnessBucket:
+      type: object
+      required:
+        - employees
+        - shifts
+        - period
+      properties:
+        employees:
+          type: array
+          description: Employees that need to be distributed fairly
+          items:
+            type: string
+        shifts:
+          type: array
+          description: Shifts that need to be distributed fairly
+          items:
+            type: string
+        period:
+          $ref: '#/components/schemas/PlanningPeriod'
+
 
     ShiftFillRequest:
       allOf:     # Combines the SolveJob and the inline model
@@ -749,6 +769,11 @@ components:
               description: Contract definitions used by employees.
               items:
                 $ref: '#/components/schemas/Contract'
+            fairnessBuckets:
+              type: array
+              description: Buckets of employees and shifts that require fair distribution of work volume.
+              items:
+                $ref: '#/components/schemas/FairnessBucket'
             employees:
               type: array
               description: Group of employees available to be planned in the planning period defined by the demand.
