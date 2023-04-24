@@ -1711,6 +1711,36 @@ components:
           description: Respect employee skill level match
           type: string
           example: 1soft
+
+    PeriodRule:
+      type: object
+      properties:
+        period:
+          $ref: '#/components/schemas/PlanningPeriod'
+        maxWorkingDays:
+          type: integer
+          description: Maximum number of total days working in planning period.
+        minWorkingDays:
+          type: integer
+          description: Minimum number of total days working in planning period.
+        minWorkingDuration:
+          type: string
+          example: PT20H
+          description: Minimum duration to work in the planning period.
+        maxWorkingDuration:
+          type: string
+          description: Maximum duration (ISO8601) to work in the planning period.
+          example: PT40H
+        minRestDurationBetweenShiftsSameDay:
+          type: string
+          description: Minimum duration between two shifts on the same day in this planning period.
+          example: PT1H
+        minRestDuration:
+          type: string
+          description: Minimum duration between any two shifts in this planning period.
+          example: PT2H
+
+
     FillEmployee:
       type: object
       required:
@@ -1726,6 +1756,11 @@ components:
           description: Reference to Contract name
         home:
           $ref: '#/components/schemas/ShiftLocation'
+        periodRules:
+          type: array
+          description: List of period rules that should be applied to this employee.
+          items:
+            $ref: '#/components/schemas/PeriodRule'
         skills:
           type: array
           items:
