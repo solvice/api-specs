@@ -1037,6 +1037,11 @@ components:
                 period defined by the demand.
               items:
                 $ref: '#/components/schemas/FillEmployee'
+            fairnessBuckets:
+              type: array
+              description: Buckets of employees and shifts that require fair distribution of work volume.
+              items:
+                $ref: '#/components/schemas/FairnessBucket'
             requirements:
               type: array
               description: An optional list of shared resource requirements
@@ -2146,6 +2151,27 @@ components:
           description: >-
             The required resources needed for each person assigned to this
             shift.
+
+    FairnessBucket:
+      type: object
+      required:
+        - employees
+        - shifts
+        - period
+      properties:
+        employees:
+          type: array
+          description: Employees that need to be distributed fairly
+          items:
+            type: string
+        shifts:
+          type: array
+          description: Shifts that need to be distributed fairly
+          items:
+            type: string
+        period:
+          $ref: '#/components/schemas/PlanningPeriod'
+
     PlanningPeriod:
       type: object
       description: The planning period
