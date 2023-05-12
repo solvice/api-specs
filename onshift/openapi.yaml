@@ -1042,6 +1042,11 @@ components:
               description: Buckets of employees and shifts that require fair distribution of work volume.
               items:
                 $ref: '#/components/schemas/FairnessBucket'
+            linkedShifts:
+              type: array
+              description: Shifts that should be performed by the same employees.
+              items:
+                $ref: '#/components/schemas/LinkedShift'
             requirements:
               type: array
               description: An optional list of shared resource requirements
@@ -2151,6 +2156,17 @@ components:
           description: >-
             The required resources needed for each person assigned to this
             shift.
+
+    LinkedShift:
+      type: object
+      required:
+        - shifts
+      properties:
+        shifts:
+          type: array
+          description: Shifts that need to be linked
+          items:
+              type: string
 
     FairnessBucket:
       type: object
