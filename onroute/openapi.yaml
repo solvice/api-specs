@@ -395,7 +395,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
+                oneOf:
                   - $ref: '#/components/schemas/RoutingSolution'
                   - $ref: '#/components/schemas/PeriodicRoutingSolution'
                   - $ref: '#/components/schemas/CapacitySolution'
@@ -439,6 +439,13 @@ components:
               $ref: '#/components/schemas/options'
             weights:
               $ref: '#/components/schemas/Weights'
+            solution:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visit'
+
 
 
     PDP:
@@ -467,6 +474,11 @@ components:
               $ref: '#/components/schemas/options'
             weights:
               $ref: '#/components/schemas/Weights'
+            solution:
+              type: object
+              additionalProperties:
+                items:
+                  $ref: '#/components/schemas/Visit'
 
 
     CAP:
@@ -582,15 +594,26 @@ components:
               type: array
               description: List of Linked Orders.
               items:
-                description: Make sure that an order will always be executed at the same time with another order. Vehicle will be different as a result.
+                $ref: '#/components/schemas/LinkedOrder'
+            solution:
+              type: object
+              additionalProperties:
                 type: object
-                properties:
-                  order1:
-                    type: string
-                    description: Leading linked order
-                  order2:
-                    type: string
-                    description: Following linked order
+                additionalProperties:
+                  items:
+                    $ref: '#/components/schemas/Visit'
+
+
+    LinkedOrder:
+      type: object
+      description: The linked order object describes the orders that need to  be executed at the same time with another order. The vehicle will be different as a result.
+      properties:
+        order1:
+          type: string
+          description: Leading linked order
+        order2:
+          type: string
+          description: Following linked order
 
 
     options:
@@ -599,24 +622,26 @@ components:
       properties:
         profile:
           type: string
-          description: All vehicles are either CAR or TRUCK.
+          description: All vehicles are either CAR or TRUCK. (This feature is in beta. Give us a heads-up if you want to use it!)
           enum:
             - CAR
             - TRUCK
           default: CAR
         allow_overtime:
           type: boolean
+          default: false
           description: |
-            If the `shiftend` should be a soft condition to take into account. When `allow_overtime: true` then some orders will be planned after `shiftend`.
+            When `allow_overtime: true`, it's seen as a soft constraint and orders can be planned after `shiftend`.
         overconstrained:
           type: boolean
+          default: false
           description: |
             If you do not need to assign every order to a vehicle, then set `overconstrained: true`.
         minimize_vehicle_use:
           type: boolean
           description:  Minimise the vehicle useage or minimise total travel time. Two different objective functions.
         traffic:
-          type: integer
+          type: number
           description: Modifier for traffic.
         polylines:
           type: boolean
@@ -628,20 +653,55 @@ components:
             - SECONDS
           description: Calculate in minutes or seconds. Minutes is advised.
           default: MINUTES
-        force_type_constraints:
+        force_type_constraint:
           type: boolean
           description: If yes, then the type constraints violations are not allowed. Only do this when you are sure about type definitions.
-        capacitySpread:
+        ignore_travel_time_to_first_job:
           type: boolean
-          description: Create a fair workload for every vehicle.
           default: false
+          description: Global setting for ignoring the travel time from a vehicle's (optional) starting location to its first order.
+        ignore_travel_time_from_last_job:
+          type: boolean
+          default: false
+          description: Global setting for ignoring the travel time from a vehicle's last order to its (optional) end location.
+        max_service_time:
+          type: boolean
+          default: false
+          description: Setting `max_service_time` to true multiplies `order.priority` with the service time of an order when the solver chooses which orders to schedule in an overconstrained setting.
+        max_time_for_duration_Squash:
+          type: integer
+          default: 1
+          description: This setting determines whether an order duration gets squashed or not, given that `order.duration_squash` is set. In order for a squash to occur, the travel time from the location of the previous order to the current one must be strictly less than `max_time_for_duration_Squash`. For example, the default setting of `1` only allows squashing an order with its predecessor if the travel time is `0`.
+        max_waiting_time_for_linkedOrders:
+          type: integer
+          default: 120
+          description: The maximum waiting time for a visit so that it can synchronise with a link to perform an activity together. See interaction with `Options.use_snapUnit_for_waitRange`.
         minimize_driver_wait_time:
           type: boolean
           description: If true, this will minimise the wait time of the vehicles.
-        workloadFairnessDeviation:
+        workloadSpread:
+          type: boolean
+          default: false
+          description: If true, the workload (service time) will be spread over all vehicles and all days. (interacts with `Weights.workloadSpreadWeight` and `options.workloadSensitivity`)
+        workloadVehicleSpread:
+          type: boolean
+          default: false
+          description: If true, the workload (service time) will be spread over all days of one vehicle. (interacts with `Weights.workloadSpreadWeight` and `options.workloadSensitivity`)
+        workloadSensitivity:
           type: number
-          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadDeviation=6%, then it is a fair workload.'
+          description: 'In comparing two workloads this percentage parameter defines to what point the workloads can be considered equal/fair. Example: w1=50hours, w2=58hours and workloadSensitivity=10%, then it is a fair workload. A deviation of 5% would render it unfair.'
           example: 0.05
+        snapUnit:
+          type: integer
+          default: 1
+          minimum: 1
+          example: 5
+          description: The smallest steps in arrival time to which results will be snapped. The snapping policy is round-up and is used at runtime, implying it influences the score calculation. Unless a post-calculation feature such as order padding is used, any calculated arrival time in `[391, 395]` with a `snapUnit` of `5` will yield `395`. Fallback value for `Options.use_snapUnit_for_waitRange`.
+        use_snapUnit_for_waitRange:
+          default: false
+          minimum: 1
+          type: boolean
+          description: The possible waiting times for linked orders are whole multiples of `Options.snapUnit`, bounded by `Options.max_waiting_time_for_linkedOrders`. If `use_snapUnit_for_waitRange = true` with `snapUnit = 15` and `max_waiting_time_for_linkedOrders = 50`, possible waiting times are `0`, `15`, `30`, `45`. If `snapUnit` were to be higher than the maximum waiting time, the solver defaults to `snapUnit = 1`.
 
     Weights:
       type: object
@@ -653,18 +713,6 @@ components:
           default: 1
           maximum: 100
           description: Weight modifier for `order.priority` that ensures that priority orders are scheduled. Note that this does not make sure that they are scheduled sooner.
-        capacitySpreadWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for travel time per vehicle day.
-        overtimeWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for overtime penalties.
         preferredVehicleWeight:
           type: integer
           minimum: 0
@@ -690,15 +738,7 @@ components:
           minimum: 0
           default: 1
           maximum: 100
-          description: Weight modifier for planned vehicle and planned date requirement.
-
-        typeWeight:
-          type: integer
-          minimum: 0
-          default: 1
-          maximum: 100
-          description: Weight modifier for Type requirements for `vehicle.type` linking to `order.type`.
-
+          description: Weight modifier for plannedDate, plannedVehicle and plannedArrival.
 
         ASAPWeight:
           type: integer
@@ -716,12 +756,26 @@ components:
           description: Weight modifier for scheduling vehicles to their fixed `vehicle.region`
 
 
-        minimiseVehiclesWeight:
+        minimizeVehiclesWeight:
           type: integer
           minimum: 0
           default: 1
           maximum: 100
           description: Weight modifier for minimising the number of vehicles.
+
+        softTypesWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for order soft types.
+
+        linkedOrdersWeight:
+          type: integer
+          minimum: 0
+          default: 1
+          maximum: 100
+          description: Weight modifier for the difference in time between two linked orders.
 
 
 
@@ -802,12 +856,12 @@ components:
           description: Unique identification of a vehicle via the name.
         startlocation:
           type: string
-          example: locatie1
-          description: Start address of the vehicle
+          example: location1
+          description: Start address of the vehicle. The optimisation takes into account the travel from this location.
         endlocation:
           type: string
-          example: locatie1
-          description: End address of the vehicle. The optimisation takes into account the travel back to this location.
+          example: location1
+          description: End address of the vehicle. The optimisation takes into account the travel back to this location. Only gets enforced if the vehicle has at least one visit.
         capacity:
           type: integer
           example: 30
@@ -827,6 +881,15 @@ components:
           minimum: 0
           maximum: 1439
           example: 820
+          description: Ending time of the shift of this vehicle.
+        maxDriveTime:
+          type: integer
+          example: 480
+          description: The maximum time a vehicle can spend driving over the course of one day.
+        maxDriveTimeOrder:
+          type: integer
+          example: 180
+          description: The maximum time a vehicle can spend driving towards any order.
         type:
           type: array
           items:
@@ -895,18 +958,64 @@ components:
                 description: Ignore the travel time from the start location to the first order
 
         breaks:
-          type: object
-          description: Break definitions
+          type: array
+          description: Break definitions. Note that in edge cases, using shiftstart/shiftend/workingtime definitions might be more suitable.
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/WindowBreak'
+              - $ref: '#/components/schemas/DriveTimeBreak'
+            discriminator:
+              propertyName: type
+              mapping:
+                'window': '#/components/schemas/WindowBreak'
+                'drivetime': '#/components/schemas/DriveTimeBreak'
+
+        category:
+          type: string
+          description: Transportation type. (This feature is in beta. Give us a heads-up if you want to use it!)
+          enum:
+            - CAR
+            - BIKE
+            - TRUCK
+        region:
+          type: string
+
+    Break:
+      type: object
+      required:
+        - breaktype
+        - breakduration
+      properties:
+        breaktype:
+          type: string
+          enum:
+            - window
+            - drivetime
+        breakduration:
+          type: integer
+          minimum: 0
+          maximum: 1439
+          description: Duration of break, should be less than end minus start.
+          example: 30
+      discriminator:
+        propertyName: breaktype
+        mapping:
+          'window' : '#/components/schemas/WindowBreak'
+          'drivetime': '#/components/schemas/DriveTimeBreak'
+
+    WindowBreak:
+      allOf:
+        - $ref: '#/components/schemas/Break'
+        - type: object
           required:
             - breakstart
             - breakend
-            - breakduration
           properties:
             breakstart:
               type: integer
               minimum: 0
               maximum: 1439
-              description: Earliest starting time of break
+              description: Earliest starting time of break.
               example: 780
             breakend:
               type: integer
@@ -914,20 +1023,21 @@ components:
               maximum: 1439
               description: Earliest ending time of break.
               example: 860
-            breakduration:
+
+
+    DriveTimeBreak:
+      allOf:
+        - $ref: '#/components/schemas/Break'
+        - type: object
+          required:
+            - breakinit
+          properties:
+            breakinit:
               type: integer
               minimum: 0
               maximum: 1439
-              description: Duration of break, should be less than end minus start.
-              example: 30
-        category:
-          type: string
-          enum:
-            - CAR
-            - BIKE
-            - TRUCK
-        region:
-          type: string
+              description: The drive time after which a break should be initialized
+              example: 780
 
     Order:
       type: object
@@ -961,6 +1071,9 @@ components:
           description: |
             Priority allows you to make certain visits a priority over others. In some cases you have more visits than you can serve, resulting in a few unserved. But if you want to make sure your high priority visits take precedence, use this parameter and set it to 100.
           example: 0
+        departure_location:
+          type: string
+          description: After this order has been completed and the vehicle departs, it has to pass through the order's `departure_location`, unless the vehicle is at the end of its route. In that case, `departure_location` is ignored (see `Vehicle.endlocation` to enforce end-of-route behaviour). Note that in the first case there doesn't have to be an order at `departure_location` and the vehicle will still pass through that location without actually doing anything there, thus not yielding any `Visit`, which can result in a higher `Visit.drive` value for the next order.
         duration:
           type: integer
           description: Duration of the service in minutes
@@ -999,11 +1112,10 @@ components:
                 example: 550
               hard:
                 type: boolean
-        durationSquash:
-          description: When multiple orders are on the same location, the service duration can be lower due to simultaneous handling. The duration will then be this value. is useful when you have many stops at the same location, which could be an apartment complex. Normally, each stop has a duration value of let's say 10 minutes, which accounts for parking and finding the entrance. If you had 6 stops assigned to a driver at the same time, it doesn't take an hour in total! Use this parameter to squash the durations of each subsequent delivery at the same address. If you set it to 1, it will squash it to 1 minute, so the total duration for the above 6 stops would be 15 minutes.
+        duration_squash:
+          description: This feature is useful when you have more than one stop at the same location, which can be the case for an apartment complex. If it takes a travel time of `0` (<`options.max_time_for_duration_Squash`) to go from one order to to the next, and the second order visited has `duration = 7` and `duration_squash = -5`, then its associated `Visit.finish` will only be `7-5 = 2` time units after the first visit, instead of its full duration of `7`. This is realised by overriding the value of the travel time with `duration_squash`. This feature also works for chains of any amount of visits.
           type: integer
-          minimum: 0
-          example: 5
+          example: -5
         dateWindows:
           type: array
           description: List of start/end date/time combinations.
@@ -1053,18 +1165,19 @@ components:
         plannedDate:
           type: string
           format: date
-          description: Fixed date on which this order is already planned and should hence be taken into account in the planning.
+          description: Fixed date on which this order is already planned and should hence be taken into account in the planning (PVRP).
         plannedVehicle:
           type: string
-          description: Name of the vehicle to which this order is already planned and should hence be taken into account in the next planning.
+          description: Name of the vehicle to which this order is already planned and should hence be taken into account in the next planning (PVRP).
         plannedArrival:
           type: integer
-          description: Name of the vehicle to which this order is already planned and should hence be taken into account in the next planning.
+          description: The minute of day at which the order is planned to complete. The difference with the actual arrival time is scaled in the score with plannedWeight (PVRP).
         hard:
           type: boolean
           description: In the case of overconstrained planning, this indicates whether this order should be integrated into the planning or not.
         hardWeight:
           type: integer
+          maximum: 1000
           description: In the case of overconstrained planning, this indicates the weight whether this order should be integrated into the planning or not.
         softTypes:
           type: array
@@ -1078,6 +1191,11 @@ components:
               weight:
                 type: integer
                 description: Value of the weight. This will be on the same level as travel time.
+        padding:
+          type: integer
+          minimum: 0
+          example: 4
+          description: After the arrival time has been calculated and snapped, the arrival can be postponed. A padding of 4 means that an arrival snapped to minute 900 will be postponed to minute 904, independent of snapUnit.
 
     Sales:
       type: object
@@ -1259,7 +1377,6 @@ components:
           properties:
             solution:
               type: object
-
               additionalProperties:
                 type: array
                 items:
@@ -1306,40 +1423,60 @@ components:
       type: object
       properties:
         location:
-          description: Location name.
           type: string
           example: "Ghent, Belgium"
+          description: Location name.
         order:
-          description: Order name.
           type: string
           example: "order_233062"
+          description: Order name.
+        nextLocation:
+          type: string
+          example: "Brussels, Belgium"
+          description: Next location name.
         arrival:
-          description: Arrival at visit
           type: integer
-          example: 730
           minimum: 0
           maximum: 1440
+          example: 730
+          description: Arrival at visit.
         finish:
           type: integer
-          example: 750
           minimum: 0
           maximum: 1440
+          example: 750
+          description: Finish time of visit.
+        wait:
+          type: integer
+          example: 3
+          description: Time spent waiting before arriving (used for synchronisation).
         drive:
           type: integer
           example: 5
-          minimum: 0
           description: Drive time to next location in minutes.
         distance:
           type: integer
           example: 4294
           description: Distance to next location in meters.
+        service:
+          type: integer
+          example: 10
+          description: Service time for this visit.
+        demand:
+          type: integer
+          example: 10
+          description: Load in cargo for capacity type 1.
+        demand2:
+          type: integer
+          example: 32
+          description: Load in cargo for capacity type 2.
         date:
           type: string
           format: date
           description: Date on which this visit is scheduled.
         activity:
           type: string
-          description: Type of visit (pickup, delivery or execution)
+          description: Type of visit (pickup, delivery, execution or break)
         coords:
           $ref: '#/components/schemas/Location'
 
