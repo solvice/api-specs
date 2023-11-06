@@ -9,7 +9,7 @@ jobs:
   build2:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: readmeio/rdme@8.6.6
         with:
-          rdme: openapi ./onshift/openapi.yaml --key=rdme_xn8s9h3dd36f6390c935aa5e472f2c1aff2220a785699c9895cc63ab1ea28ceb461ed7 --id=61a1025ae500b60a3cb9e3de
+          rdme: openapi ./onshift/openapi.yaml --key=${{secrets.README_OAS_KEY}} --id=61a1025ae500b60a3cb9e3de
