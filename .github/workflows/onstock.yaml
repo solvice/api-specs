@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: readmeio/rdme@7.2.0
+      - uses: readmeio/rdme@8.6.6
         with:
           rdme: openapi ./onstock/openapi.yaml --key=rdme_xn8s9h3dd36f6390c935aa5e472f2c1aff2220a785699c9895cc63ab1ea28ceb461ed7 --id=61af6819429f960f63440868
